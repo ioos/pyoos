@@ -2,27 +2,40 @@ from pyoos.cdm.features.feature import Feature
 from pyoos.cdm.utils.structure_data import StructureData
 
 class Point(Feature):
-	"""
-		A collection of observations at one time and location.
-		ie. An instantaneous reading of multiple parameters from a sensor
-	"""
+    """
+        A collection of observations at one time and location.
+        ie. An instantaneous reading of multiple parameters from a sensor
+    """
 
-	def __init__(self):
-		self._data = StructureData()
-		return None
+    def __init__(self):
+        self._memberNames = []
+        self._members = []
+        return None
 
+    def get_location(self):
+        """
+            A Shapely Point object (x,y,z) in the cartesian plane
+        """
+        return self._location
+    def set_location(self, location):
+        self._location = location
+    location = property(get_location, set_location)
 
-	def get_location(self):
-		return self._location
-	def set_location(self, location):
-		self._location = location
-	location = property(get_location, set_location)
+    def get_time(self):
+        """
+            The observation time
+        """
+        return self._time
+    def set_time(self, time):
+        self._time = time
+    time = property(get_time, set_time)
 
-	def get_time(self):
-		return self._time
-	def set_time(self, time):
-		self._time = time
-	time = property(get_time, set_time)
+    def add_member(self, member):
+        self._members.append(member)
+        self._memberNames.append(member['name'])
 
-	def get_data(self):
-		return self._data
+    def get_member(self, **kwargs):
+        """
+            Get Member by variable name
+        """
+        return self._members[self._memberNames.index(kwargs.get('name'))]

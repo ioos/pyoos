@@ -1,4 +1,4 @@
-class Feature:
+class Feature(object):
 
 	def __init__(self):
 		return None
