@@ -10,6 +10,7 @@ class Point(Feature):
     def __init__(self):
         self._memberNames = []
         self._members = []
+        self._type = "Point"
         return None
 
     def get_location(self):
@@ -39,3 +40,9 @@ class Point(Feature):
             Get Member by variable name
         """
         return self._members[self._memberNames.index(kwargs.get('name'))]
+
+    def set_members(self, members):
+        self._members = members
+    def get_members(self):
+        return self._members
+    members = property(get_members, set_members)

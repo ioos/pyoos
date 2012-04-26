@@ -1,9 +1,9 @@
-from pyoos.cdm.collections.feature_collection import FeatureCollection
+from pyoos.cdm.collections.nested_point_collection import NestedPointCollection
 
-class SectionCollection(FeatureCollection):
+class SectionCollection(NestedPointCollection):
     """
         A collection of Sections
     """
 
-    def __init__(self):
-        super(SectionCollection,self).__init__()
+    def __init__(self, **kwargs):
+        super(SectionCollection,self).__init__(**kwargs)

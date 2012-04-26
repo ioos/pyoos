@@ -6,7 +6,7 @@ from pyoos.cdm.features.point import Point
 from pyoos.cdm.utils.member import Member
 
 class PointTest(unittest.TestCase):
-    def test_point_creation(self):
+    def test_point(self):
         dt = datetime.utcnow()
         p = Point()
         p.location = sPoint(-123.17, 48.33, 10)
@@ -16,6 +16,7 @@ class PointTest(unittest.TestCase):
         assert p.location.y == 48.33
         assert p.location.z == 10
         assert p.time == dt
+        assert p.type == "Point"
 
     def test_set_get_member(self):
         p = Point()

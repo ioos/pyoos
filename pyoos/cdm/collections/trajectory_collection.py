@@ -1,9 +1,10 @@
-from pyoos.cdm.collections.feature_collection import FeatureCollection
+from pyoos.cdm.collections.nested_point_collection import NestedPointCollection
 
-class TrajectoryCollection(FeatureCollection):
+class TrajectoryCollection(NestedPointCollection):
     """
         A collection of Trajectories
     """
 
-    def __init__(self):
-        super(TrajectoryCollection,self).__init__()
+    def __init__(self, **kwargs):
+        super(TrajectoryCollection,self).__init__(**kwargs)
+        

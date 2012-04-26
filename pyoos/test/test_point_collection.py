@@ -5,8 +5,8 @@ from pyoos.cdm.utils.member import Member
 from pyoos.cdm.collections.point_collection import PointCollection
 import datetime
 
-class PointTest(unittest.TestCase):
-    def test_point_collection_create(self):
+class PointCollectionTest(unittest.TestCase):
+    def test_point_collection(self):
         dt1 = datetime.date(2007, 12, 5)
         p1 = Point()
         p1.time = dt1
@@ -25,8 +25,8 @@ class PointTest(unittest.TestCase):
         p2.add_member(member3)
         p2.add_member(member4)
 
-        pc = PointCollection([p1,p2])
-        pc.calculateBounds()
+        pc = PointCollection(elements=[p1,p2])
+        pc.calculate_bounds()
 
         assert pc.size == 2
         assert pc.time_range[0] == dt1

@@ -7,7 +7,7 @@ class Feature(object):
 		return self._type
 	def set_type(self, type):
 		self._type = value
-	value = property(get_type, set_type)
+	type = property(get_type, set_type)
 
 	def get_title(self):
 		return self._location
