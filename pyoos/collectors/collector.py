@@ -3,7 +3,7 @@ from pytz import timezone
 class Collector(object):
 
     def __init__(self):
-        self._utc = timezone('UTC')
+        self.utc = timezone('UTC')
 
     def get_start_time(self):
         """
@@ -16,8 +16,8 @@ class Collector(object):
     def set_start_time(self, time):
 
         if not time.tzinfo:
-            time = time.replace(tzinfo=self._utc)
-        self._start_time = time.astimezone(self._utc)
+            time = time.replace(tzinfo=self.utc)
+        self._start_time = time.astimezone(self.utc)
     start_time = property(get_start_time, set_start_time)
 
     def get_end_time(self):
@@ -31,6 +31,6 @@ class Collector(object):
     def set_end_time(self, time):
 
         if not time.tzinfo:
-            time = time.replace(tzinfo=self._utc)
-        self._end_time = time.astimezone(self._utc)
+            time = time.replace(tzinfo=self.utc)
+        self._end_time = time.astimezone(self.utc)
     end_time = property(get_end_time, set_end_time)
