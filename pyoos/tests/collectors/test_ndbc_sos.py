@@ -1,5 +1,5 @@
 import unittest
-from pyoos.collectors.ndbc_sos import NdbcSos
+from pyoos.collectors.ndbc.ndbc_sos import NdbcSos
 
 class NdbcSosTest(unittest.TestCase):
 
@@ -18,17 +18,21 @@ class NdbcSosTest(unittest.TestCase):
     def test_ndbc_describe_sensor(self):
         procedure = self.c.server.offerings[1].procedures[0]
         outputFormat = self.c.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values'][0]
-        response = self.c.server.describe_sensor(procedure=procedure,
-                                                        outputFormat=outputFormat)
-        assert isinstance(response, str)
+        response = self.c.get_sensor_metadata(procedure=procedure,
+                                              outputFormat=outputFormat)
+        assert isinstance(response.systems[0].id, str)
 
     def test_ndbc_get_observation(self):
         offering = self.c.server.offerings[1]
+        # NDBC only allows one offering at a time
         offerings = [offering.name]
         responseFormat = offering.response_formats[0]
+        # NDBC only allows one observed_property at a time
         observedProperties = [offering.observed_properties[0]]
         eventTime = None
-        response = self.c.server.get_observation(offerings=offerings, responseFormat=responseFormat, observedProperties=observedProperties, eventTime=eventTime)
-
+        response = self.c.server.get_observation(offerings=offerings,
+                                                 responseFormat=responseFormat,
+                                                 observedProperties=observedProperties,
+                                                 eventTime=eventTime)
         assert isinstance(response, str)
 
