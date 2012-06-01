@@ -18,8 +18,8 @@ class NdbcSosTest(unittest.TestCase):
     def test_ndbc_describe_sensor(self):
         procedure = self.c.server.offerings[1].procedures[0]
         outputFormat = self.c.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values'][0]
-        response = self.c.get_sensor_metadata(procedure=procedure,
-                                              outputFormat=outputFormat)
+        response = self.c.get_metadata(procedure=procedure,
+                                       outputFormat=outputFormat)
         assert isinstance(response.systems[0].id, str)
 
     def test_ndbc_get_observation(self):

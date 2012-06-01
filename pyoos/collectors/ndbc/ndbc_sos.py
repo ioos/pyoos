@@ -15,7 +15,7 @@ class NdbcSos(Collector):
     def get_data(self, **kwargs):
         True
 
-    def get_sensor_metadata(self, **kwargs):
+    def get_metadata(self, **kwargs):
         response = self.server.describe_sensor(**kwargs)
         return IoosDescribeSensor(response)
 
