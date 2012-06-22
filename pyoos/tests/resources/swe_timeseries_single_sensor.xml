@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<om:ObservationCollection xmlns:om="http://www.opengis.net/om/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/observation.xsd">
+  <gml:metaDataProperty xlink:title="disclaimer">
+    <gml:GenericMetaData>
+      <gml:description>DISCLAIMER</gml:description>
+    </gml:GenericMetaData>
+  </gml:metaDataProperty>
+  <om:member>
+    <om:Observation>
+      <gml:description>TimeSeries 1</gml:description>
+      <gml:name>TimeSeries_1</gml:name>
+      <gml:boundedBy>
+        <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+          <gml:lowerCorner>32.5 -78.5</gml:lowerCorner>
+          <gml:upperCorner>32.5 -78.5</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+      <om:samplingTime>
+        <gml:TimePeriod>
+          <gml:beginPosition>2009-05-23T00:00:00Z</gml:beginPosition>
+          <gml:endPosition>2009-05-23T02:00:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:samplingTime>
+      <om:procedure />
+      <om:observedProperty />
+      <om:featureOfInterest>
+        <gml:FeatureCollection>
+          <gml:metaDataProperty>
+            <gml:name codeSpace="http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.6/cf-conventions.html#discrete-sampling-geometries">timeSeries</gml:name>
+          </gml:metaDataProperty>
+          <gml:location>
+            <gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+              <gml:pos>32.5 -78.5</gml:pos>
+            </gml:Point>
+          </gml:location>
+        </gml:FeatureCollection>
+      </om:featureOfInterest>
+      <om:result>
+        <swe:DataStream definition="timeSeries">
+          <swe:field name="time">
+            <swe:Time definition="http://www.opengis.net/def/property/OGC/0/SamplingTime">
+              <swe:uom xlink:href="http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"/>
+            </swe:Time>
+          </swe:field>
+          <swe:field name="location">
+            <swe:Vector definition="http://www.opengis.net/def/property/OGC/0/PlatformLocation" referenceFrame="http://www.opengis.net/def/crs/EPSG/0/4979">
+              <swe:coordinate name="lat">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/latitude" axisID="Lat">
+                  <swe:uom code="deg"/>
+                  <swe:value>32.5</swe:value>
+                </swe:Quantity>
+              </swe:coordinate>
+              <swe:coordinate name="lon">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/longitude" axisID="Long">
+                  <swe:uom code="deg"/>
+                  <swe:value>-78.5</swe:value>
+                </swe:Quantity>
+              </swe:coordinate>
+              <swe:coordinate name="z">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/altitude" axisID="h">
+                  <swe:uom code="m"/>
+                  <swe:value>10</swe:value>
+                </swe:Quantity>
+              </swe:coordinate>
+            </swe:Vector>
+          </swe:field>
+          <swe:field name="temp">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/air_temperature">
+              <swe:uom code="Cel"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:encoding>
+            <swe:TextEncoding blockSeparator="\n" tokenSeparator=","/>
+          </swe:encoding>
+          <swe:values>
+            2009-05-23T00:00:00Z,15.4
+            2009-05-23T01:00:00Z,15.8
+            2009-05-23T02:00:00Z,15.6
+          </swe:values>
+        </swe:DataStream>
+      </om:result>
+    </om:Observation>
+  </om:member>
+</om:ObservationCollection>

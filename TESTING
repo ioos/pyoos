@@ -1,0 +1,14 @@
+Testing pyoos
+==============
+
+The pyoos module is tested with the help of py.test
+
+    http://pypi.python.org/pypi/pytest
+
+To run all tests:
+
+    $ python runtests.py
+
+To run a single test:
+
+    $ python -m pytest path_to_test
