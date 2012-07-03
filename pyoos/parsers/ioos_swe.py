@@ -5,6 +5,7 @@ from owslib.util import nspath as nsp
 from owslib.util import nspath_eval as nspv
 from owslib.crs import Crs
 from pyoos.parsers.swe.swe_timeseries import SweTimeSeries
+from shapely.geometry import box
 
 ns = OWSLibNamespaces()
 
@@ -47,9 +48,9 @@ class OmObservation(object):
             self.bbox_srs = Crs(testXMLAttribute(envelope,'srsName'))
             # Always keep the BBOX as minx, miny, maxx, maxy
             if self.bbox_srs.axisorder == "yx":
-                self.bbox = (float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
+                self.bbox = box(float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
             else:
-                self.bbox = (float(lower_left_corner[0]), float(lower_left_corner[1]), float(upper_right_corner[0]), float(upper_right_corner[1]))
+                self.bbox = box(float(lower_left_corner[0]), float(lower_left_corner[1]), float(upper_right_corner[0]), float(upper_right_corner[1]))
         except Exception:
             self.bbox = None
             self.bbox_srs = None
