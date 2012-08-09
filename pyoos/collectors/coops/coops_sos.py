@@ -21,4 +21,7 @@ class CoopsSos(Collector):
     #    return IoosDif(response)
         
     def get_raw_data(self, **kwargs):
-        return self.server.get_observation(**kwargs)
+        res = self.server.get_observation(**kwargs)
+        if res[41:56] == "ExceptionReport":
+            res = -1
+        return res
