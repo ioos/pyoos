@@ -1,5 +1,4 @@
 from pyoos.cdm.features.feature import Feature
-from pyoos.cdm.utils.structure_data import StructureData
 
 class Point(Feature):
     """
