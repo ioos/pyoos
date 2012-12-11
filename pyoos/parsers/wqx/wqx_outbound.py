@@ -3,6 +3,7 @@ from owslib.util import testXMLAttribute, testXMLValue
 from owslib.crs import Crs
 from pyoos.utils.asatime import AsaTime
 from pyoos.utils.etree import etree
+import pytz
 
 def nsp(element_tag, namespace):
     return nspath(element_tag, namespace=namespace)
@@ -59,6 +60,8 @@ class WqxActivity(object):
         if tz is not None:
             parse_string = "%s %s" % (parse_string, tz)
         self.start_time = AsaTime.parse(parse_string)
+        if self.start_time.tzinfo is None:
+            self.start_time = self.start_time.replace(tzinfo=pytz.utc)
 
         self.project = testXMLValue(des.find(nsp("ProjectIdentifier", wqx_ns)))
         self.location_id = testXMLValue(des.find(nsp("MonitoringLocationIdentifier", wqx_ns)))
