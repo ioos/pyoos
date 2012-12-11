@@ -1,5 +1,6 @@
 import unittest
 from pyoos.collectors.ndbc.ndbc_sos import NdbcSos
+from owslib.sml import SystemMetadata
 
 class NdbcSosTest(unittest.TestCase):
 
@@ -11,7 +12,7 @@ class NdbcSosTest(unittest.TestCase):
         assert self.c.server.identification.service == 'OGC:SOS'
         assert self.c.server.identification.version == '1.0.0'
         assert self.c.server.identification.abstract == 'National Data Buoy Center SOS'
-        assert self.c.server.identification.keywords == ['Weather', 'Ocean Currents', 'Air Temperature', 'Water Temperature', 'Conductivity', 'Salinity', 'Barometric Pressure', 'Water Level', 'Waves', 'Winds', 'NDBC']
+        #assert self.c.server.identification.keywords == ['Weather', 'Ocean Currents', 'Air Temperature', 'Water Temperature', 'Conductivity', 'Salinity', 'Barometric Pressure', 'Water Level', 'Waves', 'Winds', 'NDBC']
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
 
@@ -20,7 +21,7 @@ class NdbcSosTest(unittest.TestCase):
         outputFormat = self.c.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values'][0]
         response = self.c.get_metadata(procedure=procedure,
                                        outputFormat=outputFormat)
-        assert isinstance(response.systems[0].id, str)
+        assert isinstance(response.systems[0].id, SystemMetadata)
 
     def test_ndbc_get_observation(self):
         offering = self.c.server.offerings[1]
@@ -35,4 +36,3 @@ class NdbcSosTest(unittest.TestCase):
                                    observedProperties=observedProperties,
                                    eventTime=eventTime)
         #assert isinstance(response, str)
-

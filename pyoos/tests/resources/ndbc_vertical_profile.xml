@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<om:ObservationCollection xmlns:om="http://www.opengis.net/om/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:swe="http://www.opengis.net/swe/1.0" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/om/1.0 http://schemas.opengis.net/om/1.0.0/observation.xsd">
+  <gml:metaDataProperty xlink:title="disclaimer">
+    <gml:GenericMetaData>
+      <gml:description>Does IOOS have any suggestion for DISCLAIMER text?  Is this mandatory?</gml:description>
+    </gml:GenericMetaData>
+  </gml:metaDataProperty>
+  <om:member>
+    <om:Observation>
+      <gml:description>currents observations at 41012</gml:description>
+      <gml:name>urn:ioos:station:wmo:41012</gml:name>
+      <gml:boundedBy>
+        <gml:Envelope srsName="urn:ogc:def:crs:epsg::4326">
+          <gml:lowerCorner>30.04 -80.55</gml:lowerCorner>
+          <gml:upperCorner>30.04 -80.55</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+      <om:samplingTime>
+        <gml:TimePeriod>
+          <gml:beginPosition>2011-03-01T00:50:00Z</gml:beginPosition>
+          <gml:endPosition>2011-03-01T23:50:00Z</gml:endPosition>
+        </gml:TimePeriod>
+      </om:samplingTime>
+      <om:procedure/>
+      <om:observedProperty xlink:href="http://mmisw.org/ont/cf/parameter/currents"/>
+      <om:featureOfInterest>
+        <gml:FeatureCollection>
+          <gml:metaDataProperty>
+            <gml:name codeSpace="http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.6/cf-conventions.html#discrete-sampling-geometries">timeSeriesProfile</gml:name>
+          </gml:metaDataProperty>
+          <gml:location>
+            <gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+              <gml:pos>30.04 -80.55</gml:pos>
+            </gml:Point>
+          </gml:location>
+        </gml:FeatureCollection>
+      </om:featureOfInterest>
+      <om:result>
+        <swe:DataStream definition="timeSeriesProfile">
+          <swe:field name="station_id">
+            <swe:Text definition="http://fixme.vocab/station">
+              <swe:value>urn:ioos:station:wmo:41012</swe:value>
+            </swe:Text>
+          </swe:field>
+          <swe:field name="sensor_id">
+            <swe:Text definition="http://fixme.vocab/sensor"/>
+          </swe:field>
+          <swe:field name="time">
+            <swe:Time definition="http://www.opengis.net/def/property/OGC/0/SamplingTime">
+              <swe:uom xlink:href="http://www.opengis.net/def/uom/ISO-8601/0/Gregorian"/>
+            </swe:Time>
+          </swe:field>
+          <swe:field name="location">
+            <swe:Vector definition="http://www.opengis.net/def/property/OGC/0/PlatformLocation" referenceFrame="http://www.opengis.net/def/crs/EPSG/0/4979">
+              <swe:coordinate name="lat">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/latitude" axisID="Lat">
+                  <swe:uom code="deg"/>
+                  <swe:value>30.04</swe:value>
+                </swe:Quantity>
+              </swe:coordinate>
+              <swe:coordinate name="lon">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/longitude" axisID="Long">
+                  <swe:uom code="deg"/>
+                  <swe:value>-80.55</swe:value>
+                </swe:Quantity>
+              </swe:coordinate>
+              <swe:coordinate name="z">
+                <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/altitude" axisID="h">
+                  <swe:uom code="m"/>
+                </swe:Quantity>
+              </swe:coordinate>
+            </swe:Vector>
+          </swe:field>
+          <swe:field name="direction_of_sea_water_velocity">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/direction_of_sea_water_velocity">
+              <swe:uom code="deg"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="sea_water_speed">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/sea_water_speed">
+              <swe:uom code="cm/s"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="upward_sea_water_velocity">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/upward_sea_water_velocity">
+              <swe:uom code="cm/s"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="error_velocity">
+            <swe:Quantity definition="http://fixme.vocab/error_velocity">
+              <swe:uom code="cm/s"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="platform_orientation">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/platform_orientation">
+              <swe:uom code="deg"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="platform_pitch_angle">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/platform_pitch_angle">
+              <swe:uom code="deg"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="platform_roll_angle">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/platform_roll_angle">
+              <swe:uom code="deg"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="sea_water_temperature">
+            <swe:Quantity definition="http://mmisw.org/ont/cf/parameter/sea_water_temperature">
+              <swe:uom code="Cel"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="pct_good_3_beam">
+            <swe:Quantity definition="http://fixme.vocab/pct_good_3_beam">
+              <swe:uom code="%"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="pct_good_4_beam">
+            <swe:Quantity definition="http://fixme.vocabpct_good_4_beam">
+              <swe:uom code="%"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="pct_rejected">
+            <swe:Quantity definition="http://fixme.vocab/pct_rejected">
+              <swe:uom code="%"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="pct_bad">
+            <swe:Quantity definition="http://fixme.vocab/pct_bad">
+              <swe:uom code="%"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="echo_intensity_beam1">
+            <swe:Quantity definition="http://fixme.vocab/echo_intensity_beam1">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="echo_intensity_beam2">
+            <swe:Quantity definition="http://fixme.vocab/echo_intensity_beam2">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="echo_intensity_beam3">
+            <swe:Quantity definition="http://fixme.vocab/echo_intensity_beam3">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="echo_intensity_beam4">
+            <swe:Quantity definition="http://fixme.vocab/echo_intensity_beam4">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="correlation_maginitude_beam1">
+            <swe:Quantity definition="http://fixme.vocab/correlation_maginitude_beam1">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="correlation_maginitude_beam2">
+            <swe:Quantity definition="http://fixme.vocab/correlation_maginitude_beam2">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="correlation_maginitude_beam3">
+            <swe:Quantity definition="http://fixme.vocab/correlation_maginitude_beam3">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="correlation_maginitude_beam4">
+            <swe:Quantity definition="http://fixme.vocab/correlation_maginitude_beam4">
+              <swe:uom code="count"/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:field name="quality_flags">
+            <swe:Quantity definition="http://fixme.vocab/quality_flags">
+              <swe:uom code=""/>
+            </swe:Quantity>
+          </swe:field>
+          <swe:encoding>
+            <swe:TextEncoding decimalSeparator="." tokenSeparator="," blockSeparator="\n"/>
+          </swe:encoding>
+          <swe:values>urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,5.00,57,25.7,-2.7,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,7.00,62,23.5,-2.5,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,9.00,65,21.1,-2.6,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,11.00,71,17.2,-2.5,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,13.00,73,18.2,-2.3,-4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,15.00,64,22.1,-2.4,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,17.00,58,23.4,-2.4,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,19.00,51,24.7,-2.6,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,21.00,47,26.5,-2.7,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,23.00,47,27.2,-2.8,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,25.00,49,27.6,-2.8,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,27.00,54,25.0,-2.6,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,29.00,61,22.1,-2.7,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,31.00,65,18.7,-2.8,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T00:50:00Z,33.00,68,17.9,-2.9,-4.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,5.00,57,25.7,-2.6,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,7.00,58,24.0,-2.5,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,9.00,60,21.8,-2.3,-8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,11.00,62,19.1,-2.3,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,13.00,67,15.8,-2.5,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,15.00,61,17.0,-2.4,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,17.00,57,19.2,-2.2,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,19.00,56,21.8,-2.5,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,21.00,53,22.5,-2.6,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,23.00,53,23.3,-2.9,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,25.00,60,20.7,-2.7,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,27.00,64,17.5,-2.5,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,29.00,69,14.1,-2.6,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,31.00,66,12.8,-2.5,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T01:50:00Z,33.00,63,10.5,-2.5,4.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,5.00,73,19.8,-2.3,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,7.00,72,18.9,-2.0,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,9.00,73,18.4,-1.9,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,11.00,77,17.0,-2.0,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,13.00,77,15.5,-2.0,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,15.00,82,13.8,-2.1,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,17.00,81,9.5,-1.8,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,19.00,60,9.7,-1.7,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,21.00,55,13.7,-1.9,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,23.00,62,15.1,-2.1,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,25.00,61,14.7,-2.1,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,27.00,54,12.2,-2.1,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,29.00,52,9.2,-2.1,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,31.00,43,7.2,-1.9,-4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T02:50:00Z,33.00,24,6.0,-2.0,-6.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,5.00,32,9.4,-1.5,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,7.00,31,9.4,-1.4,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,9.00,29,9.7,-1.5,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,11.00,21,7.3,-1.4,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,13.00,352,4.2,-1.4,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,15.00,3,5.3,-1.4,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,17.00,28,7.8,-1.8,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,19.00,45,8.6,-1.5,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,21.00,44,7.1,-1.8,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,23.00,28,6.4,-1.6,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,25.00,21,6.1,-1.7,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,27.00,355,6.4,-1.6,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,29.00,344,7.4,-1.3,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,31.00,333,9.0,-1.6,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T03:50:00Z,33.00,321,10.4,-1.5,-1.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,5.00,352,9.1,-3.4,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,7.00,342,9.5,-3.2,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,9.00,320,9.7,-2.8,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,11.00,306,12.2,-2.5,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,13.00,296,14.2,-2.6,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,15.00,308,10.8,-3.1,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,17.00,319,6.9,-3.0,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,19.00,319,5.2,-3.2,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,21.00,308,7.6,-3.2,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,23.00,311,10.1,-3.0,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,25.00,311,13.2,-2.9,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,27.00,311,16.1,-2.8,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,29.00,308,18.4,-2.8,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,31.00,306,20.5,-2.8,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T04:50:00Z,33.00,303,20.4,-2.6,-2.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,5.00,328,14.8,-2.0,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,7.00,323,14.4,-1.6,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,9.00,319,15.3,-1.2,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,11.00,310,19.0,-1.2,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,13.00,304,21.8,-1.6,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,15.00,307,19.8,-2.2,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,17.00,311,17.7,-2.1,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,19.00,307,18.6,-2.0,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,21.00,305,22.5,-2.4,-8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,23.00,306,27.5,-2.1,-9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,25.00,308,30.6,-2.1,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,27.00,310,31.3,-2.0,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,29.00,307,31.1,-1.9,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,31.00,305,29.2,-1.8,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T05:50:00Z,33.00,303,25.2,-1.7,12.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,5.00,321,26.2,-2.0,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,7.00,320,25.1,-1.6,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,9.00,320,25.3,-1.4,14.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,11.00,315,26.7,-1.4,10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,13.00,314,29.6,-1.7,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,15.00,311,33.8,-1.9,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,17.00,309,34.3,-2.5,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,19.00,311,30.3,-2.8,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,21.00,313,29.2,-2.6,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,23.00,313,31.9,-3.1,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,25.00,316,34.2,-3.0,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,27.00,314,35.2,-3.0,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,29.00,312,34.4,-2.4,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,31.00,310,34.2,-2.4,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T06:50:00Z,33.00,309,32.6,-2.0,10.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,5.00,328,33.9,-2.6,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,7.00,328,35.1,-2.5,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,9.00,327,35.8,-2.6,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,11.00,326,34.8,-2.6,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,13.00,326,35.8,-2.5,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,15.00,323,37.8,-2.5,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,17.00,319,42.6,-2.6,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,19.00,314,43.0,-2.8,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,21.00,310,40.5,-2.8,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,23.00,313,40.4,-2.6,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,25.00,314,39.3,-2.7,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,27.00,314,38.7,-2.6,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,29.00,315,37.4,-2.7,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,31.00,316,35.4,-2.7,-12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T07:50:00Z,33.00,317,33.7,-2.8,-18.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,5.00,335,34.8,-2.4,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,7.00,334,34.6,-2.4,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,9.00,332,34.0,-2.4,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,11.00,330,37.3,-2.4,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,13.00,328,41.8,-2.5,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,15.00,322,44.0,-2.8,-10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,17.00,317,46.1,-3.5,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,19.00,317,43.9,-3.7,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,21.00,319,42.7,-3.5,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,23.00,318,41.1,-2.8,21.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,25.00,318,40.2,-2.4,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,27.00,317,40.3,-2.0,19.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,29.00,318,39.9,-1.9,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,31.00,319,38.6,-1.9,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T08:50:00Z,33.00,318,38.0,-2.0,10.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,5.00,345,40.0,-2.7,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,7.00,344,40.5,-2.6,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,9.00,343,41.1,-3.0,11.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,11.00,343,41.0,-3.0,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,13.00,341,42.5,-2.9,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,15.00,339,43.0,-3.1,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,17.00,338,44.5,-3.4,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,19.00,334,47.6,-3.5,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,21.00,333,47.2,-3.9,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,23.00,333,41.6,-4.3,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,25.00,331,37.7,-4.2,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,27.00,330,37.9,-3.8,-8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,29.00,328,36.3,-3.2,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,31.00,328,35.2,-3.1,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T09:50:00Z,33.00,325,32.0,-3.0,-27.0,,,,,,,,,,,,,,,,,191333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,5.00,29,38.8,-1.3,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,7.00,34,35.8,-0.5,-23.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,9.00,30,38.6,-1.2,-10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,11.00,28,39.4,-1.5,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,13.00,25,38.8,-1.4,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,15.00,21,39.3,-1.3,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,17.00,17,36.9,-1.0,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,19.00,20,28.7,-1.0,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,21.00,23,25.3,-1.1,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,23.00,25,23.4,-1.3,-4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,25.00,22,22.1,-1.2,-4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,27.00,24,21.1,-1.3,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,29.00,23,20.2,-1.2,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,31.00,24,17.7,-1.1,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T12:50:00Z,33.00,25,16.5,-0.9,-4.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,5.00,48,34.7,-1.9,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,7.00,48,33.4,-1.8,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,9.00,47,33.7,-2.1,-4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,11.00,43,34.3,-2.4,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,13.00,39,33.9,-2.4,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,15.00,34,32.9,-2.6,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,17.00,26,27.8,-2.6,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,19.00,27,20.6,-2.3,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,21.00,30,17.6,-2.1,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,23.00,32,16.6,-2.1,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,25.00,31,14.5,-2.1,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,27.00,33,13.0,-2.0,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,29.00,30,11.3,-2.1,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,31.00,30,10.4,-2.1,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T13:50:00Z,33.00,22,8.8,-2.3,-14.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,5.00,58,30.3,-2.3,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,7.00,62,27.9,-1.8,-23.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,9.00,54,29.5,-2.5,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,11.00,49,29.9,-2.7,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,13.00,42,28.6,-2.7,-12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,15.00,35,22.9,-2.3,-25.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,17.00,35,17.4,-2.3,-18.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,19.00,35,13.7,-2.5,-8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,21.00,37,12.7,-2.6,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,23.00,36,12.0,-2.6,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,25.00,35,11.7,-2.3,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,27.00,31,11.0,-2.3,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,29.00,33,10.9,-2.3,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,31.00,28,9.3,-2.3,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T14:50:00Z,33.00,37,9.1,-2.2,-4.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,5.00,66,23.7,-2.4,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,7.00,65,24.0,-2.1,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,9.00,63,25.0,-2.0,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,11.00,60,25.1,-2.1,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,13.00,56,25.8,-2.2,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,15.00,41,23.1,-2.4,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,17.00,23,18.7,-2.4,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,19.00,16,15.7,-2.2,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,21.00,10,14.8,-2.1,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,23.00,8,14.1,-2.3,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,25.00,9,12.5,-2.2,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,27.00,3,12.0,-2.2,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,29.00,2,11.3,-2.4,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,31.00,356,10.4,-2.5,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T15:50:00Z,33.00,352,10.6,-2.7,0.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,5.00,101,8.6,-2.3,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,7.00,99,8.6,-2.5,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,9.00,97,6.9,-2.3,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,11.00,75,7.5,-2.3,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,13.00,62,8.4,-2.3,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,15.00,35,9.7,-2.3,-9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,17.00,4,12.6,-2.3,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,19.00,342,13.3,-2.3,-1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,21.00,324,13.8,-2.4,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,23.00,320,13.6,-2.4,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,25.00,311,14.0,-2.5,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,27.00,306,14.7,-2.6,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,29.00,303,14.9,-3.2,-13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,31.00,312,13.7,-2.9,-3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T16:50:00Z,33.00,307,14.9,-2.3,-4.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,5.00,228,7.2,-2.0,1.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,7.00,235,6.5,-2.1,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,9.00,253,4.8,-2.1,6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,11.00,267,4.3,-2.1,0.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,13.00,304,5.0,-2.1,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,15.00,326,8.8,-2.1,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,17.00,329,17.5,-1.5,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,19.00,315,22.1,-1.8,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,21.00,309,24.6,-2.3,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,23.00,307,26.1,-2.5,-2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,25.00,308,27.5,-2.4,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,27.00,302,27.2,-2.7,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,29.00,299,26.1,-3.2,10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,31.00,297,26.0,-3.7,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T17:50:00Z,33.00,301,26.4,-2.7,-8.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,5.00,241,17.3,-2.2,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,7.00,247,16.2,-2.1,20.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,9.00,249,16.2,-2.1,19.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,11.00,254,17.2,-2.5,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,13.00,270,16.1,-2.2,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,15.00,297,18.6,-2.1,-8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,17.00,312,26.2,-2.3,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,19.00,314,30.8,-2.5,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,21.00,310,33.8,-3.0,5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,23.00,308,33.4,-3.0,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,25.00,305,32.4,-3.1,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,27.00,304,32.5,-3.0,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,29.00,304,32.4,-2.8,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,31.00,306,29.2,-3.6,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T18:50:00Z,33.00,306,28.9,-3.3,20.0,,,,,,,,,,,,,,,,,292333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,5.00,256,27.1,-2.6,28.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,7.00,258,26.1,-2.6,24.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,9.00,260,26.6,-2.6,19.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,11.00,263,24.9,-2.7,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,13.00,267,23.1,-2.9,10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,15.00,274,22.7,-3.0,3.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,17.00,286,22.4,-3.0,-6.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,19.00,306,22.1,-2.8,-18.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,21.00,320,26.8,-3.0,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,23.00,321,28.9,-3.7,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,25.00,318,28.8,-4.0,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,27.00,315,28.3,-4.0,7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,29.00,314,26.9,-4.0,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,31.00,314,26.9,-3.7,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T19:50:00Z,33.00,314,26.6,-3.4,-3.0,,,,,,,,,,,,,,,,,393333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,5.00,234,21.1,-3.9,14.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,7.00,241,19.3,-3.8,23.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,9.00,242,19.2,-3.7,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,11.00,246,17.7,-4.1,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,13.00,250,15.2,-3.9,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,15.00,264,11.7,-3.1,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,17.00,265,9.0,-3.5,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,19.00,300,3.0,-3.5,15.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,21.00,54,7.7,-3.5,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,23.00,59,13.6,-3.1,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,25.00,60,13.7,-3.4,13.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,27.00,61,13.0,-3.6,20.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,29.00,65,11.2,-4.0,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,31.00,80,10.5,-4.6,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T22:50:00Z,33.00,71,10.6,-4.6,25.0,,,,,,,,,,,,,,,,,191333333
+
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,5.00,211,19.4,-6.0,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,7.00,216,17.2,-5.5,9.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,9.00,212,17.0,-5.0,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,11.00,208,15.5,-4.8,2.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,13.00,205,13.4,-4.5,10.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,15.00,201,8.5,-4.1,12.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,17.00,165,6.8,-3.7,4.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,19.00,113,10.0,-3.5,-7.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,21.00,91,19.0,-3.2,-5.0,,,,,,,,,,,,,,,,,393333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,23.00,83,26.3,-3.1,17.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,25.00,91,27.5,-3.8,8.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,27.00,90,27.1,-3.8,29.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,29.00,93,25.7,-3.9,34.0,,,,,,,,,,,,,,,,,191333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,31.00,101,24.7,-4.0,16.0,,,,,,,,,,,,,,,,,292333333
+urn:ioos:sensor:wmo:41012::adcp0,2011-03-01T23:50:00Z,33.00,106,23.5,-3.7,-2.0,,,,,,,,,,,,,,,,,393333333
+
+</swe:values>
+        </swe:DataStream>
+      </om:result>
+    </om:Observation>
+  </om:member>
+</om:ObservationCollection>
