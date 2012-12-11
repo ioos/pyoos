@@ -72,7 +72,7 @@ class WqxActivity(object):
         if smpl is not None:
             self.sample_collection_equipment_name = testXMLValue(smpl.find(nsp("SampleCollectionEquipmentName", wqx_ns)))
             smplcol = smpl.find(nsp("SampleCollectionMethod", wqx_ns))
-            if smplcol:
+            if smplcol is not None:
                 self.method_id = testXMLValue(smplcol.find(nsp("MethodIdentifier", wqx_ns)))
                 self.method_context = testXMLValue(smplcol.find(nsp("MethodIdentifierContext", wqx_ns)))
                 self.method_name = testXMLValue(smplcol.find(nsp("MethodName", wqx_ns)))
