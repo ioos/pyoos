@@ -1,6 +1,6 @@
 unittest2==0.5.1
 Shapely==1.2.16
-git+https://github.com/kwilcox/owslib.git@trunk#egg=OWSLib
+OWSLib
 requests
 pytest
 pytest-cov
