@@ -1,0 +1,5 @@
+Timeseries: http://sdftest.ndbc.noaa.gov/sos/server.php?request=GetObservation&service=SOS&version=1.0.0&offering=urn:ioos:station:wmo:41012&observedproperty=Winds&responseformat=text/xml;subtype=%22om/1.0.0%22&eventtime=2011-03-01T00:00Z/2011-03-02T00:00Z
+
+Profile: http://sdftest.ndbc.noaa.gov/sos/server.php?request=GetObservation&service=SOS&version=1.0.0&offering=urn:ioos:station:wmo:41012&observedproperty=Currents&responseformat=text/xml;subtype=%22om/1.0.0%22&eventtime=2011-03-01T00:00Z/2011-03-02T00:00Z
+
+Trajectory: http://sdftest.ndbc.noaa.gov/sos/server.php?request=GetObservation&service=SOS&version=1.0.0&offering=urn:ioos:station:wmo:48900&observedproperty=sea_water_salinity&responseformat=text/xml;subtype=%22om/1.0.0%22&eventtime=2010-07-26T00:00Z/2010-07-27T00:00Z

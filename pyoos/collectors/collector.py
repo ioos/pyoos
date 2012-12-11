@@ -12,7 +12,10 @@ class Collector(object):
             If the datetime object passed in has no tzinfo
             associated with it, it is assumed to be UTC.
         """
-        return self._start_time
+        try: 
+            return self._start_time
+        except:
+            return None
     def set_start_time(self, time):
 
         if not time.tzinfo:
@@ -27,7 +30,10 @@ class Collector(object):
             If the datetime object passed in has no tzinfo
             associated with it, it is assumed to be UTC.
         """
-        return self._end_time
+        try: 
+            return self._end_time
+        except:
+            return None
     def set_end_time(self, time):
 
         if not time.tzinfo:
