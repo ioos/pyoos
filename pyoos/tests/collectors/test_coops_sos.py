@@ -23,18 +23,21 @@ class CoopsSosTest(unittest.TestCase):
         assert isinstance(response.systems[0].id, str)
 
     def test_coops_get_observation(self):
-        eventTime = None
-        stations = {}
-        station_names = set(['station-9052000']) 
+        # COOPS does not support empty eventtime parameters
+        eventTime = "2012-10-01T00:00:00Z/2012-10-01T23:59:00Z"
+        station = None
+        station_names = list(set(['station-9052000']))
         for offering in self.c.server.offerings:
             if offering.id in station_names:
-                stations[offering.id] = offering
-        station = stations[key]
+                station = offering
+                break
+
         response = res = self.c.get_raw_data(
                                    offerings=[station.name],
-                                   responseFormat='text/csv',
+                                   responseFormat='text/xml;schema="ioos/0.6.1"',
                                    observedProperties=['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum'],
                                    eventTime=eventTime,
                                    dataType='VerifiedSixMinute')
-        #assert isinstance(response, str)
 
+        assert isinstance(response, str)
+        

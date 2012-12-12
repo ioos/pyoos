@@ -21,7 +21,8 @@ class NdbcSosTest(unittest.TestCase):
         outputFormat = self.c.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values'][0]
         response = self.c.get_metadata(procedure=procedure,
                                        outputFormat=outputFormat)
-        assert isinstance(response.systems[0].id, SystemMetadata)
+
+        assert isinstance(response.systems[0], SystemMetadata)
 
     def test_ndbc_get_observation(self):
         offering = self.c.server.offerings[1]
