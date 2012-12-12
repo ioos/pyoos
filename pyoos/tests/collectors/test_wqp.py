@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+from pytest import raises
 from pyoos.collectors.wqp.wqp_rest import WqpRest
 from datetime import datetime, timedelta
 from pyoos.utils.asatime import AsaTime
@@ -81,3 +82,8 @@ class WqpTest(unittest.TestCase):
         assert results.organization.name == u"Iowa Dept. of  Natural Resources"
         assert results.organization.id == u"21IOWA"
         
+
+    def test_bad_wqp_site(self):
+        results = self.c.get_metadata(siteid="s")
+        with raises(AttributeError):
+            print results.organization

@@ -16,8 +16,11 @@ class WqxOutbound(object):
         wqx_ns = "http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/"
 
         if isinstance(element, str) or isinstance(element, unicode):
-            # Strip out the XML header due to UTF8 encoding declaration
-            self._root = etree.fromstring(element[38:])
+            try:
+                self._root = etree.fromstring(element)
+            except ValueError:
+                # Strip out the XML header due to UTF8 encoding declaration
+                self._root = etree.fromstring(element[38:])
         else:
             self._root = element
 
@@ -26,16 +29,20 @@ class WqxOutbound(object):
 
         org = self._root.find(nsp("Organization", wqx_ns))
 
-        self.organization = WqxOrganizationDescription(org.find(nsp("OrganizationDescription",wqx_ns)), wqx_ns)
+        self.failed = False
+        if org is None:
+            self.failed = True
+        else:
+            self.organization = WqxOrganizationDescription(org.find(nsp("OrganizationDescription",wqx_ns)), wqx_ns)
 
-        self.location = None
-        ml = org.find(nsp("MonitoringLocation",wqx_ns))
-        if ml is not None:
-            self.location = WqxMonitoringLocation(ml, wqx_ns)
+            self.location = None
+            ml = org.find(nsp("MonitoringLocation",wqx_ns))
+            if ml is not None:
+                self.location = WqxMonitoringLocation(ml, wqx_ns)
 
-        self.activities = []
-        for act in org.findall(nsp("Activity", wqx_ns)):
-            self.activities.append(WqxActivity(act, wqx_ns))
+            self.activities = []
+            for act in org.findall(nsp("Activity", wqx_ns)):
+                self.activities.append(WqxActivity(act, wqx_ns))
 
 class WqxActivity(object):
     """
