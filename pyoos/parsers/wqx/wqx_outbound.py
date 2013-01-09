@@ -93,6 +93,14 @@ class WqxResult(object):
         self._root = element
 
         des = self._root.find(nsp("ResultDescription", wqx_ns))
+        self.name = None
+        self.short_name = None
+        self.status = None
+        self.stastistical_base_code = None
+        self.value_type = None
+        self.weight_basis = None
+        self.time_basis = None
+        self.temperature_basis = None
         if des is not None:
             self.name = testXMLValue(des.find(nsp("CharacteristicName", wqx_ns)))
             self.short_name = testXMLValue(des.find(nsp("ResultSampleFractionText", wqx_ns)))
@@ -104,15 +112,20 @@ class WqxResult(object):
             self.temperature_basis = testXMLValue(des.find(nsp("ResultTemperatureBasisText", wqx_ns)))
 
         rm = des.find(nsp("ResultMeasure", wqx_ns))
+        self.value = None
+        self.units = None
         if rm is not None:
             self.value = testXMLValue(rm.find(nsp("ResultMeasureValue", wqx_ns)))
             self.units = testXMLValue(rm.find(nsp("MeasureUnitCode", wqx_ns)))
 
         qu = des.find(nsp("DataQuality", wqx_ns))
+        self.quality = None
         if qu is not None:
             self.quality = testXMLValue(qu.find(nsp("PrecisionValue", wqx_ns)))
 
         am = self._root.find(nsp("ResultAnalyticalMethod", wqx_ns))
+        self.analytical_method_id = None
+        self.analytical_method_id_context = None
         if am is not None:
             self.analytical_method_id = testXMLValue(am.find(nsp("MethodIdentifier", wqx_ns)))
             self.analytical_method_id_context = testXMLValue(am.find(nsp("MethodIdentifierContext", wqx_ns)))

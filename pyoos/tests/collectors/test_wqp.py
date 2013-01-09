@@ -82,6 +82,11 @@ class WqpTest(unittest.TestCase):
         assert results.organization.name == u"Iowa Dept. of  Natural Resources"
         assert results.organization.id == u"21IOWA"
         
+        #for a in results.activities:
+        #    for r in a.results:
+        #        assert r is not None
+        #        if r.name == "Escherichia coli":
+        #            print r.value
 
     def test_bad_wqp_site(self):
         results = self.c.get_metadata(siteid="s")
