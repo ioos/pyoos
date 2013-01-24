@@ -5,8 +5,61 @@ from pyoos.utils.asatime import AsaTime
 from pyoos.utils.etree import etree
 import pytz
 
+from shapely.geometry import Point as sPoint
+from pyoos.cdm.features.point import Point
+from pyoos.cdm.features.station import Station as Station
+from pyoos.cdm.utils.member import Member
+
 def nsp(element_tag, namespace):
     return nspath(element_tag, namespace=namespace)
+
+class WqxToStation(object):
+    """
+        Convert a WqxOutbound object or WQX string/element to the DSG
+    """
+    def __init__(self, wqx_metadata, wqx_data):
+        if not isinstance(wqx_metadata, WqxOutbound):
+            wqx_metadata = WqxOutbound(wqx_metadata)
+
+        if not isinstance(wqx_data, WqxOutbound):
+            wqx_data = WqxOutbound(wqx_data)
+
+        if wqx_data.failed or wqx_metadata.failed:
+            self.feature = None
+        else:
+            s = Station()
+            s.uid = wqx_metadata.location.id
+            s.name = wqx_metadata.location.name
+            s.set_property("station_type", wqx_metadata.location.type)
+            s.set_property("location_description", wqx_metadata.location.description)
+            s.set_property("huc", wqx_metadata.location.huc)
+            s.set_property("county", wqx_metadata.location.county)
+            s.set_property("state", wqx_metadata.location.state)
+            s.set_property("country", wqx_metadata.location.country)
+            s.set_property("organization_id", wqx_metadata.organization.id)
+            s.set_property("organization_name", wqx_metadata.organization.name)
+            s.set_property("vertical_units", wqx_metadata.location.vertical_measure_units)
+            s.set_property("horizontal_crs", wqx_metadata.location.horizontal_crs_name)
+            s.set_property("vertical_crs", wqx_metadata.location.vertical_crs_name)
+
+            for a in wqx_data.activities:
+                p = Point()
+                p.time = a.start_time
+
+                for r in a.results:
+                    p.add_member(Member(value=r.value, unit=r.units, name=r.name, description=r.short_name, standard=None, quality=r.quality))
+
+                s.add_element(p)
+
+            # Not set the station's location
+            vertical = float(wqx_metadata.location.vertical_measure_value)
+            # convert the vertical to meters if it is ft (which it always is)
+            if wqx_metadata.location.vertical_measure_units == "ft":
+                vertical /= 3.28084
+                s.set_property("vertical_units", "m")
+            s.location = sPoint(float(wqx_metadata.location.longitude), float(wqx_metadata.location.latitude), vertical)
+
+            self.feature = s
 
 class WqxOutbound(object):
     """
@@ -149,6 +202,11 @@ class WqxMonitoringLocation(object):
     def __init__(self, element, wqx_ns):
         self._root = element
 
+        self.id = None
+        self.name = None
+        self.type = None
+        self.description = None
+        self.huc = None
         identity = self._root.find(nsp("MonitoringLocationIdentity", wqx_ns))
         if identity is not None:
             self.id = testXMLValue(identity.find(nsp("MonitoringLocationIdentifier", wqx_ns)))
@@ -157,6 +215,14 @@ class WqxMonitoringLocation(object):
             self.description = testXMLValue(identity.find(nsp("MonitoringLocationDescriptionText", wqx_ns)))
             self.huc = testXMLValue(identity.find(nsp("HUCEightDigitCode", wqx_ns)))
 
+        self.latitude = None
+        self.longitude = None
+        self.map_scale = None
+        self.horizontal_collection_method = None
+        self.horizontal_crs_name = None
+        self.horizontal_crs = None
+        self.vertical_crs_name = None
+        self.vertical_crs = None
         geo = self._root.find(nsp("MonitoringLocationGeospatial", wqx_ns))
         if geo is not None:
             self.latitude = testXMLValue(geo.find(nsp("LatitudeMeasure", wqx_ns)))
@@ -167,7 +233,9 @@ class WqxMonitoringLocation(object):
             #self.horizontal_crs = Crs("EPSG:" + testXMLValue(geo.find(nsp("HorizontalCoordinateReferenceSystemDatumName", wqx_ns))))
             self.vertical_crs_name = testXMLValue(geo.find(nsp("VerticalCollectionMethodName", wqx_ns)))
             #self.vertical_crs = Crs(testXMLValue("EPSG:" + geo.find(nsp("VerticalCoordinateReferenceSystemDatumName", wqx_ns))))
-
+        
+        self.vertical_measure_value = None
+        self.vertical_measure_units = None
         vm = geo.find(nsp("VerticalMeasure", wqx_ns))
         if vm is not None:
             self.vertical_measure_value = testXMLValue(vm.find(nsp("MeasureValue", wqx_ns)))

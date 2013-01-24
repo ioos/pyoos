@@ -1,6 +1,6 @@
 from pyoos.collectors.collector import Collector
 from pyoos.utils.etree import etree
-from pyoos.parsers.wqx.wqx_outbound import WqxOutbound
+from pyoos.parsers.wqx.wqx_outbound import WqxOutbound, WqxToStation
 import requests
 
 class WqpRest(Collector):
@@ -14,12 +14,24 @@ class WqpRest(Collector):
     def get_metadata(self, **kwargs):
         kwargs["mimeType"] = "xml"
         response = self.get_raw_sites_data(**kwargs)
-        return WqxOutbound(response)
+        wqx = WqxOutbound(response)
+        if wqx.failed:
+            return None
+        return wqx
 
     def get_data(self, **kwargs):
         kwargs["mimeType"] = "xml"
         response = self.get_raw_results_data(**kwargs)
-        return WqxOutbound(response)
+        wqx = WqxOutbound(response)
+        if wqx.failed:
+            return None
+        return wqx
+    
+    def get_station(self, **kwargs):
+        kwargs["mimeType"] = "xml"
+        meta = self.get_raw_sites_data(**kwargs)
+        data = self.get_raw_results_data(**kwargs)
+        return WqxToStation(meta,data).feature
         
     def get_characterisic_types(self, **kwargs):
         root = etree.fromstring(requests.get(self.characteristic_types_url).text)

@@ -71,11 +71,7 @@ class WqpTest(unittest.TestCase):
         assert results.location.county == u"013"
         
 
-    def test_wqp_results_metadata(self):
-        #self.c.start_time = datetime.today() - timedelta(weeks=520)
-        #self.c.start_time = AsaTime.parse("2009-08-01")
-        #self.c.end_time = AsaTime.parse("2009-09-10")
-        
+    def test_wqp_results_metadata(self):       
         results = self.c.get_data(siteid="21IOWA-10070005")
         
         # OrganizationDescription
@@ -92,3 +88,16 @@ class WqpTest(unittest.TestCase):
         results = self.c.get_metadata(siteid="s")
         with raises(AttributeError):
             print results.organization
+
+    def test_into_dsg(self):
+        results = self.c.get_station(siteid="21IOWA-10070005")
+        results.calculate_bounds()
+
+        assert results.location.x == -92.4495
+        assert results.location.y == 42.5392
+        assert results.location.z == float(854 / 3.28084)
+
+
+
+
+
