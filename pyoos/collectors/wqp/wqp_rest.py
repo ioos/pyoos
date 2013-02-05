@@ -56,6 +56,6 @@ class WqpRest(Collector):
         if self.end_time is not None:
             params["startDateHi"] = self.end_time.strftime("%m/%d/%Y")
 
-        params["command.avoid"] = "NWIS"
+        #params["command.avoid"] = "NWIS"
 
         return params
