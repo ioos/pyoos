@@ -47,7 +47,7 @@ class WqxToStation(object):
                 p.time = a.start_time
 
                 for r in a.results:
-                    p.add_member(Member(value=r.value, unit=r.units, name=r.name, description=r.short_name, standard=None, quality=r.quality))
+                    p.add_member(Member(value=r.value, unit=r.units, name=r.name, description=r.short_name, standard=None, quality=r.quality, method_id=a.method_id, method_name=a.method_name))
 
                 s.add_element(p)
 
@@ -132,6 +132,9 @@ class WqxActivity(object):
         self.location_id = testXMLValue(des.find(nsp("MonitoringLocationIdentifier", wqx_ns)))
         self.comment = testXMLValue(des.find(nsp("ActivityCommentText", wqx_ns)))
 
+        self.method_id = None
+        self.method_name = None
+        self.method_context = None
         # Method
         smpl = self._root.find(nsp("SampleDescription", wqx_ns))
         if smpl is not None:
