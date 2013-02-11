@@ -51,8 +51,13 @@ class WqxToStation(object):
 
                 s.add_element(p)
 
-            # Not set the station's location
-            vertical = float(wqx_metadata.location.vertical_measure_value)
+            # Now set the station's location
+            vertical = 0
+            try:
+                vertical = float(wqx_metadata.location.vertical_measure_value)
+            except:
+                pass
+
             # convert the vertical to meters if it is ft (which it always is)
             if wqx_metadata.location.vertical_measure_units == "ft":
                 vertical /= 3.28084
