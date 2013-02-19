@@ -6,7 +6,7 @@ from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
 from shapely.geometry import Point as Location
 
-DEBUG = True
+DEBUG = False
 WSDL_HTTP = "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl"
 
 class NerrsWSDL(Collector):
