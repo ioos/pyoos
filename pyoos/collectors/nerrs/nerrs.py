@@ -6,7 +6,7 @@ from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
 from shapely.geometry import Point as Location
 
-DEBUG = False
+DEBUG = True
 WSDL_HTTP = "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl"
 
 class NerrsWSDL(Collector):
@@ -123,7 +123,7 @@ class NerrsWSDL(Collector):
 
 			self.response.close()
 			reply = Reply(self.xml_response)
-			return reply.get_stations(station_code=kwargs.get("station_code"))
+			return reply.parse_station_response(station_code=kwargs.get("station_code"))
 		else:
 			if kwargs.get('site_id') is None:
 				f = open('./tmp/tempfile.txt', 'r')
@@ -135,7 +135,7 @@ class NerrsWSDL(Collector):
 				f.close()
 
 			reply = Reply(self.xml_response)
-			return reply.get_stations(station_code=kwargs.get("station_code"))
+			return reply.parse_station_response(station_code=kwargs.get("station_code"))
 
 	def get_station_data(self, **kwargs):
 		if kwargs.get('min_date') is not None and kwargs.get('max_date') is not None:
@@ -189,7 +189,7 @@ class NerrsWSDL(Collector):
 			f.close()
 
 		reply = Reply(self.data_xml)
-		return reply.get_data_date_range()
+		return reply.parse_data_date_range()
 		
 	def __get_single_param(self,station_code,param,recs=None,test=None):
 		global DEBUG, WSDL_HTTP
@@ -232,7 +232,7 @@ class NerrsWSDL(Collector):
 			f.close()
 
 		reply = Reply(self.data_xml)
-		return reply.get_data_single_param()
+		return reply.parse_data_single_param()
 
 	def __get_all_params(self,station_code,recs=None,test=None):
 		global DEBUG, WSDL_HTTP
@@ -275,7 +275,7 @@ class NerrsWSDL(Collector):
 			f.close()
 
 		reply = Reply(self.data_xml)
-		return reply.get_data_all_params()
+		return reply.parse_data_all_params()
 
 
 def unit(param):

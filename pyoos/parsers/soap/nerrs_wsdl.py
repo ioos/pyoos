@@ -1,6 +1,6 @@
 from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
-from datetime import date, MINYEAR, datetime
+from datetime import MINYEAR, datetime
 
 SOAPENV = 'http://schemas.xmlsoap.org/soap/envelope/'
 NS1 = 'http://webservices2'
@@ -20,11 +20,11 @@ class WsdlReply(object):
 		if hasattr(self._root, 'getroot'):
 			self._root = self._root.getroot()
 
-	def get_stations(self, **kwargs):
+	def parse_station_response(self, **kwargs):
 		global SOAPENV, NS1
 		retval = list()
+		nerrFilter = False
 		try:
-			nerrFilter = False
 			body = nsp('Body', SOAPENV)
 			resp = nsp('exportStationCodesXMLNewResponse', NS1)
 
@@ -54,9 +54,9 @@ class WsdlReply(object):
 					retval.append(NerrStation(data))
 		except:
 			retval = None
-			pass
+			raise
 
-		if len(retval) < 1:
+		if retval is not None and len(retval) < 1:
 			retval = None
 
 		if retval is None and nerrFilter == True:
@@ -66,7 +66,7 @@ class WsdlReply(object):
 
 		return retval
 
-	def get_data_single_param(self, **kwargs):
+	def parse_data_single_param(self, **kwargs):
 		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
@@ -88,7 +88,7 @@ class WsdlReply(object):
 
 		return retval
 
-	def get_data_all_params(self, **kwargs):
+	def parse_data_all_params(self, **kwargs):
 		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
@@ -106,11 +106,11 @@ class WsdlReply(object):
 				retval.add_data(NerrStationData(data))
 		except:
 			retval = None
-			raise
+			pass
 
 		return retval
 
-	def get_data_date_range(self, **kwargs):
+	def parse_data_date_range(self, **kwargs):
 		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
@@ -128,9 +128,9 @@ class WsdlReply(object):
 				retval.add_data(NerrStationData(data))
 		except:
 			retval = None
-			raise
+			pass
 
-		if len(retval) < 1:
+		if retval is not None and len(retval) < 1:
 			retval = None
 			raise ValueError('No data for given date range')
 
@@ -163,20 +163,20 @@ class NerrDataCollection(object):
 	def add_data(self, data):
 		self._data.append(data)
 
-	def get_values(self, param=None, datetime=None):
+	def get_values(self, param=None, date_time=None):
 		if param is None:
 			param = self.__params()[0]
 
-		if datetime is None:
+		if date_time is None:
 			retval = list()
 			for data in self._data:
 				retval.append(data.get_value(param))
 			return retval
 
-		if datetime is not None:
+		if date_time is not None:
 			retval = list()
 			for data in self._data:
-				if data.is_datetime(datetime):
+				if data.is_datetime(date_time):
 					retval.append(data.get_value(param))
 			return retval
 
@@ -238,29 +238,18 @@ class NerrStationData(object):
 
 	def is_datetime(self, dt_str):
 		dt_split = dt_str.split()
-		hr = 0
-		mn = 0
-		#date
-		d_str = dt_split[0].split('/')
-		mth = int(d_str[0])
-		day = int(d_str[1])
-		yr = int(d_str[2])
+		dt = None
 		if len(dt_split) > 1:
-			#time
-			t_str = dt_split[1].split(':')
-			hr = int(t_str[0])
-			mn = int(t_str[1])
+			dt = datetime.strptime(dt_str,'%m/%d/%Y %H:%M')
+		else:
+			dt = datetime.strptime(dt_str,'%m/%d/%Y')
 
-		dt = datetime(yr,mth,day,hr,mn)
-
-		if hr == 0 and mn == 0:
+		if len(dt_split) == 1:
 			# compare dates
-			# print str('comparing: %s - %s' % (dt.date().strftime('%m/%d/%Y'), self.timestamp.get_local_date()))
 			if dt.date() < self.timestamp._local_dt.date() or dt.date() > self.timestamp._local_dt.date():
 				return False
 		else:
 			# compare date times
-			#print str('comparing: %s - %s' % (dt.strftime('%m/%d/%Y %H:%M'), self.timestamp.get_local_datetime()))
 			if dt < self.timestamp._local_dt or dt > self.timestamp._local_dt:
 				return False
 		return True
@@ -300,17 +289,7 @@ class NerrDataDate(object):
 
 	def __get_datetime(self, dt_str):
 		if isinstance(dt_str, str) or isinstance(dt_str, unicode):
-			dt_split = dt_str.split()
-			sdate = dt_split[0]
-			stime = dt_split[1]
-			t_split = stime.split(':')
-			hr = int(t_split[0])
-			mn = int(t_split[1])
-			d_split = sdate.split('/')
-			mnth = int(d_split[0])
-			day = int(d_split[1])
-			yr = int(d_split[2])
-			dt = datetime(yr,mnth,day,hr,mn)
+			dt = datetime.strptime(dt_str, '%m/%d/%Y %H:%M')
 			return dt
 
 		return None
@@ -320,7 +299,7 @@ class NerrStation(object):
 	def __init__(self, data_root):
 		self._root = data_root
 		# parse info
-		#nameing
+		#naming
 		self.id = testXMLValue(self._root.find("NERR_Site_ID"))
 		self.code = testXMLValue(self._root.find("Station_Code"))
 		self.name = testXMLValue(self._root.find("Station_Name"))
@@ -370,38 +349,33 @@ class NerrDate(object):
 	def __init__(self, date_str):
 		self._str = date_str
 		self.dates = list()
-		self.min_date = date.today()
-		self.max_date = date(MINYEAR,1,1)
 		for dst in self._str.split(';'):
 			dst_split = dst.split('-')
-			start = dst_split[0].split()
-			start_dt = date(int(start[1]), month(start[0]), 1)
-			if self.min_date > start_dt:
-				self.min_date = start_dt
-			end_dt = date.today()
-			if len(dst_split) > 1 and dst_split[1] != '':
-				end = dst_split[1].split()
-				if len(end) > 1:
-					end_dt = date(int(end[1]), month(end[0]),1)
+			start_str = dst_split[0].split()
+			start_dt = datetime(int(start_str[1]),month(start_str[0]),1)
+			end_dt = datetime.today()
+			if len(dst_split) > 1 and len(dst_split[1]) > 0:
+				end_str = dst_split[1].split()
+				if len(end_str) == 2:
+					end_dt = datetime(int(end_str[1]),month(end_str[0]),1)
 				else:
-					end_dt = date(int(end[0]),1,1)
-			if end_dt > self.max_date:
-				self.max_date = end_dt
-			self.dates.append(dict(start_date=start_dt,end_date=end_dt))
+					end_dt = datetime(int(end_str[0]),1,1)
+			self.dates.append(start_dt)
+			self.dates.append(end_dt)
+		self.dates.sort()
 
 	def get_start_date(self, obj=False):
 		if obj == False:
-			return self.min_date.strftime("%m/%d/%Y")
+			return self.dates[0].strftime("%m/%d/%Y")
 		else:
-			return self.min_date
+			return self.dates[0]
 
 	def get_latest_date(self, obj=False):
 		if obj == False:
-			return self.max_date.strftime("%m/%d/%Y")
+			i = len(self.dates) - 1
+			return self.dates[i].strftime("%m/%d/%Y")
 		else:
-			return self.max_date
-
-
+			return self.dates[i]
 
 
 def month(m):
