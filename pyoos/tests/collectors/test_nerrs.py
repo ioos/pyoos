@@ -41,7 +41,7 @@ class NerrTest(unittest.TestCase):
       		</soapenv:Envelope>
 		"""
 
-		stations = self.nerrs.get_metadata(test=None)
+		stations = self.nerrs.get_metadata()
 
 		assert len(stations) == 318
 
@@ -98,7 +98,7 @@ class NerrTest(unittest.TestCase):
        </data>
 
 		"""
-		station = self.nerrs.get_metadata(site_id='apa', station_code='apapcnut', test=True)
+		station = self.nerrs.get_metadata(site_id='apa', station_code='apapcnut')
 
 		assert station is not None
 		assert len(station) == 1
@@ -128,7 +128,7 @@ class NerrTest(unittest.TestCase):
 			gets all stations that match the site_id
 		"""
 
-		stations = self.nerrs.get_metadata(site_id='kac',test=True)
+		stations = self.nerrs.get_metadata(site_id='kac')
 
 		assert stations is not None
 		assert len(stations) == 16
@@ -154,7 +154,7 @@ class NerrTest(unittest.TestCase):
 
 		"""
 
-		station = self.nerrs.get_metadata(station_code="jobjbmet",test=True)
+		station = self.nerrs.get_metadata(station_code="jobjbmet")
 
 		assert station is not None
 		assert len(station) == 1
@@ -189,7 +189,7 @@ class NerrTest(unittest.TestCase):
 			test getting all params from a single station
 		"""
 
-		data = self.nerrs.get_station_data(station_code='apapcnut',recs='10',test=True)
+		data = self.nerrs.get_station_data(station_code='apapcnut',recs='10')
 
 		assert data is not None
 		assert len(data) == 10
@@ -219,7 +219,7 @@ class NerrTest(unittest.TestCase):
 			get a single param from a station
 		"""
 
-		data = self.nerrs.get_station_data(station_code='kacbcwq',param='TEMP',recs='10',test=True)
+		data = self.nerrs.get_station_data(station_code='kacbcwq',param='TEMP',recs='10')
 
 		assert data is not None
 		assert len(data) == 10
@@ -244,7 +244,7 @@ class NerrTest(unittest.TestCase):
 			get a single param in a date range
 		"""
 
-		data = self.nerrs.get_station_data(station_code='kacsdwq',min_date='01/01/2004',max_date='12/01/2004',param='PH',test=True)
+		data = self.nerrs.get_station_data(station_code='kacsdwq',min_date='01/01/2004',max_date='12/01/2004',param='PH')
 
 		assert data is not None
 		assert len(data) == 1000
@@ -263,22 +263,22 @@ class NerrTest(unittest.TestCase):
 
 		# bad station
 		with raises(ValueError):
-			data = self.nerrs.get_metadata(station_code='valhalla', test=True)
+			data = self.nerrs.get_metadata(station_code='valhalla')
 			assert data is None
 
 		# bad site id
 		with raises(ValueError):
-			data = self.nerrs.get_metadata(site_id='asgard', test=True)
+			data = self.nerrs.get_metadata(site_id='asgard')
 			assert data is None
 
 		# bad site id, good station
 		with raises(ValueError):
-			data = self.nerrs.get_metadata(site_id='asgard', station_code='kacsdwq', test=True)
+			data = self.nerrs.get_metadata(site_id='asgard', station_code='kacsdwq')
 			assert data is None
 
 		# bad station, good site id
 		with raises(ValueError):
-			data = self.nerrs.get_metadata(site_id='kac', station_code='valhalla', test=True)
+			data = self.nerrs.get_metadata(site_id='kac', station_code='valhalla')
 			assert data is None
 
 	def test_bad_station_data(self):
@@ -323,9 +323,7 @@ class NerrTest(unittest.TestCase):
 			test the station cdm returned from nerrs
 		"""
 
-		return
-
-		station = self.nerrs.get_station('acebbwq', site_id='ace', min_date='02/06/2013', max_date='02/10/2013', test=True)
+		station = self.nerrs.get_station('acebbwq', site_id='ace', min_date='02/06/2013', max_date='02/10/2013')
 
 		assert station is not None
 

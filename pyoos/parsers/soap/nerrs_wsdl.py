@@ -2,38 +2,58 @@ from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
 from datetime import MINYEAR, datetime
 
-SOAPENV = 'http://schemas.xmlsoap.org/soap/envelope/'
-NS1 = 'http://webservices2'
-
 def nsp(element_tag, namespace):
 	return nspath(element_tag, namespace=namespace)
+
+def month(m):
+	return {
+		'Jan':1,
+		'Feb':2,
+		'Mar':3,
+		'Apr':4,
+		'May':5,
+		'Jun':6,
+		'Jul':7,
+		'July':7,
+		'Aug':8,
+		'Sep':9,
+		'Oct':10,
+		'Nov':11,
+		'Dec':12
+	}[m]
+
+def check_for_tag(t):
+	try:
+		[
+			'data',
+			'Station_Code',
+			'DateTimeStamp',
+			'utcStamp',
+			'ID',
+			'Historical'
+		].index(t)
+		return False
+	except:
+		pass
+	return True
 
 class WsdlReply(object):
 
 	def __init__(self, wsdl_response):
-		if isinstance(wsdl_response, str) or isinstance(wsdl_response, unicode):
-			try:
-				self._root = etree.fromstring(wsdl_response)
-			except Exception, e:
-				self._root = etree.fromstring(wsdl_response[38:])
-
-		if hasattr(self._root, 'getroot'):
-			self._root = self._root.getroot()
+		self._root = wsdl_response
+		self._NS1 = 'http://webservices2'
 
 	def parse_station_response(self, **kwargs):
-		global SOAPENV, NS1
 		retval = list()
 		nerrFilter = False
 		try:
-			body = nsp('Body', SOAPENV)
-			resp = nsp('exportStationCodesXMLNewResponse', NS1)
+			resp = nsp('exportStationCodesXMLNewResponse', self._NS1)
 
-			body = self._root.find(body)
-			resp = body.find(resp)
+			resp = self._root.find(resp)
 
 			if resp is None:
-				resp = nsp('NERRFilterStationCodesXMLNewResponse', NS1)
-				resp = body.find(resp)
+				resp = nsp('NERRFilterStationCodesXMLNewResponse', self._NS1)
+				resp = self._root.find(resp)
 
 			ret = 'exportStationCodesXMLNewReturn'
 			ret = resp.find(ret)
@@ -67,16 +87,13 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_single_param(self, **kwargs):
-		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
 		try:
-			body = nsp('Body', SOAPENV)
-			resp = nsp('exportSingleParamXMLNewResponse', NS1)
+			resp = nsp('exportSingleParamXMLNewResponse', self._NS1)
 			ret = 'exportSingleParamXMLNewReturn'
 
-			body = self._root.find(body)
-			resp = body.find(resp)
+			resp = self._root.find(resp)
 			ret = resp.find(ret)
 			retData = ret.find('returnData')
 
@@ -89,16 +106,13 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_all_params(self, **kwargs):
-		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
 		try:
-			body = nsp('Body', SOAPENV)
-			resp = nsp('exportAllParamsXMLNewResponse', NS1)
+			resp = nsp('exportAllParamsXMLNewResponse', self._NS1)
 			ret = 'exportAllParamsXMLNewReturn'
 
-			body = self._root.find(body)
-			resp = body.find(resp)
+			resp = self._root.find(resp)
 			ret = resp.find(ret)
 			retData = ret.find('returnData')
 
@@ -111,16 +125,13 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_date_range(self, **kwargs):
-		global SOAPENV, NS1
 		retval = NerrDataCollection()
 
 		try:
-			body = nsp('Body', SOAPENV)
-			resp = nsp('exportAllParamsDateRangeXMLNewResponse', NS1)
+			resp = nsp('exportAllParamsDateRangeXMLNewResponse', self._NS1)
 			ret = 'exportAllParamsDateRangeXMLNewReturn'
 
-			body = self._root.find(body)
-			resp = body.find(resp)
+			resp = self._root.find(resp)
 			ret = resp.find(ret)
 			retData = ret.find('returnData')
 
@@ -317,26 +328,6 @@ class NerrStation(object):
 		# other
 		self.reserve_name = testXMLValue(self._root.find("Reserve_Name"))
 
-	def parse_date(self, date):
-		"""
-			dates are handed in looking like: Month Year-Month Year-Month
-			ex: Jun 1996-Dec 2001
-			dates can also be ongoing, resulting in
-			ex: Jan 2002-
-		"""
-		now = today.today()
-		split_date = date.split('-')
-		# index 0 is start, index 1 is end
-		start_date = split_date[0].split()
-		retval = dict()
-		retval['start_date'] = month(start_date[0]) + start_date[1]
-		if len(split_date) > 1 and split_date[1] is not '':
-			end_date = split_date[1].split()
-			retval['end_date'] = month(end_date[0]) + end_date[1]
-		else:
-			retval['end_date'] = str(now.month) + "/" + str(now.day) + "/" + str(now.year)
-		return retval
-
 class NerrLocation(object):
 	def __init__(self, root):
 		self.latitude = float(testXMLValue(root.find("Latitude")))
@@ -376,36 +367,3 @@ class NerrDate(object):
 			return self.dates[i].strftime("%m/%d/%Y")
 		else:
 			return self.dates[i]
-
-
-def month(m):
-	return {
-		'Jan':1,
-		'Feb':2,
-		'Mar':3,
-		'Apr':4,
-		'May':5,
-		'Jun':6,
-		'Jul':7,
-		'July':7,
-		'Aug':8,
-		'Sep':9,
-		'Oct':10,
-		'Nov':11,
-		'Dec':12
-	}[m]
-
-def check_for_tag(t):
-	try:
-		[
-			'data',
-			'Station_Code',
-			'DateTimeStamp',
-			'utcStamp',
-			'ID',
-			'Historical'
-		].index(t)
-		return False
-	except:
-		pass
-	return True

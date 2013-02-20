@@ -5,21 +5,36 @@ from pyoos.parsers.soap.nerrs_wsdl import WsdlReply as Reply
 from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
 from shapely.geometry import Point as Location
-from tempfile import mkstemp
+from owslib.util import nspath
+from pyoos.utils.etree import etree
 
-DEBUG = True
-WSDL_HTTP = "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl"
+def unit(param):
+	return {
+		'Temp':'\\xb0C'.decode('unicode-escape'),
+		'SpCond':'mS/cm',
+		'Sal':'ppt',
+		'DO_pct':'%',
+		'DO_mgl':'mg/L',
+		'cDepth':'m',
+		'Level':'m',
+		'cLevel':'m',
+		'pH':'',
+		'Turb':'NTU',
+		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape')
+	}[param]
 
 class NerrsWSDL(Collector):
 	def __init__(self, **kwargs):
 		super(NerrsWSDL,self).__init__()
-		self.client = Client(url=WSDL_HTTP)
+		self._WSDL_HTTP = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
+		self._SOAPENV = 'http://schemas.xmlsoap.org/soap/envelope/'
+		self.client = Client(url=self._WSDL_HTTP)
 
 	def get_station(self, station_code, **kwargs):
 		"""
 			retrieves the metadata and data for a station and returns a populated cdm Station object
 		"""
-		metadata = self.get_metadata(station_code=station_code, site_id=kwargs.get('site_id'), test=kwargs.get('test'))
+		metadata = self.get_metadata(station_code=station_code, site_id=kwargs.get('site_id'))
 		metadata = metadata[0]
 		# need to explore the limitations requested by the user in order to define what we are retrieving from nerrs
 		min_date = kwargs.get('min_date')
@@ -35,9 +50,9 @@ class NerrsWSDL(Collector):
 		if param is None:
 			for p in metadata.parameters:
 				# get data for each param
-				data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p, test=kwargs.get('test')))
+				data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p))
 		else:
-			data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=param, test=kwargs.get('test')))
+			data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=param))
 
 		retval = Station()
 		# set metadata
@@ -76,223 +91,121 @@ class NerrsWSDL(Collector):
 		return retval
 
 	def get_metadata(self, **kwargs):
-		global DEBUG, WSDL_HTTP
 		# use suds to generate the soap request (though it will fail)
-		if kwargs.get("test") is None:
-			if kwargs.get("site_id") is not None:
-				#use NerrFilter request
-				try:
-					self.client.service.NERRFilterStationCodesXMLNew(kwargs.get("site_id"))
-				except:
-					pass
-				data = str(self.client.last_sent())
-				soap_header = dict(soapaction='NERRFilterStationCodesXMLNew')
-			else:
-				try:
-					self.client.service.exportStationCodesXMLNew()
-				except Exception, e:
-					pass
-				data = str(self.client.last_sent())
-				soap_header = dict(soapaction='exportStationCodesXMLNew')
-
-			self.request = Request(url=WSDL_HTTP, data=data, headers=soap_header)
-
+		if kwargs.get("site_id") is not None:
+			#use NerrFilter request
 			try:
-				self.response = urlopen(self.request)
-			except HTTPError:
-				if e.getcode() == 500 and kwargs.get('site_id') is not None:
-					raise ValueError(str('Unknown site_id: %s' % (kwargs.get('site_id'))))
-				else:
-					raise
-				return None
+				self.client.service.NERRFilterStationCodesXMLNew(kwargs.get("site_id"))
 			except:
-				raise
-				return None
-
-			self.xml_response = self.response.read()
-
-			# save to temp file for testing
-			if DEBUG == True:
-				if kwargs.get("site_id") is None:
-					try:
-						with open('./tmp/stationdata.txt', 'w') as f:
-							f.write(self.xml_response)
-							f.close()
-					except:
-						pass
-				else:
-					f = open(str('./tmp/%s_tempfile.txt' % (kwargs.get('site_id'))), 'w')
-					f.write(self.xml_response)
-					f.close()
-
-			self.response.close()
-			reply = Reply(self.xml_response)
-			return reply.parse_station_response(station_code=kwargs.get("station_code"))
+				pass
+			soap_header = dict(soapaction='NERRFilterStationCodesXMLNew')
 		else:
-			if kwargs.get('site_id') is None:
-				f = open('./tmp/tempfile.txt', 'r')
-				self.xml_response = f.read()
-				f.close()
-			else:
-				f = open(str('./tmp/%s_tempfile.txt' % (kwargs.get('site_id'))), 'r')
-				self.xml_response = f.read()
-				f.close()
+			try:
+				self.client.service.exportStationCodesXMLNew()
+			except:
+				pass
+			soap_header = dict(soapaction='exportStationCodesXMLNew')
+		
+		data = str(self.client.last_sent())
+		reply = self.__get_reply_from_response(data, soap_header)
 
-			reply = Reply(self.xml_response)
-			return reply.parse_station_response(station_code=kwargs.get("station_code"))
+		if reply is None:
+			return reply
+
+		return reply.parse_station_response(station_code=kwargs.get("station_code"))
 
 	def get_station_data(self, **kwargs):
 		if kwargs.get('min_date') is not None and kwargs.get('max_date') is not None:
-			return self.__get_all_params_bound(kwargs.get('station_code'), kwargs.get('min_date'), kwargs.get('max_date'), kwargs.get('param'), kwargs.get('test'))
+			return self.__get_all_params_bound(kwargs.get('station_code'), kwargs.get('min_date'), kwargs.get('max_date'), kwargs.get('param'))
 		elif kwargs.get('station_code') is not None and kwargs.get('param') is not None:
-			return self.__get_single_param(kwargs.get('station_code'), kwargs.get('param'), kwargs.get('recs'), kwargs.get('test'))
+			return self.__get_single_param(kwargs.get('station_code'), kwargs.get('param'), kwargs.get('recs'))
 		elif kwargs.get('station_code') is not None:
-			return self.__get_all_params(kwargs.get('station_code'), kwargs.get('recs'), kwargs.get('test'))
+			return self.__get_all_params(kwargs.get('station_code'), kwargs.get('recs'))
 
 		return None
 
-	def __get_all_params_bound(self,station_code,min_date,max_date,param,test=None):
-		global DEBUG, WSDL_HTTP
+	def __get_all_params_bound(self,station_code,min_date,max_date,param):
+		try:
+			self.client.service.exportAllParamsDateRangeXMLNew(station_code,min_date,max_date,param)
+		except:
+			pass
 
-		if test is None:
-			test = False
+		data = str(self.client.last_sent())
+		soap_header = dict(soapaction='exportAllParamsDateRangeXMLNew')
+		
+		reply = self.__get_reply_from_response(data, soap_header)
 
-		f_mid = min_date.replace('/','-')
-		f_mad = max_date.replace('/','-')
+		if reply is None:
+			return reply
 
-		if test == True:
-			f = open(str('./tmp/%s_%s_%s_data.txt' % (station_code,f_mid,f_mad)), 'r')
-			self.data_xml = f.read()
-			f.close()
-		else:
-			try:
-				self.client.service.exportAllParamsDateRangeXMLNew(station_code,min_date,max_date,param)
-			except:
-				pass
-			data = str(self.client.last_sent())
-			soap_header = dict(soapaction='exportAllParamsDateRangeXMLNew')
-			self.request = Request(url=WSDL_HTTP, data=data, headers=soap_header)
-
-			try:
-				self.response = urlopen(self.request)
-			except HTTPError, e:
-				if e.getcode() == 500:
-					raise ValueError(str('Invalid station_code: %s or date range: %s-%s or param: %s' % (station_code,min_date,max_date,param)))
-				else:
-					raise
-				return None
-			except:
-				raise
-				return None
-
-			self.data_xml = self.response.read()
-
-		if DEBUG == True:
-			f = open(str('./tmp/%s_%s_%s_data.txt' % (station_code,f_mid,f_mad)), 'w')
-			f.write(self.data_xml)
-			f.close()
-
-		reply = Reply(self.data_xml)
 		return reply.parse_data_date_range()
 		
-	def __get_single_param(self,station_code,param,recs=None,test=None):
-		global DEBUG, WSDL_HTTP
-
+	def __get_single_param(self,station_code,param,recs=None):
 		if recs is None:
 			recs = '100'
-		if test is None:
-			test = False;
 
-		if test == True:
-			f = open(str('./tmp/%s_%s_data.txt' % (station_code,param)), 'r')
-			self.data_xml = f.read()
-			f.close()
-		else:
-			try:
-				self.client.service.exportSingleParamXMLNew(station_code,recs,param)
-			except:
-				pass
-			data = str(self.client.last_sent())
-			soap_header = dict(soapaction='exportSingleParamXMLNew')
-			self.request = Request(url=WSDL_HTTP, data=data, headers=soap_header)
+		try:
+			self.client.service.exportSingleParamXMLNew(station_code,recs,param)
+		except:
+			pass
 
-			try:
-				self.response = urlopen(self.request)
-			except HTTPError, e:
-				if e.getcode() == 500:
-					raise ValueError(str('Invalid station_code: %s or param: %s' % (station_code,param)))
-				else:
-					raise
-				return None
-			except:
-				raise
-				return None
+		data = str(self.client.last_sent())
+		soap_header = dict(soapaction='exportSingleParamXMLNew')
+		
+		reply = self.__get_reply_from_response(data, soap_header)
 
-			self.data_xml = self.response.read()
+		if reply is None:
+			return reply
 
-		if DEBUG == True:
-			f = open(str('./tmp/%s_%s_data.txt' % (station_code,param)), 'w')
-			f.write(self.data_xml)
-			f.close()
-
-		reply = Reply(self.data_xml)
 		return reply.parse_data_single_param()
 
-	def __get_all_params(self,station_code,recs=None,test=None):
-		global DEBUG, WSDL_HTTP
-
+	def __get_all_params(self,station_code,recs=None):
 		if recs is None:
 			recs = '100'
-		if test is None:
-			test = False
 
-		if test == True:
-			f = open(str('./tmp/%s_data.txt' % (station_code)), 'r')
-			self.data_xml = f.read()
-			f.close()
-		else:
-			try:
-				self.client.service.exportAllParamsXMLNew(station_code,recs)
-			except:
-				pass
-			data = str(self.client.last_sent())
-			soap_header = dict(soapaction='exportAllParamsXMLNew')
-			self.request = Request(url=WSDL_HTTP, data=data, headers=soap_header)
+		try:
+			self.client.service.exportAllParamsXMLNew(station_code,recs)
+		except:
+			pass
 
-			try:
-				self.response = urlopen(self.request)
-			except HTTPError, e:
-				if e.getcode() == 500:
-					raise ValueError(str('Invalid station_code: %s' % (station_code)))
-				else:
-					raise
-				return None
-			except:
-				raise
-				return None
+		data = str(self.client.last_sent())
+		soap_header = dict(soapaction='exportAllParamsXMLNew')
+		
+		reply = self.__get_reply_from_response(data, soap_header)
 
-			self.data_xml = self.response.read()
+		if reply is None:
+			return reply
 
-		if DEBUG == True:
-			f = open(str('./tmp/%s_data.txt' % (station_code)), 'w')
-			f.write(self.data_xml)
-			f.close()
-
-		reply = Reply(self.data_xml)
 		return reply.parse_data_all_params()
 
+	def __get_reply_from_response(self, data, soap_header):
+		self.request = Request(url=self._WSDL_HTTP, data=data, headers=soap_header)
 
-def unit(param):
-	return {
-		'Temp':'\\xb0C'.decode('unicode-escape'),
-		'SpCond':'mS/cm',
-		'Sal':'ppt',
-		'DO_pct':'%',
-		'DO_mgl':'mg/L',
-		'cDepth':'m',
-		'Level':'m',
-		'cLevel':'m',
-		'pH':'',
-		'Turb':'NTU',
-		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape')
-	}[param]
+		try:
+			self.response = urlopen(self.request)
+		except HTTPError, e:
+			if e.getcode() == 500:
+				raise ValueError('Invalid value(s) in request, please check input and try again')
+			else:
+				raise
+			return None
+		except:
+			raise
+			return None
+
+		self.response_soap = self.response.read()
+		self.response.close()
+
+		# pass in the etree object that points to the return/response point
+		xml_root = None
+		try:
+			xml_root = etree.fromstring(self.response_soap)
+		except Exception, e:
+			xml_root = etree.fromstring(self.response_soap[38:])
+
+		if hasattr(xml_root, 'getroot'):
+			xml_root = xml_root.getroot()
+
+		xml_root = xml_root.find(nspath('Body',namespace=self._SOAPENV))
+
+		return Reply(xml_root)
