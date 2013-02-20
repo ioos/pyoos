@@ -5,6 +5,7 @@ from pyoos.parsers.soap.nerrs_wsdl import WsdlReply as Reply
 from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
 from shapely.geometry import Point as Location
+from tempfile import mkstemp
 
 DEBUG = True
 WSDL_HTTP = "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl"
@@ -113,9 +114,12 @@ class NerrsWSDL(Collector):
 			# save to temp file for testing
 			if DEBUG == True:
 				if kwargs.get("site_id") is None:
-					f = open('./tmp/tempfile.txt', 'w')
-					f.write(self.xml_response)
-					f.close()
+					try:
+						with open('./tmp/stationdata.txt', 'w') as f:
+							f.write(self.xml_response)
+							f.close()
+					except:
+						pass
 				else:
 					f = open(str('./tmp/%s_tempfile.txt' % (kwargs.get('site_id'))), 'w')
 					f.write(self.xml_response)

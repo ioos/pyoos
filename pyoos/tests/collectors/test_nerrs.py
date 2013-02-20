@@ -41,7 +41,7 @@ class NerrTest(unittest.TestCase):
       		</soapenv:Envelope>
 		"""
 
-		stations = self.nerrs.get_metadata(test=True)
+		stations = self.nerrs.get_metadata(test=None)
 
 		assert len(stations) == 318
 
