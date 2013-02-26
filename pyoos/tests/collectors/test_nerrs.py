@@ -68,9 +68,10 @@ class NerrTest(unittest.TestCase):
 				assert st.location.state == 'SC'
 				assert st.status == 'Active'
 				# check active dates
-				assert st.activity.get_start_date() == '02/01/2002'
+				assert st.activity.get_start() == '02/01/2002 00:00'
 				today = date.today().strftime("%m/%d/%Y")
-				assert st.activity.get_latest_date() == today
+				today += " 00:00"
+				assert st.activity.get_end() == today
 				# check params
 				assert st.parameters.index('NO23F') >= 0
 				assert st.parameters.index('PO4F') >= 0
@@ -112,9 +113,10 @@ class NerrTest(unittest.TestCase):
 		assert station.location.longitude == 85.0196
 		assert station.location.state == 'FL'
 		assert station.status == 'Active'
-		assert station.activity.get_start_date() == '04/01/2002'
+		assert station.activity.get_start() == '04/01/2002 00:00'
 		today = date.today().strftime("%m/%d/%Y")
-		assert station.activity.get_latest_date() == today
+		today += " 00:00"
+		assert station.activity.get_end() == today
 		assert station.reserve_name == 'Apalachicola Bay'
 		assert station.parameters.index('NO23F') >= 0
 		assert station.parameters.index('PO4F') >= 0
@@ -167,9 +169,10 @@ class NerrTest(unittest.TestCase):
 		assert station.location.longitude == 66.222969
 		assert station.location.state == 'PR'
 		assert station.status == 'Active'
-		assert station.activity.get_start_date() == "01/01/2001"
+		assert station.activity.get_start() == "01/01/2001 00:00"
 		today = date.today().strftime("%m/%d/%Y")
-		assert station.activity.get_latest_date() == today
+		today += " 00:00"
+		assert station.activity.get_end() == today
 		assert station.reserve_name == 'Jobos Bay'
 
 		assert station.parameters.index('ATemp') >= 0
@@ -208,12 +211,6 @@ class NerrTest(unittest.TestCase):
 		assert len(nh4f) == 10
 		assert nh4f[3] == 0.04
 
-		no3f = data.get_values_and_date(param='NO3F')
-
-		assert no3f is not None
-		assert len(no3f) == 10
-		assert no3f[5] == (None,'02/09/2011 11:27')
-
 	def test_get_single_param(self):
 		"""
 			get a single param from a station
@@ -234,10 +231,6 @@ class NerrTest(unittest.TestCase):
 		vals = data.get_values()
 		assert len(vals) == 10
 		assert vals[3] == 10.3
-
-		vals = data.get_values_and_date()
-		assert len(vals) == 10
-		assert vals[6] == (10.4, '09/24/2003 14:30')
 
 	def test_single_param_dates(self):
 		"""

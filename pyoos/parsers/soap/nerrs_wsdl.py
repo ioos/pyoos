@@ -87,7 +87,7 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_single_param(self, **kwargs):
-		retval = NerrDataCollection()
+		retval = None
 
 		try:
 			resp = nsp('exportSingleParamXMLNewResponse', self._NS1)
@@ -95,10 +95,7 @@ class WsdlReply(object):
 
 			resp = self._root.find(resp)
 			ret = resp.find(ret)
-			retData = ret.find('returnData')
-
-			for data in retData.findall('data'):
-				retval.add_data(NerrStationData(data))
+			retval = self.__get_data(ret)
 		except:
 			retval = None
 			pass
@@ -106,7 +103,7 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_all_params(self, **kwargs):
-		retval = NerrDataCollection()
+		retval = None
 
 		try:
 			resp = nsp('exportAllParamsXMLNewResponse', self._NS1)
@@ -114,10 +111,7 @@ class WsdlReply(object):
 
 			resp = self._root.find(resp)
 			ret = resp.find(ret)
-			retData = ret.find('returnData')
-
-			for data in retData.findall('data'):
-				retval.add_data(NerrStationData(data))
+			retval = self.__get_data(ret)
 		except:
 			retval = None
 			pass
@@ -125,7 +119,7 @@ class WsdlReply(object):
 		return retval
 
 	def parse_data_date_range(self, **kwargs):
-		retval = NerrDataCollection()
+		retval = None
 
 		try:
 			resp = nsp('exportAllParamsDateRangeXMLNewResponse', self._NS1)
@@ -133,10 +127,7 @@ class WsdlReply(object):
 
 			resp = self._root.find(resp)
 			ret = resp.find(ret)
-			retData = ret.find('returnData')
-
-			for data in retData.findall('data'):
-				retval.add_data(NerrStationData(data))
+			retval = self.__get_data(ret)
 		except:
 			retval = None
 			pass
@@ -145,6 +136,13 @@ class WsdlReply(object):
 			retval = None
 			raise ValueError('No data for given date range')
 
+		return retval
+
+	def __get_data(self, parent):
+		retData = parent.find('returnData')
+		retval = NerrDataCollection()
+		for data in retData.findall('data'):
+			retval.add_data(NerrData(data))
 		return retval
 
 
@@ -171,12 +169,15 @@ class NerrDataCollection(object):
 
 		return retval
 
+	def get_top_param(self):
+		return self.__params()[0]
+
 	def add_data(self, data):
 		self._data.append(data)
 
 	def get_values(self, param=None, date_time=None):
 		if param is None:
-			param = self.__params()[0]
+			param = self.get_top_param()
 
 		if date_time is None:
 			retval = list()
@@ -187,35 +188,25 @@ class NerrDataCollection(object):
 		if date_time is not None:
 			retval = list()
 			for data in self._data:
-				if data.is_datetime(date_time):
+				if data.valid_datetime(date_time):
 					retval.append(data.get_value(param))
 			return retval
 
 		return None
 
-	def get_values_and_date(self, param=None):
+	def value_and_utc(self, param=None):
 		retval = list()
 
 		if param is None:
-			param = self.__params()[0]
+			param = self.get_top_param()
 
 		for data in self._data:
-			retval.append((data.get_value(param), data.timestamp.get_local_datetime()))
+			retval.append((data.get_value(param), data.utc._dt[0]))
 
 		return retval
 
-	def get_value_and_utc_datetime(self, param=None):
-		retval = list()
 
-		if param is None:
-			param = self.__params()[0]
-
-		for data in self._data:
-			retval.append((data.get_value(param), data.timestamp._utc_dt))
-
-		return retval
-
-class NerrStationData(object):
+class NerrData(object):
 	def __init__(self, data_root):
 		self._root = data_root
 
@@ -233,7 +224,8 @@ class NerrStationData(object):
 					setattr(self, child.tag, None)
 				self._param_list.append(child.tag)
 		# set date object
-		self.timestamp = NerrDataDate(testXMLValue(self._root.find('DateTimeStamp')), testXMLValue(self._root.find('utcStamp')))
+		self.local = NerrDate(testXMLValue(self._root.find('DateTimeStamp')))
+		self.utc = NerrDate(testXMLValue(self._root.find('utcStamp')))
 
 	def get_value(self, param):
 		return getattr(self, param, None)
@@ -247,7 +239,7 @@ class NerrStationData(object):
 			retval[param] = getattr(self, param, None)
 		return retval
 
-	def is_datetime(self, dt_str):
+	def valid_datetime(self, dt_str):
 		dt_split = dt_str.split()
 		dt = None
 		if len(dt_split) > 1:
@@ -255,55 +247,94 @@ class NerrStationData(object):
 		else:
 			dt = datetime.strptime(dt_str,'%m/%d/%Y')
 
+		if dt is None:
+			return False
+
+		local_dt = self.local._dt[0]
+
 		if len(dt_split) == 1:
 			# compare dates
-			if dt.date() < self.timestamp._local_dt.date() or dt.date() > self.timestamp._local_dt.date():
+			if dt.date() < local_dt.date() or dt.date() > local_dt.date():
 				return False
 		else:
 			# compare date times
-			if dt < self.timestamp._local_dt or dt > self.timestamp._local_dt:
+			if dt < local_dt or dt > local_dt:
 				return False
 		return True
 
+class NerrDate(object):
+	def __init__(self, dt_str=None):
+		self._dt = list()
+		if dt_str is not None:
+			self.set_datetime(dt_str)
 
-class NerrDataDate(object):
-	def __init__(self, ldtstr=None, udtstr=None):
-		if ldtstr is not None:
-			self.set_local_datetime(ldtstr)
-		if udtstr is not None:
-			self.set_utc_datetime(udtstr)
-		return
+	def __get__(self, obj, objtype):
+		return self.get_datetime_string()
 
-	def set_local_datetime(self, dt_str):
-		self._local_dt = self.__get_datetime(dt_str)
-
-	def set_utc_datetime(self, dt_str):
-		self._utc_dt = self.__get_datetime(dt_str)
-
-	def get_local_date(self):
-		return self._local_dt.date().strftime('%m/%d/%Y')
-
-	def get_local_time(self):
-		return self._local_dt.time().strftime('%H:%M')
-
-	def get_utc_date(self):
-		return self._utc_dt.date().strftime('%m/%d/%Y')
-
-	def get_utc_time(self):
-		return self._utc_dt.time().strftime('%H:%M')
-
-	def get_local_datetime(self):
-		return self._local_dt.strftime('%m/%d/%Y %H:%M')
-
-	def get_utc_datetime(self):
-		return self._utc_dt.strftime('%m/%d/%Y %H:%M')
+	def __set__(self, obj, value):
+		self.set_datetime(value)
 
 	def __get_datetime(self, dt_str):
 		if isinstance(dt_str, str) or isinstance(dt_str, unicode):
-			dt = datetime.strptime(dt_str, '%m/%d/%Y %H:%M')
-			return dt
+			ret = list()
+			try:
+				ret.append(datetime.strptime(dt_str, '%m/%d/%Y %H:%M'))
+			except:
+				periods = dt_str.split(';')
+				for p in periods:
+					p_spl = p.split('-')
+					for dt in p_spl:
+						dt_spl = dt.split()
+						if len(dt_spl) == 2:
+							mth = month(dt_spl[0])
+							yr = int(dt_spl[1])
+							ret.append(datetime(yr,mth,1))
+						elif len(dt_spl) == 1:
+							yr = int(dt_spl[0])
+							ret.append(datetime(yr,1,1))
+						else:
+							# add today as date
+							today = datetime.strptime(datetime.today().date().strftime('%m/%d/%Y'),'%m/%d/%Y')
+							if today not in ret:
+								ret.append(today)
+			return ret
 
 		return None
+
+	def get_datetime_string(self, **kwargs):
+		ret = list()
+		for dt in self._dt:
+			if kwargs.get('date') is not None:
+				ret.append(dt.date().strftime('%m/%d/%Y'))
+			elif kwargs.get('time') is not None:
+				ret.append(dt.time().strftime('%H:%M'))
+			else:
+				ret.append(dt.strftime('%m/%d/%Y %H:%M'))
+		return ret
+
+	def set_datetime(self, dt, index=-1):
+		if isinstance(dt, datetime):
+			if index < 0:
+				self._dt.append(dt)
+			else:
+				self._dt[index] = dt
+		elif isinstance(dt,str) or isinstance(st,unicode):
+			dt_list = self.__get_datetime(dt)
+			if len(dt_list) == 1 and index >= 0:
+				self._dt[index] = dt_list[0]
+			else:
+				for dt_obj in dt_list:
+					self._dt.append(dt_obj)
+
+		self._dt.sort()
+
+	def get_start(self):
+		ret = self.get_datetime_string()
+		return ret[0]
+
+	def get_end(self):
+		ret = self.get_datetime_string()
+		return ret[len(ret)-1]
 
 
 class NerrStation(object):
@@ -328,6 +359,7 @@ class NerrStation(object):
 		# other
 		self.reserve_name = testXMLValue(self._root.find("Reserve_Name"))
 
+
 class NerrLocation(object):
 	def __init__(self, root):
 		self.latitude = float(testXMLValue(root.find("Latitude")))
@@ -335,35 +367,3 @@ class NerrLocation(object):
 		self.state = testXMLValue(root.find("State"))
 		if len(self.state) < 3:	# upper case if state initials
 			self.state = self.state.upper()
-
-class NerrDate(object):
-	def __init__(self, date_str):
-		self._str = date_str
-		self.dates = list()
-		for dst in self._str.split(';'):
-			dst_split = dst.split('-')
-			start_str = dst_split[0].split()
-			start_dt = datetime(int(start_str[1]),month(start_str[0]),1)
-			end_dt = datetime.today()
-			if len(dst_split) > 1 and len(dst_split[1]) > 0:
-				end_str = dst_split[1].split()
-				if len(end_str) == 2:
-					end_dt = datetime(int(end_str[1]),month(end_str[0]),1)
-				else:
-					end_dt = datetime(int(end_str[0]),1,1)
-			self.dates.append(start_dt)
-			self.dates.append(end_dt)
-		self.dates.sort()
-
-	def get_start_date(self, obj=False):
-		if obj == False:
-			return self.dates[0].strftime("%m/%d/%Y")
-		else:
-			return self.dates[0]
-
-	def get_latest_date(self, obj=False):
-		if obj == False:
-			i = len(self.dates) - 1
-			return self.dates[i].strftime("%m/%d/%Y")
-		else:
-			return self.dates[i]

@@ -39,21 +39,23 @@ class NerrsWSDL(Collector):
 		# need to explore the limitations requested by the user in order to define what we are retrieving from nerrs
 		min_date = kwargs.get('min_date')
 		if min_date is None:
-			min_date = metadata.activity.get_start_date()
+			min_date = metadata.activity.get_start()
 
 		max_date = kwargs.get('max_date')
 		if max_date is None:
-			max_date = metadata.activity.get_latest_date()
+			max_date = metadata.activity.get_end()
 
 		data = list()
 		param = kwargs.get('observed_property')
 		if param is None:
-			for p in metadata.parameters:
-				# get data for each param
-				data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p))
+			param = metadata.parameters
 		else:
-			data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=param))
+			param = param.split(',')
 
+		for p in param:
+			data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p))
+
+		# data is a list of NerrDataCollection that track 1 param each
 		retval = Station()
 		# set metadata
 		retval.set_uid(station_code)
@@ -62,24 +64,15 @@ class NerrsWSDL(Collector):
 		# add points
 		pt_dict = dict()
 		for d in data:
-			if param is None:
-				for p in metadata.parameters:
-					for dv in d.get_value_and_utc_datetime(p):
-						if dv[0] is not None:
-							if not pt_dict.has_key(dv[1]):
-								pt_dict[dv[1]] = Point()
-								pt_dict[dv[1]].set_time(dv[1])
-							if p.upper() == 'DEPTH':
-								# set location with depth value
-								pt_dict[dv[1]].location = Location(metadata.location.longitude, metadata.location.latitude, float(dv[0]))
-							else:
-								pt_dict[dv[1]].add_member(dict(name=p,value=dv[0],unit=unit(p)))
-			else:
-				for dv in d.get_value_and_utc_datetime(param):
-					if dv[0] is not None:
-						if not pt_dict.has_key(dv[1]):
-							pt_dict[dv[1]] = Point()
-							pt_dict[dv[1]].set_time(dv[1])
+			for dv in d.value_and_utc():
+				if dv[0] is not None:
+					p = d.get_top_param()
+					if dv[1] not in pt_dict:
+						pt_dict[dv[1]] = Point()
+						pt_dict[dv[1]].time = dv[1]
+					if p.upper() == 'DEPTH':
+						pt_dict[dv[1]].location = Location(metadata.location.longitude, metadata.location.latitude, float(dv[0]))
+					else:
 						pt_dict[dv[1]].add_member(dict(name=p,value=dv[0],unit=unit(p)))
 
 		for pt in pt_dict.values():
