@@ -328,12 +328,12 @@ class NerrDate(object):
 
 		self._dt.sort()
 
-	def get_start(self):
-		ret = self.get_datetime_string()
+	def get_start(self, **kwargs):
+		ret = self.get_datetime_string(**kwargs)
 		return ret[0]
 
-	def get_end(self):
-		ret = self.get_datetime_string()
+	def get_end(self, **kwargs):
+		ret = self.get_datetime_string(**kwargs)
 		return ret[len(ret)-1]
 
 

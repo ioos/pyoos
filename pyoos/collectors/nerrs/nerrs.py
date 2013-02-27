@@ -4,12 +4,14 @@ from urllib2 import urlopen, Request, HTTPError
 from pyoos.parsers.soap.nerrs_wsdl import WsdlReply as Reply
 from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
+from pyoos.cdm.collections.station_collection import StationCollection
 from shapely.geometry import Point as Location
 from owslib.util import nspath
 from pyoos.utils.etree import etree
 
 def unit(param):
 	return {
+		# Water Quality
 		'Temp':'\\xb0C'.decode('unicode-escape'),
 		'SpCond':'mS/cm',
 		'Sal':'ppt',
@@ -20,7 +22,27 @@ def unit(param):
 		'cLevel':'m',
 		'pH':'',
 		'Turb':'NTU',
-		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape')
+		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape'),
+		# Meterological
+		'ATemp':'\\xb0C'.decode('unicode-escape'),
+		'RH':'%',
+		'BP':'mb',
+		'WSpd':'m/s',
+		'MaxWSpd':'m/s',
+		'MaxWSpdT':'hh:mm',
+		'Wdir':'\\xb0'.decode('unicode-escape'),
+		'SDWDir':'sd',
+		'TotPAR':'mmol/m^2',
+		'TotPrcp':'mm',
+		'CumPrcp':'mm',
+		'TotSoRad':'W/m^2',
+		# Nutrient and Pigment
+		'PO4F':'mg/L',
+		'NH4F':'mg/L',
+		'NO2F':'mg/L',
+		'NO3F':'mg/L',
+		'NO23F':'mg/L',
+		'CHLA_N':'\\u03bcg/L'.decode('unicode-escape')
 	}[param]
 
 class NerrsWSDL(Collector):
@@ -30,20 +52,76 @@ class NerrsWSDL(Collector):
 		self._SOAPENV = 'http://schemas.xmlsoap.org/soap/envelope/'
 		self.client = Client(url=self._WSDL_HTTP)
 
+	def get_stations_bbox(self, south, west, north, east, **kwargs):
+		"""
+			lookups stations by bbox (south,west,north,east)
+			returns a StationCollection object
+		"""
+		# will have to get all metadata and just sort through it, filtering it by the bbox
+		metadata = self.get_metadata()
+		desired_stations = list()
+		for nerr in metadata:
+			# lat is deg West
+			if nerr.location.longitude >= east and nerr.location.longitude <= west:
+				# lon is deg North
+				if nerr.location.latitude <= north and nerr.location.latitude >= south:
+					desired_stations.append(nerr)
+
+		# get Station objects for each of our desired stations
+		ret = StationCollection()
+		for ds in desired_stations:
+			elem = self.get_station(ds.code, site_id=ds.id, min_date=kwargs.get('min_date'), max_date=kwargs.get('max_date'), observed_property=kwargs.get('observed_property'), metadata=ds)
+			ret.add_element(elem)
+
+		return ret
+
+	def get_stations_latlon(self, lat, lon, **kwargs):
+		"""
+			lookups stations by lat/lon points (comma-deliminated)
+			returns a StationCollection object
+		"""
+		# get all metadata, sort through, getting only stations that match our lat/lons
+		lats = str(lat).split(',')
+		lons = str(lon).split(',')
+		if len(lats) != len(lons):
+			# reduce the larger list to the size of the other list
+			while len(lats) > len(lons):
+				noop = lats.pop()
+			while len(lons) > len(lats):
+				noop = lons.pop()
+
+		metadata = self.get_metadata()
+		desired_stations = list()
+		for nerr in metadata:
+			for i, val in enumerate(lats):
+				if nerr.location.latitude == float(val) and nerr.location.longitude == float(lons[i]) and nerr not in desired_stations:
+					desired_stations.append(nerr)
+
+		# get a StationCollection of the desired stations
+		ret = StationCollection()
+		for ds in desired_stations:
+			elem = self.get_station(ds.code, site_id=ds.id, min_date=kwargs.get('min_date'), max_date=kwargs.get('max_date'), observed_property=kwargs.get('observed_property'), metadata=ds)
+			ret.add_element(elem)
+
+		return ret
+
 	def get_station(self, station_code, **kwargs):
 		"""
 			retrieves the metadata and data for a station and returns a populated cdm Station object
+			returns a Station object
 		"""
-		metadata = self.get_metadata(station_code=station_code, site_id=kwargs.get('site_id'))
-		metadata = metadata[0]
+		metadata = kwargs.get('metadata')
+		if metadata is None:
+			metadata = self.get_metadata(station_code=station_code, site_id=kwargs.get('site_id'))
+			metadata = metadata[0]
 		# need to explore the limitations requested by the user in order to define what we are retrieving from nerrs
 		min_date = kwargs.get('min_date')
 		if min_date is None:
-			min_date = metadata.activity.get_start()
+			min_date = metadata.activity.get_start(date=True)
 
 		max_date = kwargs.get('max_date')
 		if max_date is None:
-			max_date = metadata.activity.get_end()
+			max_date = metadata.activity.get_end(date=True)
 
 		data = list()
 		param = kwargs.get('observed_property')
@@ -53,7 +131,14 @@ class NerrsWSDL(Collector):
 			param = param.split(',')
 
 		for p in param:
-			data.append(self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p))
+			try:
+				d = self.get_station_data(station_code=station_code, min_date=min_date, max_date=max_date, param=p)
+				if d is None:
+					print str('No data for: %s-%s-%s-%s' % (station_code,min_date,max_date,p))
+				else:
+					data.append(d)
+			except:
+				print str('No data for: %s-%s-%s-%s' % (station_code,min_date,max_date,p))
 
 		# data is a list of NerrDataCollection that track 1 param each
 		retval = Station()

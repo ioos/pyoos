@@ -1,6 +1,7 @@
 from pyoos.cdm.collections.feature_collection import FeatureCollection
 from shapely.geometry import MultiPoint
 from datetime import datetime
+import sys
 
 class PointCollection(FeatureCollection):
     """
@@ -33,6 +34,28 @@ class PointCollection(FeatureCollection):
         stuff = map(lambda x: [x.time, x.location], self._elements)
         self.time_range = sorted(map(lambda x: x[0], stuff))
         points = map(lambda x: x[1], stuff)
-        self.depth_range = sorted(map(lambda x: x[1].z, stuff))
-        self.bbox = MultiPoint(points).envelope
+
+        try:
+            filtered_stuff = self.__filter_depths(stuff)
+            self.depth_range = sorted(map(lambda x: x[1].z, filtered_stuff))
+        except:
+            self.depth_range = None
+
+        try:
+            self.bbox = MultiPoint(points).envelope
+        except:
+            self.bbox = None
+            
         self.size = len(self._elements)
+
+
+    def __filter_depths(self, list_to_filter):
+        retval = list()
+        for item in list_to_filter:
+            try:
+                getz = item[1].z
+                retval.append(item)
+            except:
+                pass # don't do anything
+
+        return retval
