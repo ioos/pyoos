@@ -1,7 +1,7 @@
 from pyoos.collectors.collector import Collector
 from suds.client import Client
 from urllib2 import urlopen, Request, HTTPError
-from pyoos.parsers.soap.nerrs_wsdl import WsdlReply as Reply
+from pyoos.parsers.nerrs.nerrs_wsdl import WsdlReply as Reply
 from pyoos.cdm.features.station import Station
 from pyoos.cdm.features.point import Point
 from pyoos.cdm.collections.station_collection import StationCollection
