@@ -1,9 +1,50 @@
 from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
 from datetime import MINYEAR, datetime
+from pyoos.cdm.features.station import Station
+from pyoos.cdm.features.point import Point
+from pyoos.cdm.collections.station_collection import StationCollection
+from shapely.geometry import Point as Location
+
 
 def nsp(element_tag, namespace):
 	return nspath(element_tag, namespace=namespace)
+
+def unit(param):
+	return {
+		# Water Quality
+		'Temp':'\\xb0C'.decode('unicode-escape'),
+		'SpCond':'mS/cm',
+		'Sal':'ppt',
+		'DO_pct':'%',
+		'DO_mgl':'mg/L',
+		'cDepth':'m',
+		'Level':'m',
+		'cLevel':'m',
+		'pH':'',
+		'Turb':'NTU',
+		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape'),
+		# Meterological
+		'ATemp':'\\xb0C'.decode('unicode-escape'),
+		'RH':'%',
+		'BP':'mb',
+		'WSpd':'m/s',
+		'MaxWSpd':'m/s',
+		'MaxWSpdT':'hh:mm',
+		'Wdir':'\\xb0'.decode('unicode-escape'),
+		'SDWDir':'sd',
+		'TotPAR':'mmol/m^2',
+		'TotPrcp':'mm',
+		'CumPrcp':'mm',
+		'TotSoRad':'W/m^2',
+		# Nutrient and Pigment
+		'PO4F':'mg/L',
+		'NH4F':'mg/L',
+		'NO2F':'mg/L',
+		'NO3F':'mg/L',
+		'NO23F':'mg/L',
+		'CHLA_N':'\\u03bcg/L'.decode('unicode-escape')
+	}[param]
 
 def month(m):
 	return {
@@ -43,30 +84,67 @@ class WsdlReply(object):
 		self._root = wsdl_response
 		self._NS1 = 'http://webservices2'
 
-	def parse_station_response(self, **kwargs):
+	def parse_station_collection(self, cb_func, cb_args, desired_stations):
+		"""
+			Function to group Stations into a StationCollection
+			- cb_func: the get_station function to call from the nerr collector
+			- cb_args: arguments to pass along into the get_station function
+			- desired_stations: list of stations that are to be added into the collections
+			returns a StationCollection object
+		"""
+		if not isinstance(cb_args, dict):
+			return None
+
+		if not isinstance(desired_stations, list) or len(desired_stations) < 1:
+			return None
+
+		retval = StationCollection()
+
+		for ds in desired_stations:
+			elem = cb_func(ds.code, site_id=ds.id, metadata=ds, **cb_args)
+			retval.add_element(elem)
+
+		return retval
+
+	def parse_station(self, metadata, data):
+		"""
+			Creates a Station object from metadata and data for the station
+			- metadata: NerrStation object
+			- data: list of NerrData objects
+			returns a Station object
+		"""
+		if not isinstance(metadata, NerrStation) or not isinstance(data, list) or len(data) < 1:
+			return None
+
+		retval = Station()
+		retval.uid = metadata.code
+		retval.name = metadata.name
+		retval.description = str('%s-%s' % (metadata.id,metadata.code))
+		point_dict = dict()
+		for d in data:
+			for value_date in d.value_and_utc():
+				if value_date[0] is not None:
+					param = d.get_top_param()
+					if value_date[1] not in point_dict:
+						point_dict[value_date[1]] = Point()
+						point_dict[value_date[1]].time = value_date[1]
+					if param.upper() == 'DEPTH':
+						point_dict[value_date[1]].location = Location(metadata.location.longitude, metadata.location.latitude, float(value_date[0]))
+					else:
+						point_dict[value_date[1]].add_member(dict(name=param,value=value_date[0],unit=unit(param)))
+
+		for point in point_dict.values():
+			retval.add_element(point)
+
+		retval.set_location(Location(metadata.location.longitude, metadata.location.latitude))
+
+		return retval
+
+	def parse_metadata(self, nerrFilter=False, **kwargs):
 		retval = list()
-		nerrFilter = False
 		try:
-			resp = nsp('exportStationCodesXMLNewResponse', self._NS1)
-
-			resp = self._root.find(resp)
-
-			if resp is None:
-				resp = nsp('NERRFilterStationCodesXMLNewResponse', self._NS1)
-				resp = self._root.find(resp)
-
-			ret = 'exportStationCodesXMLNewReturn'
-			ret = resp.find(ret)
-
-			if ret is None:
-				ret = 'NERRFilterStationCodesXMLNewReturn'
-				ret = resp.find(ret)
-				nerrFilter = True
-
-			retData = ret.find('returnData')
-
 			st_code = kwargs.get('station_code')
-			for data in retData.findall('data'):
+			for data in self._root.findall('data'):
 				if st_code is not None:
 					if st_code == testXMLValue(data.find('Station_Code')):
 						retval.append(NerrStation(data))
@@ -86,62 +164,19 @@ class WsdlReply(object):
 
 		return retval
 
-	def parse_data_single_param(self, **kwargs):
+	def parse_data(self, **kwargs):
 		retval = None
-
 		try:
-			resp = nsp('exportSingleParamXMLNewResponse', self._NS1)
-			ret = 'exportSingleParamXMLNewReturn'
-
-			resp = self._root.find(resp)
-			ret = resp.find(ret)
-			retval = self.__get_data(ret)
+			retval = self.__get_data()
 		except:
 			retval = None
 			pass
-
 		return retval
 
-	def parse_data_all_params(self, **kwargs):
-		retval = None
 
-		try:
-			resp = nsp('exportAllParamsXMLNewResponse', self._NS1)
-			ret = 'exportAllParamsXMLNewReturn'
-
-			resp = self._root.find(resp)
-			ret = resp.find(ret)
-			retval = self.__get_data(ret)
-		except:
-			retval = None
-			pass
-
-		return retval
-
-	def parse_data_date_range(self, **kwargs):
-		retval = None
-
-		try:
-			resp = nsp('exportAllParamsDateRangeXMLNewResponse', self._NS1)
-			ret = 'exportAllParamsDateRangeXMLNewReturn'
-
-			resp = self._root.find(resp)
-			ret = resp.find(ret)
-			retval = self.__get_data(ret)
-		except:
-			retval = None
-			pass
-
-		if retval is not None and len(retval) < 1:
-			retval = None
-			raise ValueError('No data for given date range')
-
-		return retval
-
-	def __get_data(self, parent):
-		retData = parent.find('returnData')
+	def __get_data(self):
 		retval = NerrDataCollection()
-		for data in retData.findall('data'):
+		for data in self._root.findall('data'):
 			retval.add_data(NerrData(data))
 		return retval
 
