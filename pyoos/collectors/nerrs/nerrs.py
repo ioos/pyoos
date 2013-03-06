@@ -5,42 +5,6 @@ from pyoos.parsers.nerrs.nerrs_wsdl import WsdlReply as Reply
 from owslib.util import nspath
 from pyoos.utils.etree import etree
 
-def unit(param):
-	return {
-		# Water Quality
-		'Temp':'\\xb0C'.decode('unicode-escape'),
-		'SpCond':'mS/cm',
-		'Sal':'ppt',
-		'DO_pct':'%',
-		'DO_mgl':'mg/L',
-		'cDepth':'m',
-		'Level':'m',
-		'cLevel':'m',
-		'pH':'',
-		'Turb':'NTU',
-		'ChlFluor':'\\u03bcg/L'.decode('unicode-escape'),
-		# Meterological
-		'ATemp':'\\xb0C'.decode('unicode-escape'),
-		'RH':'%',
-		'BP':'mb',
-		'WSpd':'m/s',
-		'MaxWSpd':'m/s',
-		'MaxWSpdT':'hh:mm',
-		'Wdir':'\\xb0'.decode('unicode-escape'),
-		'SDWDir':'sd',
-		'TotPAR':'mmol/m^2',
-		'TotPrcp':'mm',
-		'CumPrcp':'mm',
-		'TotSoRad':'W/m^2',
-		# Nutrient and Pigment
-		'PO4F':'mg/L',
-		'NH4F':'mg/L',
-		'NO2F':'mg/L',
-		'NO3F':'mg/L',
-		'NO23F':'mg/L',
-		'CHLA_N':'\\u03bcg/L'.decode('unicode-escape')
-	}[param]
-
 class NerrsWSDL(Collector):
 	def __init__(self, **kwargs):
 		super(NerrsWSDL,self).__init__()
