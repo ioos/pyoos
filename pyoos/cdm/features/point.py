@@ -10,6 +10,7 @@ class Point(Feature):
         self._member_names = []
         self._members = []
         self._type = "Point"
+        self._time = None
 
     def get_location(self):
         """
