@@ -1,5 +1,8 @@
 *.pyc
 *~
 pyoos.sublime*
-
 tmp/*
+pyoos.egg*
+.coverage
+dist/*
+
