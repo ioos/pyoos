@@ -117,14 +117,19 @@ class WqxActivity(object):
 
         # Date/Time
         sd = testXMLValue(des.find(nsp("ActivityStartDate", wqx_ns)))  # YYYY-MM-DD
-        st = des.find(nsp("ActivityStartTime", wqx_ns))
-        t = testXMLValue(st.find(nsp("Time", wqx_ns)))
-        tz = testXMLValue(st.find(nsp("TimeZoneCode", wqx_ns)))
+        parse_string = "%s" % sd
 
-        parse_string = "%s %s" % (sd, t)
-        if tz is not None:
-            parse_string = "%s %s" % (parse_string, tz)
-        self.start_time = AsaTime.parse(parse_string)
+        st = des.find(nsp("ActivityStartTime", wqx_ns))
+        # If no time is defined, skip trying to pull it out and just use the date
+        if st is not None:
+            t = testXMLValue(st.find(nsp("Time", wqx_ns)))
+            tz = testXMLValue(st.find(nsp("TimeZoneCode", wqx_ns)))
+
+            parse_string = "%s %s" % (parse_string, t)
+            if tz is not None:
+                parse_string = "%s %s" % (parse_string, tz)
+
+        self.start_time = AsaTime.parse(parse_string)    
         if self.start_time.tzinfo is None:
             self.start_time = self.start_time.replace(tzinfo=pytz.utc)
 
