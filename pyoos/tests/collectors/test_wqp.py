@@ -93,11 +93,11 @@ class WqpTest(unittest.TestCase):
         results = self.c.get_station(siteid="21IOWA-10070005")
         results.calculate_bounds()
 
+        assert len(results.get_unique_members()) == 240
         assert results.location.x == -92.4495
         assert results.location.y == 42.5392
         assert results.location.z == float(854 / 3.28084)
 
-
-
-
-
+        results = self.c.get_station(siteid="21IOWA-10070005", characteristicName="Mercury")
+        results.calculate_bounds()
+        assert len(results.get_unique_members()) == 1
