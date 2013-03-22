@@ -2,7 +2,9 @@ from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
 from pyoos.cdm.features import station, point
 from pyoos.cdm.collections.station_collection import StationCollection
-from shapely.geometery import Point as Location
+from shapely.geometry import Point as Location
+from datetime import datetime
+from dateutil.parser import parse as dtParser
 
 def nsp(tag, namespace):
 	return nspath(tag, namespace=namespace)
@@ -11,12 +13,13 @@ class USGSParser(object):
 	def __init__(self, **kwargs):
 		self._wml_ns = 'http://www.cuahsi.org/waterML/1.1/'
 
-	def parse_response(response):
+	def parse_response(self,response):
 		if response is None:
 			return None
 
 		xml = etree.fromstring(response)
 		time_series = self._read_xml(xml)
+
 		if len(time_series) > 1:
 			# retval is a StationCollection
 			retval = StationCollection()
@@ -30,11 +33,11 @@ class USGSParser(object):
 
 		return retval
 
-	def _timeseries_to_station(time_series):
+	def _timeseries_to_station(self,time_series):
 		retval = station.Station()
 		retval.uid = time_series.Code
 		retval.name = time_series.Name
-		retval.description = str('%s-%s-%s' % (time_series.HUC,time_series.state,time_series.county))
+		retval.description = str('%s-%s-%s' % (time_series.HUC,time_series.State,time_series.County))
 
 		# collection of variables, sort by datetime
 		point_dict = dict()
@@ -48,7 +51,7 @@ class USGSParser(object):
 		for pt in point_dict.values():
 			retval.add_element(pt)
 
-		retval.set_location(Location(time_series.Location[0], time_series.Location[1]))
+		retval.set_location(Location(float(time_series.Location[0]), float(time_series.Location[1])))
 
 		return retval
 
@@ -61,7 +64,8 @@ class USGSParser(object):
 		"""
 		series = list()
 		for timeSeries in xml.iter(tag=self._nsp('timeSeries')):
-			scode = testXMLValue(timeSeries.find(self._nsp('siteCode')))
+			srcinf = timeSeries.find(self._nsp('sourceInfo'))
+			scode = testXMLValue(srcinf.find(self._nsp('siteCode')))
 			tseries = None
 			for s in series:
 				if s.Code == scode:
@@ -69,6 +73,7 @@ class USGSParser(object):
 
 			if tseries is None:
 				tseries = self._read_timeseries_source(timeSeries)
+				series.append(tseries)
 
 			# add variable
 			var = self._read_variable(timeSeries.find(self._nsp('variable')))
@@ -81,23 +86,32 @@ class USGSParser(object):
 	def _read_timeseries_source(self, timeSeries):
 		tsval = dict()
 
+		# go down into sourceInfo
+		timeSeries = timeSeries.find(self._nsp('sourceInfo'))
+
 		tsval['code'] = testXMLValue(timeSeries.find(self._nsp('siteCode')))
 		tsval['name'] = testXMLValue(timeSeries.find(self._nsp('siteName')))
-		tzinfo = testXMLValue(timeSeries.find(self._nsp('defaultTimeZone')))
-		tsval['timezone_offset'] = tzinfo['zoneOffset']
-		tsval['latitude'] = testXMLValue(timeSeries.find(self._nsp('latitude')))
-		tsval['longitude ']= testXMLValue(timeSeries.find(self._nsp('longitude')))
+
+		tzinfo = timeSeries.find(self._nsp('timeZoneInfo'))
+		tzinfo = tzinfo.find(self._nsp('defaultTimeZone'))
+		tsval['timezone_offset'] = tzinfo.attrib['zoneOffset']
+
+		loc = timeSeries.find(self._nsp('geoLocation'))
+		loc = loc.find(self._nsp('geogLocation'))
+		tsval['latitude'] = testXMLValue(loc.find(self._nsp('latitude')))
+		tsval['longitude']= testXMLValue(loc.find(self._nsp('longitude')))
+
 		for prop in timeSeries.findall(self._nsp('siteProperty')):
-			if prop['name'] == 'siteTypeCd':
+			if prop.attrib['name'] == 'siteTypeCd':
 				tsval['type'] = testXMLValue(prop)
-			elif prop['name'] == 'hucCd':
+			elif prop.attrib['name'] == 'hucCd':
 				tsval['huc'] = testXMLValue(prop)
-			elif prop['name'] == 'stateCd':
+			elif prop.attrib['name'] == 'stateCd':
 				tsval['state'] = testXMLValue(prop)
-			elif prop['name'] == 'countyCd':
+			elif prop.attrib['name'] == 'countyCd':
 				tsval['county'] = testXMLValue(prop)
 
-		return TimeSeries(tsval)
+		return TimeSeries(**tsval)
 
 	def _read_variable(self, variable):
 		vval = dict()
@@ -109,13 +123,14 @@ class USGSParser(object):
 		vval['units'] = testXMLValue(variable.find(self._nsp('unitCode')))
 		vval['no_data_value'] = testXMLValue(variable.find(self._nsp('noDataValue')))
 
-		return Variable(vval)
+		return Variable(**vval)
 
 	def _read_values(self, values):
 		tuples = list()
 		for value in values.findall(self._nsp('value')):
 			val = testXMLValue(value)
-			dt = datetime.strptime(value['dateTime'], '%Y-%m-%dT%H:%M:%S.%f-%z')
+			dts = value.attrib['dateTime']
+			dt = dtParser(dts)
 			tuples.append((dt,val))
 		return tuples
 

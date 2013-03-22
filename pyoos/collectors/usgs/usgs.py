@@ -1,4 +1,4 @@
-from pyoos.collectors import Collector
+from pyoos.collectors.collector import Collector
 from datetime import datetime
 from urllib2 import urlopen, Request, HTTPError
 from pyoos.parsers.usgs.usgs_waterml import USGSParser
@@ -6,10 +6,10 @@ from pyoos.parsers.usgs.usgs_waterml import USGSParser
 class USGSCollector(Collector):
 	def __init__(self, **kwargs):
 		super(USGSCollector,self).__init__()
-		self._usgs_http = 'http://waterserivces.usgs.gov/nwis/iv'
+		self._usgs_http = 'http://waterservices.usgs.gov/nwis/iv'
 		self._parser = USGSParser()
 
-	def get_stations_by_bbox(north,south,east,west,period_days=None,period_hours=None,startDT=None,endDT=None):
+	def get_stations_by_bbox(self,north,south,east,west,period_days=None,period_hours=None,startDT=None,endDT=None):
 		"""
 			retrieves a StationCollection object from USGS determined by the boundaries given
 			Note: according to the USGS web site, the product of the range of latitude and longitude cannot exceed 25 degrees
@@ -45,14 +45,14 @@ class USGSCollector(Collector):
 			args['period'] = str('PT%sH' % (str(period_hours)))
 		elif startDT is not None:
 			args['startDT'] = startDT.strftime('%Y-%m-%dT%H:%M')
-			if endD is not None:
+			if endDT is not None:
 				args['endDT'] = endDT.strftime('%Y-%m-%dT%H:%M')
 
 		response = self.__request_from_usgs(args)
 
 		return self._parser.parse_response(response)
 
-	def get_stations_by_state(state_code,period_days=None,period_hours=None,startDT=None,endDT=None):
+	def get_stations_by_state(self,state_code,period_days=None,period_hours=None,startDT=None,endDT=None):
 		"""
 			retrieves a StationCollection object from USGS, determined by the state code 
 			- state_code: an USPS postal service (2-character) state code
@@ -76,14 +76,14 @@ class USGSCollector(Collector):
 			args['period'] = str('PT%sH' % (str(period_hours)))
 		elif startDT is not None:
 			args['startDT'] = startDT.strftime('%Y-%m-%dT%H:%M')
-			if endD is not None:
+			if endDT is not None:
 				args['endDT'] = endDT.strftime('%Y-%m-%dT%H:%M')
 
 		response = self.__request_from_usgs(args)
 
 		return self._parser.parse_response(response)
 
-	def get_station(site,period_days=None,period_hours=None,startDT=None,endDT=None):
+	def get_station(self,site,period_days=None,period_hours=None,startDT=None,endDT=None):
 		"""
 			retrieves a Station object from USGS, determined by the site id
 			(optional)
@@ -103,7 +103,7 @@ class USGSCollector(Collector):
 			for item in site:
 				site_p += str(item) + ","
 		else:
-			site_p = str(site_p)
+			site_p = str(site)
 
 		args = dict(site=site_p)
 
@@ -113,14 +113,14 @@ class USGSCollector(Collector):
 			args['period'] = str('PT%sH' % (str(period_hours)))
 		elif startDT is not None:
 			args['startDT'] = startDT.strftime('%Y-%m-%dT%H:%M')
-			if endD is not None:
+			if endDT is not None:
 				args['endDT'] = endDT.strftime('%Y-%m-%dT%H:%M')
 
 		response = self.__request_from_usgs(args)
 
 		return self._parser.parse_response(response)
 
-	def __request_from_usgs(args):
+	def __request_from_usgs(self,args):
 		if args is None or not isinstance(args, dict):
 			raise ValueError("args was expected to be non-None and of type dict")
 
@@ -128,11 +128,11 @@ class USGSCollector(Collector):
 		# add all of the arguments
 		query = "?"
 		for item in args.items():
-			query += str('%s=%s' % (str(item[0]),str(item[1])))
+			query += str('%s=%s&' % (str(item[0]),str(item[1])))
 		url += query
 
 		try:
-			req = Request(url)
+			req = urlopen(Request(url))
 		except:
 			raise
 			return None
