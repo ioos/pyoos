@@ -1,5 +1,7 @@
 *.pyc
 *~
+*.out
+
 pyoos.sublime*
 tmp/*
 pyoos.egg*
