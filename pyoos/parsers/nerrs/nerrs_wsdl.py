@@ -1,9 +1,9 @@
 from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
-from datetime import MINYEAR, datetime
-from pyoos.cdm.features.station import Station
-from pyoos.cdm.features.point import Point
-from pyoos.cdm.collections.station_collection import StationCollection
+from datetime import datetime
+from paegan.cdm.dsg.features.station import Station
+from paegan.cdm.dsg.features.base.point import Point
+from paegan.cdm.dsg.collections.station_collection import StationCollection
 from shapely.geometry import Point as Location
 
 

@@ -6,9 +6,9 @@ from pyoos.utils.etree import etree
 import pytz
 
 from shapely.geometry import Point as sPoint
-from pyoos.cdm.features.point import Point
-from pyoos.cdm.features.station import Station as Station
-from pyoos.cdm.utils.member import Member
+from paegan.cdm.dsg.features.base.point import Point
+from paegan.cdm.dsg.features.station import Station as Station
+from paegan.cdm.dsg.member import Member
 
 def nsp(element_tag, namespace):
     return nspath(element_tag, namespace=namespace)

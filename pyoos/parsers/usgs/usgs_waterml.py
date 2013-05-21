@@ -1,7 +1,8 @@
 from pyoos.utils.etree import etree
 from owslib.util import nspath, testXMLValue
-from pyoos.cdm.features import station, point
-from pyoos.cdm.collections.station_collection import StationCollection
+from paegan.cdm.dsg.features import station
+from paegan.cdm.dsg.features.base import point
+from paegan.cdm.dsg.collections.station_collection import StationCollection
 from shapely.geometry import Point as Location
 from datetime import datetime
 from dateutil.parser import parse as dtParser

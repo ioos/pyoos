@@ -1,12 +1,12 @@
 from pyoos.parsers.swe.swe_base import SweBase
-from pyoos.cdm.features.point import Point
+from paegan.cdm.dsg.features.base.point import Point
 from owslib.util import nspath as nsp
 from owslib.util import testXMLAttribute, testXMLValue
 from shapely.geometry import Point as sPoint
 from owslib.crs import Crs
 import dateutil.parser
-from pyoos.cdm.utils.member import Member
-from pyoos.cdm.collections.point_collection import PointCollection
+from paegan.cdm.dsg.member import Member
+from paegan.cdm.dsg.collections.base.point_collection import PointCollection
 
 class SweTimeSeries(SweBase):
     def __init__(self, **kwargs):
