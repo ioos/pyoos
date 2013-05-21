@@ -1,5 +1,5 @@
 import unittest
-from pyoos.tests.utils import resource_file
+from tests.utils import resource_file
 from pyoos.parsers.ioos_swe import IoosSwe
 import pytz
 from datetime import datetime
