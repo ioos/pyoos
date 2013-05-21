@@ -17,7 +17,7 @@ class PyTest(Command):
 
 setup(
     name                = "pyoos",
-    version             = "0.2",
+    version             = "0.3",
     description         = "A Python API into IOOS data",
     long_description    = readme,
     license             = 'LICENSE.txt',
