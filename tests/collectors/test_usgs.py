@@ -1,89 +1,69 @@
 import unittest
-from pyoos.collectors.usgs.usgs import USGSCollector
+from pyoos.collectors.usgs.usgs_rest import UsgsRest
 from datetime import datetime, timedelta
 
 class USGSTest(unittest.TestCase):
 
-	def setUp(self):
-		self._usgs = USGSCollector()
+    def setUp(self):
+        self.c = UsgsRest()
 
-	def test_by_bbox(self):
-		"""
-			test station cdm returned from usgs
-		"""
+    def test_by_bbox(self):
+        self.c.filter(bbox=(-87,46,-85,48))
+        collection = self.c.collect()
+        collection.calculate_bounds()
 
-		collection = self._usgs.get_stations_by_bbox(48,46,-85,-87)
+        # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
+        assert len(collection.elements) == 4
+        assert sorted(map(lambda x: x.uid, collection.elements)) == ["04044724", "04045500", "04046000", "04056500"]
 
-		assert collection is not None
+        station = collection.elements[0]
+        assert station.name == "AU TRAIN RIVER AT FOREST LAKE, MI"
+        # Measures 2 variables
+        assert len(station.get_unique_members()) == 2
+        assert station.location.x == -86.8501514
+        assert station.location.y == 46.34077908
+        assert station.location.z == 0
+        
+        # Apply time fitler as well
+        starting = datetime.utcnow() - timedelta(hours=6)
+        self.c.filter(start=starting)
+        collection = self.c.collect()
+        collection.calculate_bounds()
 
-		collection.calculate_bounds()
+        # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
+        assert len(collection.elements) == 4
+        assert sorted(map(lambda x: x.uid, collection.elements)) == ["04044724", "04045500", "04046000", "04056500"]
 
-		assert collection.size == len(collection.time_range) == collection.point_size == 4
+    def test_by_state(self):
+        # Clear filters
+        self.c.clear()
+        # Add custom state filter
+        self.c.filter(state="ri")
+        collection = self.c.collect()
 
-		# test period_hours
-		collection = self._usgs.get_stations_by_bbox(48,46,-85,-87,period_hours=6)
+        # Returns 41 stations
+        assert len(collection.elements) == 41
 
-		assert collection is not None
+        station = collection.elements[0]
+        assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"
+        # Measures 2 variables
+        assert len(station.get_unique_members()) == 2
+        assert station.location.x == -71.3511649
+        assert station.location.y == 41.83093376
+        assert station.location.z == 0
 
-		collection.calculate_bounds()
+    def test_by_site_code(self):
+        # Clear filters
+        self.c.clear()
+        # Add custom state filter
+        self.c.filter(features=['04001000'])
+        collection = self.c.collect()
+        collection.calculate_bounds()
 
-		assert collection.size == 4
-		assert len(collection.time_range) == collection.point_size
-
-	def test_by_state(self):
-		"""
-			test station cdm returned from usgs
-		"""
-
-		collection = self._usgs.get_stations_by_state('co',period_days=1)
-
-		assert collection is not None
-
-		collection.calculate_bounds()
-
-		#assert collection.size == 387
-		assert len(collection.time_range) == collection.point_size
-
-	def test_by_site_code(self):
-		"""
-			test station cdm returned using site code
-		"""
-
-		station = self._usgs.get_station('04001000')
-
-		assert station is not None
-
-		station.calculate_bounds()
-
-		assert station.uid == '04001000'
-		assert station.name == 'WASHINGTON CREEK AT WINDIGO, MI'
-		assert str(station.location) == 'POINT (-89.1459196999999932 47.9212792000000007)'
-
-		start_dt = datetime.today() - timedelta(days=1)
-		station2 = self._usgs.get_station('04001000', startDT=start_dt)
-
-		assert station2 is not None
-
-		station2.calculate_bounds()
-
-		assert station2.uid == '04001000'
-		assert station2.name == 'WASHINGTON CREEK AT WINDIGO, MI'
-		assert str(station2.location) == 'POINT (-89.1459196999999932 47.9212792000000007)'
-		assert station.size < station2.size
-
-		start_dt = datetime.today() - timedelta(days=3)
-		end_dt = datetime.today() - timedelta(days=2)
-
-		station3 = self._usgs.get_station('04001000', startDT=start_dt, endDT=end_dt)
-
-		assert station3 is not None
-
-		station3.calculate_bounds()
-
-		assert station3.uid == '04001000'
-		assert station3.name == 'WASHINGTON CREEK AT WINDIGO, MI'
-		assert str(station3.location) == 'POINT (-89.1459196999999932 47.9212792000000007)'
-		assert station.size < station3.size
-
-
+        station = collection.elements[0]
+        assert station.uid == '04001000'
+        assert station.name == 'WASHINGTON CREEK AT WINDIGO, MI'
+        assert station.location.x == -89.1459196999999932
+        assert station.location.y == 47.9212792000000007
+        assert station.location.z == 0
 

@@ -8,14 +8,15 @@ import pytz
 from shapely.geometry import Point as sPoint
 from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.features.station import Station as Station
+from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
 
 def nsp(element_tag, namespace):
     return nspath(element_tag, namespace=namespace)
 
-class WqxToStation(object):
+class WqxToPaegan(object):
     """
-        Convert a WqxOutbound object or WQX string/element to the DSG
+        Convert a WqxOutbound object or WQX string/element to the Paegan DSG as a StationCollection
     """
     def __init__(self, wqx_metadata, wqx_data):
         if not isinstance(wqx_metadata, WqxOutbound):
@@ -27,44 +28,55 @@ class WqxToStation(object):
         if wqx_data.failed or wqx_metadata.failed:
             self.feature = None
         else:
-            s = Station()
-            s.uid = wqx_metadata.location.id
-            s.name = wqx_metadata.location.name
-            s.set_property("station_type", wqx_metadata.location.type)
-            s.set_property("location_description", wqx_metadata.location.description)
-            s.set_property("huc", wqx_metadata.location.huc)
-            s.set_property("county", wqx_metadata.location.county)
-            s.set_property("state", wqx_metadata.location.state)
-            s.set_property("country", wqx_metadata.location.country)
-            s.set_property("organization_id", wqx_metadata.organization.id)
-            s.set_property("organization_name", wqx_metadata.organization.name)
-            s.set_property("vertical_units", wqx_metadata.location.vertical_measure_units)
-            s.set_property("horizontal_crs", wqx_metadata.location.horizontal_crs_name)
-            s.set_property("vertical_crs", wqx_metadata.location.vertical_crs_name)
+            stations = []
+            station_lookup = []
+            # Create a station for every MonitoringLocation
+            for org in wqx_metadata.organizations:
+                for ml in org.locations:
+                    s = Station()
+                    s.uid = ml.id
+                    s.name = ml.name
+                    s.set_property("station_type", ml.type)
+                    s.set_property("location_description", ml.description)
+                    s.set_property("huc", ml.huc)
+                    s.set_property("county", ml.county)
+                    s.set_property("state", ml.state)
+                    s.set_property("country", ml.country)
+                    s.set_property("organization_id", org.description.id)
+                    s.set_property("organization_name", org.description.name)
+                    s.set_property("vertical_units", ml.vertical_measure_units)
+                    s.set_property("horizontal_crs", ml.horizontal_crs_name)
+                    s.set_property("vertical_crs", ml.vertical_crs_name)
 
-            for a in wqx_data.activities:
-                p = Point()
-                p.time = a.start_time
+                    # Now set the station's location
+                    vertical = 0
+                    try:
+                        vertical = float(ml.vertical_measure_value)
+                    except:
+                        pass
 
-                for r in a.results:
-                    p.add_member(Member(value=r.value, unit=r.units, name=r.name, description=r.short_name, standard=None, quality=r.quality, method_id=a.method_id, method_name=a.method_name))
+                    # convert the vertical to meters if it is ft (which it always is)
+                    if ml.vertical_measure_units == "ft":
+                        vertical /= 3.28084
+                        s.set_property("vertical_units", "m")
+                    s.location = sPoint(float(ml.longitude), float(ml.latitude), vertical)
 
-                s.add_element(p)
+                    stations.append(s)
+                    station_lookup.append(s.uid)
 
-            # Now set the station's location
-            vertical = 0
-            try:
-                vertical = float(wqx_metadata.location.vertical_measure_value)
-            except:
-                pass
+            for org in wqx_data.organizations:
+                for a in org.activities:
+                    p = Point()
+                    p.time = a.start_time
+                    for r in a.results:
+                        p.add_member(Member(value=r.value, unit=r.units, name=r.name, description=r.short_name, standard=None, quality=r.quality, method_id=a.method_id, method_name=a.method_name))
 
-            # convert the vertical to meters if it is ft (which it always is)
-            if wqx_metadata.location.vertical_measure_units == "ft":
-                vertical /= 3.28084
-                s.set_property("vertical_units", "m")
-            s.location = sPoint(float(wqx_metadata.location.longitude), float(wqx_metadata.location.latitude), vertical)
+                    # Assign data to the correct station pulled from the metadata
+                    station = stations[station_lookup.index(a.location_id)]
+                    p.location = station.location
+                    station.add_element(p)
 
-            self.feature = s
+            self.feature = StationCollection(elements=stations)
 
 class WqxOutbound(object):
     """
@@ -85,22 +97,36 @@ class WqxOutbound(object):
         if hasattr(self._root, 'getroot'):
             self._root = self._root.getroot()
 
-        org = self._root.find(nsp("Organization", wqx_ns))
-
         self.failed = False
-        if org is None:
+        self.organizations = []
+        orgs = self._root.findall(nsp("Organization", wqx_ns))
+
+        if orgs is None:
             self.failed = True
         else:
-            self.organization = WqxOrganizationDescription(org.find(nsp("OrganizationDescription",wqx_ns)), wqx_ns)
+            for org in orgs:
+                self.organizations.append(WqxOrganzation(org, wqx_ns))
 
-            self.location = None
-            ml = org.find(nsp("MonitoringLocation",wqx_ns))
-            if ml is not None:
-                self.location = WqxMonitoringLocation(ml, wqx_ns)
 
-            self.activities = []
-            for act in org.findall(nsp("Activity", wqx_ns)):
-                self.activities.append(WqxActivity(act, wqx_ns))
+class WqxOrganzation(object):
+    """
+        An WQX formatted <wqx:Organization> block
+    """
+    def __init__(self, element, wqx_ns):
+        self._root = element
+
+        self.description = WqxOrganizationDescription(self._root.find(nsp("OrganizationDescription",wqx_ns)), wqx_ns)
+
+        self.locations = []
+        mls = self._root.findall(nsp("MonitoringLocation",wqx_ns))
+        for loc in mls:
+            if loc is not None:
+                self.locations.append(WqxMonitoringLocation(loc, wqx_ns))
+
+        self.activities = []
+        for act in self._root.findall(nsp("Activity", wqx_ns)):
+            self.activities.append(WqxActivity(act, wqx_ns))
+
 
 class WqxActivity(object):
     """
@@ -200,7 +226,7 @@ class WqxResult(object):
 
 class WqxOrganizationDescription(object):
     """
-        An WQX formatted <wqx:Organization> block
+        An WQX formatted <wqx:OrganizationDescription> block
     """
     def __init__(self, element, wqx_ns):
         self._root = element

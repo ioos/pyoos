@@ -3,8 +3,8 @@
 import unittest
 from pytest import raises
 from pyoos.collectors.wqp.wqp_rest import WqpRest
+from pyoos.parsers.wqx.wqx_outbound import WqxOutbound
 from datetime import datetime, timedelta
-from pyoos.utils.asatime import AsaTime
 
 class WqpTest(unittest.TestCase):
 
@@ -47,57 +47,64 @@ class WqpTest(unittest.TestCase):
             </Organization>
         </WQX>
         """
-        #self.c.start_time = AsaTime.parse("2009-08-01")
-        #self.c.end_time = AsaTime.parse("2009-09-10")
-        
-        results = self.c.get_metadata(siteid="21IOWA-10070005")
+        self.c.filter(features=["21IOWA-10070005"])
+        meta, data = self.c.raw()
+
+        org = WqxOutbound(meta).organizations[0]
 
         # OrganizationDescription
-        assert results.organization.name == u"Iowa Dept. of  Natural Resources"
-        assert results.organization.id == u"21IOWA"
+        assert org.description.name == u"Iowa Dept. of  Natural Resources"
+        assert org.description.id == u"21IOWA"
 
         # MonitoringLocation
-        assert results.location.id == u"21IOWA-10070005"
-        assert results.location.name == u"Cedar River Upstream of Waterloo/Cedar Falls"
-        assert results.location.type == u"River/Stream"
-        assert results.location.description == u"Below the dam of Old Highway 218 in Cedar Falls.¿Upstream City Site."
-        assert results.location.huc == u"07080205"
-        assert results.location.latitude == u"42.5392"
-        assert results.location.longitude == u"-92.4495"
-        assert results.location.vertical_measure_value == u"854"
-        assert results.location.vertical_measure_units == u"ft"
-        assert results.location.country == u"US"
-        assert results.location.state == u"19"
-        assert results.location.county == u"013"
+        assert org.locations[0].id == u"21IOWA-10070005"
+        assert org.locations[0].name == u"Cedar River Upstream of Waterloo/Cedar Falls"
+        assert org.locations[0].type == u"River/Stream"
+        assert org.locations[0].description == u"Below the dam of Old Highway 218 in Cedar Falls.¿Upstream City Site."
+        assert org.locations[0].huc == u"07080205"
+        assert org.locations[0].latitude == u"42.5392"
+        assert org.locations[0].longitude == u"-92.4495"
+        assert org.locations[0].vertical_measure_value == u"854"
+        assert org.locations[0].vertical_measure_units == u"ft"
+        assert org.locations[0].country == u"US"
+        assert org.locations[0].state == u"19"
+        assert org.locations[0].county == u"013"
         
 
-    def test_wqp_results_metadata(self):       
-        results = self.c.get_data(siteid="21IOWA-10070005")
+    def test_wqp_results_metadata(self):
+        self.c.filter(features=["21IOWA-10070005"])
+        meta, data = self.c.raw()
         
         # OrganizationDescription
-        assert results.organization.name == u"Iowa Dept. of  Natural Resources"
-        assert results.organization.id == u"21IOWA"
-        
-        #for a in results.activities:
-        #    for r in a.results:
-        #        assert r is not None
-        #        if r.name == "Escherichia coli":
-        #            print r.value
+        org = WqxOutbound(data).organizations[0]
+        assert org.description.name == u"Iowa Dept. of  Natural Resources"
+        assert org.description.id == u"21IOWA"
 
     def test_bad_wqp_site(self):
-        results = self.c.get_metadata(siteid="s")
+        self.c.filter(features=["s"])
+        rmeta, data = self.c.raw()
+
         with raises(AttributeError):
-            print results.organization
+            print data.organization
 
     def test_into_dsg(self):
-        results = self.c.get_station(siteid="21IOWA-10070005")
-        results.calculate_bounds()
+        # First feature filter
+        self.c.filter(features=["21IOWA-10070005"])
+        station_collection = self.c.collect()
+        station_collection.calculate_bounds()
 
-        assert len(results.get_unique_members()) == 240
-        assert results.location.x == -92.4495
-        assert results.location.y == 42.5392
-        assert results.location.z == float(854 / 3.28084)
+        assert station_collection.size == 1
+        station = station_collection.elements[0]
+        assert len(station.get_unique_members()) == 240
+        assert station.location.x == -92.4495
+        assert station.location.y == 42.5392
+        assert station.location.z == float(854 / 3.28084)
 
-        results = self.c.get_station(siteid="21IOWA-10070005", characteristicName="Mercury")
-        results.calculate_bounds()
-        assert len(results.get_unique_members()) == 1
+        # Second variable filter
+        self.c.filter(variables=["Mercury"])
+        station_collection = self.c.collect()
+        station_collection.calculate_bounds()
+
+        assert station_collection.size == 1
+        station = station_collection.elements[0]
+        assert len(station.get_unique_members()) == 1
