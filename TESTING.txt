@@ -7,8 +7,8 @@ The pyoos module is tested with the help of py.test
 
 To run all tests:
 
-    $ python runtests.py
+    $ python setup.py test
 
 To run a single test:
-
+    $ pip install pytest
     $ python -m pytest path_to_test
