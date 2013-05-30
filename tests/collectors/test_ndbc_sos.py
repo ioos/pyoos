@@ -1,6 +1,6 @@
 import unittest
 from pyoos.collectors.ndbc.ndbc_sos import NdbcSos
-from owslib.sml import SystemMetadata
+from owslib.swe.sensor.sml import SystemMetadata
 
 class NdbcSosTest(unittest.TestCase):
 

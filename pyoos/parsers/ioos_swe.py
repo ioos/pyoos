@@ -1,5 +1,5 @@
 from pyoos.utils.etree import etree
-from owslib.namespaces import OWSLibNamespaces
+from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue, testXMLAttribute, extract_time
 from owslib.util import nspath as nsp
 from owslib.util import nspath_eval as nspv
@@ -7,7 +7,7 @@ from owslib.crs import Crs
 from pyoos.parsers.swe.swe_timeseries import SweTimeSeries
 from shapely.geometry import box
 
-ns = OWSLibNamespaces()
+ns = Namespaces()
 
 class IoosSwe(object):
     def __init__(self, element):
