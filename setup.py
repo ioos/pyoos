@@ -1,32 +1,33 @@
-from setuptools import setup, find_packages, Command
+from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+import sys
 
-files = ["pyoos/*"]
 readme = open('README.md', 'rb').read()
 reqs = [line.strip() for line in open('requirements.txt')]
 
-class PyTest(Command):
-    user_options = []
-    def initialize_options(self):
-        pass
+class PyTest(TestCommand):
     def finalize_options(self):
-        pass
-    def run(self):
-        import sys,subprocess
-        errno = subprocess.call([sys.executable, 'runtests.py'])
-        raise SystemExit(errno)
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.test_args)
+        sys.exit(errno)
 
 setup(
     name                = "pyoos",
     version             = "0.3",
-    description         = "A Python API into IOOS data",
+    description         = "A Python library for collecting Met/Ocean observations",
     long_description    = readme,
-    license             = 'LICENSE.txt',
+    license             = 'GPLv3',
     author              = "Kyle Wilcox",
     author_email        = "kwilcox@sasascience.com",
     url                 = "https://github.com/asascience-open/pyoos",
     packages            = find_packages(),
-    cmdclass            = {'test': PyTest},
     install_requires    = reqs,
+    tests_require       = ['pytest'],
+    cmdclass            = {'test': PyTest},
     classifiers         = [
             'Development Status :: 3 - Alpha',
             'Intended Audience :: Developers',
