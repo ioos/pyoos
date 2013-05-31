@@ -3,5 +3,4 @@ OWSLib
 requests
 pytz>=2012h
 python-dateutil>=2.1
-suds==0.4
 paegan>=0.9.6
