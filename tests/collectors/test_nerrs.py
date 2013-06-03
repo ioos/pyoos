@@ -20,7 +20,7 @@ class NerrTest(unittest.TestCase):
         station_vars = self.c.list_variables(feature='rkbfbwq')
         assert station_vars == ['Depth', 'DO_mgl', 'DO_pct', 'pH', 'Sal', 'SpCond', 'Temp', 'Turb']
 
-    def test_get_station_cdm(self):
+    def test_get_nerrs_raw(self):
         """
             test the station cdm returned from nerrs
         """
@@ -43,7 +43,7 @@ class NerrTest(unittest.TestCase):
         ending = datetime.utcnow() - timedelta(days=90)
         starting = ending - timedelta(hours=24)
         self.c.filter(start_time=starting, end_time=ending)
-        collection = self.c.collect()
+        collection = self.c.raw()
         # both are returned
         assert len(collection) == 2
 
@@ -61,4 +61,4 @@ class NerrTest(unittest.TestCase):
         self.c.clear()
         self.c.filter(variables=["ATemp","Temp"])
         with raises(ValueError):
-            self.c.collect()
+            self.c.raw()
