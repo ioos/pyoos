@@ -1,3 +1,4 @@
+from pyoos.parsers.nerrs import NerrsToPaegan
 from pyoos.collectors.collector import Collector
 from pyoos.utils.etree import etree
 from owslib.util import testXMLValue
@@ -74,8 +75,7 @@ class NerrsSoap(Collector):
         
     def collect(self):
         results = self.raw()
-        # TODO: parse results into Paegan CDM
-        return results      
+        return NerrsToPaegan(results, nerrs_stations=self.stations).feature
 
     def raw(self, **kwargs):
 
@@ -101,7 +101,7 @@ class NerrsSoap(Collector):
 
         if query_features is not None and len(query_features) > 0:
 
-            results = []
+            results = {}
             for f in query_features:
                 if self.start_time is not None and self.end_time is not None:
                     # Date range query
@@ -112,7 +112,7 @@ class NerrsSoap(Collector):
                 
                 if soap_env is not None:    
                     response = self._makesoap(soap_env)                
-                    results.append(etree.tostring(response))
+                    results[f] = etree.tostring(response)
 
             return results
 

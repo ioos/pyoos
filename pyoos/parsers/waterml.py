@@ -8,8 +8,6 @@ from paegan.cdm.dsg.features.station import Station as Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
 
-from pyoos.utils.asatime import AsaTime
-
 class WaterML11ToPaegan(object):
     def __init__(self, waterml_data):
         
