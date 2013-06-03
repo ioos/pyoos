@@ -62,3 +62,17 @@ class NerrTest(unittest.TestCase):
         self.c.filter(variables=["ATemp","Temp"])
         with raises(ValueError):
             self.c.raw()
+
+        # Test NERRS chaining
+        self.c.clear()
+        self.c.filter(features=['owcowmet','rkbfbwq']).filter(variables=["ATemp"])
+        collection = self.c.raw()
+        # only 'owcowmet' returning
+        assert len(collection) == 1
+
+        # Test multiple filter types on one call to 'filter'
+        self.c.clear()
+        self.c.filter(features=['owcowmet','rkbfbwq'], variables=["ATemp"])
+        collection = self.c.raw()
+        # only 'owcowmet' returning
+        assert len(collection) == 1        
