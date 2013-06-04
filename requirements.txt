@@ -1,6 +1,6 @@
-Shapely>=1.2.17
+Shapely>=1.2.15
 OWSLib
 requests
-pytz>=2012h
+pytz
 python-dateutil>=2.1
-paegan>=0.9.6
+paegan>=0.9.7

@@ -1,8 +1,15 @@
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
+from __future__ import with_statement
 import sys
 
-readme = open('README.md', 'rb').read()
+from setuptools import setup, find_packages
+from setuptools.command.test import test as TestCommand
+
+from pyoos import __version__
+
+def readme():
+    with open('README.md') as f:
+        return f.read()
+
 reqs = [line.strip() for line in open('requirements.txt')]
 
 class PyTest(TestCommand):
@@ -17,9 +24,9 @@ class PyTest(TestCommand):
 
 setup(
     name                = "pyoos",
-    version             = "0.3",
+    version             = __version__,
     description         = "A Python library for collecting Met/Ocean observations",
-    long_description    = readme,
+    long_description    = readme(),
     license             = 'GPLv3',
     author              = "Kyle Wilcox",
     author_email        = "kwilcox@sasascience.com",
