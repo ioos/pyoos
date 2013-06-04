@@ -1,4 +1,4 @@
-from owslib.util import nspath
+from owslib.util import nspath as nsp
 from owslib.util import testXMLAttribute, testXMLValue
 from owslib.crs import Crs
 from pyoos.utils.asatime import AsaTime
@@ -11,8 +11,6 @@ from paegan.cdm.dsg.features.station import Station as Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
 
-def nsp(element_tag, namespace):
-    return nspath(element_tag, namespace=namespace)
 
 class WqxToPaegan(object):
     """

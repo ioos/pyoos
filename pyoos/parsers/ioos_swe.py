@@ -32,12 +32,13 @@ class OmObservation(object):
         OM_NS = ns.get_versioned_namespace('om','1.0')
         GML_NS = ns.get_versioned_namespace('gml','3.1.1')
         SWE_NS = ns.get_versioned_namespace('swe','1.0')
+        XLINK_NS = ns.get_namespace("xlink")
         
         self.name = testXMLValue(self._root.find(nsp("name", GML_NS)))
         self.description = testXMLValue(self._root.find(nsp("description", GML_NS)))
         self.observedProperties = []
         for op in self._root.findall(nsp('observedProperty', OM_NS)):
-            self.observedProperties.append(testXMLAttribute(op,nspv('xlink:href')))
+            self.observedProperties.append(testXMLAttribute(op,nsp('href', XLINK_NS)))
 
         # BBOX
         try:

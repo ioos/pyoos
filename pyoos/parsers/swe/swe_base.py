@@ -1,10 +1,13 @@
 from owslib.util import nspath as nsp
 from owslib.util import nspath_eval as nspv
+from owslib.namespaces import Namespaces
 from owslib.util import testXMLAttribute, testXMLValue
 from owslib.crs import Crs
 import csv
 import StringIO
 import copy
+
+ns = Namespaces()
 
 def get_field_object(element, swe_ns):
 
@@ -119,7 +122,7 @@ class SweField(object):
         self.name = testXMLAttribute(self._root, "name")
         self.definition = testXMLAttribute(ob, "definition")
         self.units = testXMLAttribute(ob.find(nsp("uom", swe_ns)), "code")
-        self.units_url = testXMLAttribute(ob.find(nsp("uom", swe_ns)), nspv("xlink:href"))
+        self.units_url = testXMLAttribute(ob.find(nsp("uom", swe_ns)), nsp("href", ns.get_namespace('xlink')))
         self.value = testXMLValue(ob.find(nsp("value", swe_ns)))
         self.axis = testXMLAttribute(ob, "axisID")
 
