@@ -74,7 +74,7 @@ class NerrTest(unittest.TestCase):
 
     def test_nerrs_time_filter(self):
 
-        self.c.filter(bbox=(85.0196, 29.6079, 85.089, 29.7791))
+        self.c.filter(features=['owcowmet','rkbfbwq'])
 
         ending = datetime.utcnow() - timedelta(days=90)
         ending = ending.replace(tzinfo=pytz.utc)
