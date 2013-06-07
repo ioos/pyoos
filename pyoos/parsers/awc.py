@@ -35,18 +35,6 @@ class AwcToPaegan(object):
             if vertical is None:
                 vertical = 0
             s.location = sPoint(float(metar.find("latitude").text), float(metar.find("longitude").text), float(vertical))
-            '''
-            s.set_property("raw_text", metar.raw_text)
-            s.set_property("temp_c", metar.temp_c)
-            s.set_property("dewpoint_c", metar.dewpoint_c)
-            s.set_property("wind_dir_degreees", metar.wind_dir_degrees)
-            s.set_property("wind_speed_kt", metar.wind_speed_kt)
-            s.set_property("visibility_statute_mi", metar.visibility_statute_mi)
-            s.set_property("altim_in_hg", metar.altim_in_hg)
-            s.set_property("wx_string", metar.wx_string)
-            s.set_property("sky_condition", [{sky_cover:sky_cond.attrib{"sky_cover"}, cloud_base_ft_agl:sky_cond.attrib{"cloud_base_ft_agl"}} for sky_cond in metar.findall('sky_condition')])
-            s.set_property("flight_category", metar.flight_category)
-            '''
             s.set_property("metar_type", metar.find("metar_type").text)
             s.set_property("horizontal_crs", "GCS")
             s.set_property("vertical_units", "m")
