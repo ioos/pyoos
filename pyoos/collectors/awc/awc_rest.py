@@ -26,8 +26,15 @@ class AwcRest(Collector):
         return self.features
     
     def get_raw_response(self, **kwargs):
-        r = requests.get(self.data_url, params=kwargs)
-        return r.text
+        r = []
+        if ((self.bbox[3]-self.bbox[1]) * (self.bbox[2]-self.bbox[0]])) > 4:
+            x = self.bbox
+            while x <= self.bbox[2]:
+                while y <= self.bbox[3]:
+                    
+        else:
+            r.append(requests.get(self.data_url, params=kwargs).text)
+        return r
         
     def setup_params(self, **kwargs):
         params = kwargs
@@ -36,12 +43,10 @@ class AwcRest(Collector):
         params["maxLat"] = ''
         params["maxLon"] = ''
         if self.bbox is not None: # Must be in format: (minx, miny, maxx, maxy)
-            params["minLat"] = self.bbox[1]
-            params["minLon"] = self.bbox[0]
-            params["maxLat"] = self.bbox[3]
-            params["maxLon"] = self.bbox[2]
-        #if self.features is not None:
-        #    params["siteid"] = self.features[0]
+            params["minLat"] = str(self.bbox[1])
+            params["minLon"] = str(self.bbox[0])
+            params["maxLat"] = str(self.bbox[3])
+            params["maxLon"] = str(self.bbox[2])
         return params
 
     def collect(self):
