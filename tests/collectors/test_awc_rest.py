@@ -15,7 +15,7 @@ class AwcRestTest(unittest.TestCase):
     def test_bbox_filter_raw(self):
         self.c.filter(bbox=(-80, 30, -60, 50))
         response = self.c.raw()
-        assert '<response xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XML-Schema-instance" version="1.2" xsi:noNamespaceSchemaLocation="http://aviationweather.gov/adds/schema/metar1_2.xsd">' in response
+        assert '<response xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XML-Schema-instance" version="1.2" xsi:noNamespaceSchemaLocation="http://aviationweather.gov/adds/schema/metar1_2.xsd">' in response[0]
         
     def test_bbox_filter_paegan(self):
         self.c.filter(bbox=(-80, 30, -60, 50))

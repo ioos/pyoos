@@ -27,11 +27,18 @@ class AwcRest(Collector):
     
     def get_raw_response(self, **kwargs):
         r = []
-        if ((self.bbox[3]-self.bbox[1]) * (self.bbox[2]-self.bbox[0]])) > 4:
-            x = self.bbox
+        if ((self.bbox[3]-self.bbox[1]) * (self.bbox[2]-self.bbox[0])) > 4:
+            x = self.bbox[0]
+            y = self.bbox[2]
             while x <= self.bbox[2]:
                 while y <= self.bbox[3]:
-                    
+                    kwargs["minLat"] = y
+                    kwargs["minLon"] = x
+                    kwargs["maxLat"] = y + 2
+                    kwargs["maxLon"] = x + 2
+                    r.append(requests.get(self.data_url, params=kwargs).text)
+                    y += 2
+                x += 2
         else:
             r.append(requests.get(self.data_url, params=kwargs).text)
         return r
