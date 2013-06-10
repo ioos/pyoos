@@ -12,7 +12,7 @@ Pyoos will collect and parse the following data services into the [Paegan](https
 * STORET Water Quality - WqxOutbound via REST (waterqualitydata.us)
 * USGS NWIS Water Quality - WqxOutbound via REST (waterqualitydata.us)
 * USGS Instantaneous Values - WaterML via REST
-
+* NWS AWC Observations - XML via REST (http://www.aviationweather.gov)
 
 ## Common Interface
 
