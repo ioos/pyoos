@@ -131,7 +131,6 @@ Pyoos requires the following python libraries which will be downloaded and insta
 * pytz>=2012h
 * python-dateutil>=2.1
 * requests
-* lxml
 
 If your NetCDF4 and HDF5 libraries are in non-typical locations, you will need to pass the locations to the `pip` command:
 ```bash
