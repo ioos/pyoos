@@ -1,4 +1,10 @@
 import unittest
+import csv
+import StringIO
+from datetime import datetime
+
+from owslib.swe.sensor.sml import SystemMetadata
+
 from pyoos.collectors.coops.coops_sos import CoopsSos
 
 class CoopsSosTest(unittest.TestCase):
@@ -15,29 +21,73 @@ class CoopsSosTest(unittest.TestCase):
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
 
+
     def test_coops_describe_sensor(self):
-        procedure = self.c.server.offerings[1].procedures[0]
-        outputFormat = self.c.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values'][0]
-        response = self.c.get_metadata(procedure=procedure,
-                                       outputFormat=outputFormat)
-        assert isinstance(response.systems[0].id, str)
+        self.c.features = ['8454000']
+        response = self.c.metadata()
+        assert isinstance(response, list)
+        assert isinstance(response[0].systems[0], SystemMetadata)
 
-    def test_coops_get_observation(self):
-        # COOPS does not support empty eventtime parameters
-        eventTime = "2012-10-01T00:00:00Z/2012-10-01T23:59:00Z"
-        station = None
-        station_names = list(set(['station-9052000']))
-        for offering in self.c.server.offerings:
-            if offering.id in station_names:
-                station = offering
-                break
 
-        response = res = self.c.get_raw_data(
-                                   offerings=[station.name],
-                                   responseFormat='text/xml;schema="ioos/0.6.1"',
-                                   observedProperties=['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum'],
-                                   eventTime=eventTime,
-                                   dataType='VerifiedSixMinute')
+    def test_raw_coops_get_observation(self):
+        self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
+        self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
+        self.c.features     = ['8454000']
+        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']
 
-        assert isinstance(response, str)
+        response = self.c.raw(responseFormat="text/csv")
+        assert isinstance(response, basestring)
+        """
+        station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
+        urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:A1,41.8071,-71.4012,2012-10-01T00:00:00Z,1.465,urn:ioos:def:datum:noaa::MLLW,1.064
+        """
+        data = list(csv.DictReader(StringIO.StringIO(response)))
+        assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
+        assert data[0]['datum_id'] == "urn:ioos:def:datum:noaa::MLLW"
+        assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
+        assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.465"
+        assert data[0]['vertical_position (m)'] == "1.064"
+
+
+    def test_raw_coops_get_observation_with_dataType(self):
+        self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
+        self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
+        self.c.features     = ['8454000']
+        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']
+        self.c.dataType     = "VerifiedHighLow"
+
+        response = self.c.raw(responseFormat="text/csv")
+        assert isinstance(response, basestring)
+        """
+        station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
+        urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:W3,41.8071,-71.4012,2012-10-01T01:00:00Z,1.617,urn:ioos:def:datum:noaa::MLLW,1.064
+        """
+        data = list(csv.DictReader(StringIO.StringIO(response)))
+        assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
+        assert data[0]['datum_id'] == "urn:ioos:def:datum:noaa::MLLW"
+        assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
+        assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.617"
+        assert data[0]['vertical_position (m)'] == "1.064"
         
+
+    def test_raw_coops_get_observation_with_datum(self):
+        self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
+        self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
+        self.c.features     = ['8454000']
+        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']
+        self.c.dataType     = "VerifiedHighLow"
+        self.c.datum        = "NAVD"
+
+        response = self.c.raw(responseFormat="text/csv")
+        assert isinstance(response, basestring)
+        """
+        station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
+        urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:W3,41.8071,-71.4012,2012-10-01T01:00:00Z,0.863,urn:ogc:def:datum:epsg::5103,1.818
+        """
+        data = list(csv.DictReader(StringIO.StringIO(response)))
+        assert len(data) == 4
+        assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
+        assert data[0]['datum_id'] == "urn:ogc:def:datum:epsg::5103"
+        assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
+        assert data[0]['water_surface_height_above_reference_datum (m)'] == "0.863"
+        assert data[0]['vertical_position (m)'] == "1.818"        

@@ -9,7 +9,7 @@ from shapely.geometry import box
 
 ns = Namespaces()
 
-class IoosSwe(object):
+class IoosGetObservation(object):
     def __init__(self, element):
         if isinstance(element, str):
             self._root = etree.fromstring(element)
