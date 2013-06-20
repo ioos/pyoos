@@ -1,28 +1,44 @@
-from pyoos.collectors.collector import Collector
-from pyoos.parsers.ioos_describe_sensor import IoosDescribeSensor
-from pyoos.parsers.ioos_swe import IoosSwe
-from owslib.sos import SensorObservationService as Sos
+from pyoos.collectors.ioos.swe_sos import IoosSweSos
 
-class NdbcSos(Collector):
+class NdbcSos(IoosSweSos):
     def __init__(self, **kwargs):
-        super(NdbcSos,self).__init__()
-        if kwargs.get('test') is True:
-            url = 'http://sdftest.ndbc.noaa.gov/sos/server.php'
+        if kwargs.get("test", None) is True:
+            kwargs["url"] = "http://sdftest.ndbc.noaa.gov/sos/server.php"
         else:
-            url = 'http://sdf.ndbc.noaa.gov/sos/server.php'
+            kwargs["url"] = 'http://sdf.ndbc.noaa.gov/sos/server.php'
 
-        self.server = Sos(url)
+        super(NdbcSos,self).__init__(**kwargs)
+        self._datum = None
+        self._dataType = None
 
-    def get_metadata(self, **kwargs):
-        response = self.server.describe_sensor(**kwargs)
-        return IoosDescribeSensor(response)
+    def setup_params(self, **kwargs):
+        params = super(NdbcSos,self).setup_params(**kwargs)
 
-    def get_describe_sensor_output_formats(self):
-        return self.server.get_operation_by_name('DescribeSensor').parameters['outputFormat']['values']
+        if self.bbox is not None:
+            params["featureofinterest"] = "BBOX:%s" % ",".join(map(lambda x: unicode(x), self.bbox))
 
-    def get_data(self, **kwargs):
-        response = self.get_raw_data(**kwargs)
-        return IoosSwe(response)
-        
-    def get_raw_data(self, **kwargs):
-        return self.server.get_observation(**kwargs)
+        if self.features is None or len(self.features) < 1:
+            params["offerings"] = ["urn:ioos:network:noaa.nws.ndbc:all"]
+        elif len(self.features) > 1:
+            # TODO: Send many requests, one for each station, rather than a network:all
+            print "NDBC does not support filtering by > 1 station at a time... returning all stations."
+            params["offerings"] = ["urn:ioos:network:noaa.nws.ndbc:all"]
+        elif len(self.features) == 1:
+            params["offerings"] = ["urn:ioos:station:wmo:%s" % self.features[0]]
+
+        if params.get("responseFormat", None) is None:
+            params["responseFormat"] = 'text/csv'
+
+        if self.variables is None or len(self.variables) < 1:
+            raise ValueError("You must set a filter for at least one variable (observedProperty)")
+        else:
+            ops = ",".join(self.variables)
+            if isinstance(ops, basestring):
+                ops = [ops]
+            params["observedProperties"] = ops            
+
+        return params
+
+    def metadata(self, **kwargs):
+        callback = lambda x: "urn:ioos:station:wmo:%s" % x
+        return super(NdbcSos,self).metadata(feature_name_callback=callback, **kwargs)
