@@ -1,4 +1,4 @@
-from pyoos.parsers.swe.swe_base import SweBase
+from pyoos.parsers.swe.swe_common_2_0 import SweCommon_2_0
 from paegan.cdm.dsg.features.base.point import Point
 from owslib.util import nspath as nsp
 from owslib.util import testXMLAttribute, testXMLValue
@@ -8,7 +8,7 @@ import dateutil.parser
 from paegan.cdm.dsg.member import Member
 from paegan.cdm.dsg.collections.base.point_collection import PointCollection
 
-class SweTimeSeries(SweBase):
+class TimeSeries(SweCommon_2_0):
     def __init__(self, **kwargs):
         super(SweTimeSeries,self).__init__(**kwargs)
 

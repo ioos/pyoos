@@ -1,5 +1,5 @@
 from pyoos.collectors.collector import Collector
-from pyoos.parsers.ioos_describe_sensor import IoosDescribeSensor
+from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from owslib.sos import SensorObservationService as Sos
 
