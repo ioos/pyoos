@@ -1,4 +1,4 @@
-from pyoos.parsers.swe.swe_common_2_0 import SweCommon_2_0
+from pyoos.parsers.swe.swe_common_2_0 import Time, DataChoice, DataRecord
 
-class TimeSeriesProfile(SweCommon_2_0):
+class TimeSeriesProfile(object):
     pass

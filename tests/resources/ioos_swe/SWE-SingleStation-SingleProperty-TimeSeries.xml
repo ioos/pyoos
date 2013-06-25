@@ -236,11 +236,11 @@
         <swe2:TextEncoding
           decimalSeparator="."
           tokenSeparator=","
-          blockSeparator="&#10;" />
+          blockSeparator="HIHI" />
       </swe2:encoding>
       <swe2:values>
-        2009-05-23T00:00:00Z,wmo_41001_sensor1,15.4,2.0,280
-        2009-05-23T01:00:00Z,wmo_41001_sensor1,15.8,1.8,121
+        2009-05-23T00:00:00Z,wmo_41001_sensor1,15.4,2.0,280HIHI
+        2009-05-23T01:00:00Z,wmo_41001_sensor1,15.8,1.8,121HIHI
         2009-05-23T02:00:00Z,wmo_41001_sensor1,15.6,1.0,142
       </swe2:values>
     </swe2:DataArray>
