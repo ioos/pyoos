@@ -17,7 +17,7 @@ class CoopsSosTest(unittest.TestCase):
         assert self.c.server.identification.service == 'OGC:SOS'
         assert self.c.server.identification.version == '1.0.0'
         assert self.c.server.identification.abstract == 'NOAA.NOS.CO-OPS Sensor Observation Service (SOS) Server'
-        assert self.c.server.identification.keywords == ['Air Temperature', 'Barometric Pressure', 'Conductivity', 'Currents', 'Datums', 'Rain Fall', 'Relative Humidity', 'Harmonic Constituents', 'Salinity', 'Water Level', 'Water Level Predictions', 'Water Temperature', 'Winds']
+        assert self.c.server.identification.keywords == ['Air Temperature', 'Barometric Pressure', 'Conductivity', 'Currents', 'Datums', 'Rain Fall', 'Relative Humidity', 'Harmonic Constituents', 'Salinity', 'Visibility', 'Water Level', 'Water Level Predictions', 'Water Temperature', 'Winds']
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
 
