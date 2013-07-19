@@ -11,7 +11,7 @@ from paegan.cdm.dsg.features.station import Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.features.base.point import Point
 
-from pyoos.parsers.swe.swe_common_2_0 import Time, DataChoice, DataRecord, AbstractSimpleComponent
+from owslib.swe.common import Time, DataChoice, DataRecord, AbstractSimpleComponent
 
 
 def get_namespaces():
@@ -153,7 +153,6 @@ class TimeSeries(object):
 
                 i += 1
 
-            print members
             pt.members = members
             sensors[sensor_key]['values'].append(pt)
            

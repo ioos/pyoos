@@ -125,10 +125,10 @@ pip install pyoos
 
 Pyoos requires the following python libraries which will be downloaded and installed through `pip`:
 
-* Paegan>=0.9.6
-* OWSLib (custom fork... but will be intergrated soon!)
-* Shapely>=1.2.17
-* pytz>=2012h
+* Paegan>=0.9.7
+* OWSLib (install from git with `pip install git+http://github.com/geopython/OWSLib.git`)
+* Shapely>=1.2.15
+* pytz
 * python-dateutil>=2.1
 * requests
 

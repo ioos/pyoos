@@ -1,4 +1,4 @@
-from pyoos.parsers.swe.swe_common_2_0 import Time, DataChoice, DataRecord
+from owslib.swe.common import Time, DataChoice, DataRecord, AbstractSimpleComponent
 
 class TimeSeriesProfile(object):
     pass
