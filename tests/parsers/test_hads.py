@@ -16,7 +16,7 @@ class HadsParserTest(unittest.TestCase):
         self.raw_data = u'CE4D0268|FOXR1|HM|2013-07-26 16:30|4.94|  |\r\nCE4D0268|FOXR1|HM|2013-07-26 17:00|4.41|  |\r\nCE4D0268|FOXR1|PA|2013-07-26 16:30|29.93|  |\r\nCE4D0268|FOXR1|PA|2013-07-26 17:00|29.93|  |\r\nCE4D0268|FOXR1|TA|2013-07-26 16:30|66.20|  |\r\nCE4D0268|FOXR1|TA|2013-07-26 17:00|67.30|  |\r\nCE4D0268|FOXR1|US|2013-07-26 16:30|5.00|  |\r\nCE4D0268|FOXR1|US|2013-07-26 17:00|8.00|  |\r\nCE4D0268|FOXR1|UD|2013-07-26 16:30|358.00|  |\r\nCE4D0268|FOXR1|UD|2013-07-26 17:00|353.00|  |\r\nDD182264|USQR1|HG|2013-07-26 16:30|3.07|  |\r\nDD182264|USQR1|HG|2013-07-26 16:45|3.07|  |\r\n'
 
     def test_parse(self):
-        station_collection = self.hp.parse(self.metadata, self.raw_data, None)
+        station_collection = self.hp.parse(self.metadata, self.raw_data, None, (None, None))
         assert isinstance(station_collection, StationCollection)
 
         station_collection.calculate_bounds()
@@ -128,7 +128,7 @@ class HadsParserTest(unittest.TestCase):
                u'DD182264': [(u'HG', datetime.datetime(2013, 7, 26, 16, 30), u'3.07'),
                              (u'HG', datetime.datetime(2013, 7, 26, 16, 45), u'3.07')]}
 
-        parsed = self.hp._parse_data(self.raw_data, None)
+        parsed = self.hp._parse_data(self.raw_data, None, (None, None))
         assert parsed == res
 
     def test__parse_data_with_var_filter(self):
@@ -137,5 +137,5 @@ class HadsParserTest(unittest.TestCase):
                              (u'UD', datetime.datetime(2013, 7, 26, 16, 30), u'358.00'),
                              (u'UD', datetime.datetime(2013, 7, 26, 17, 0), u'353.00')]}
 
-        parsed = self.hp._parse_data(self.raw_data, [u'HM', u'UD'])
+        parsed = self.hp._parse_data(self.raw_data, [u'HM', u'UD'], (None, None))
 
