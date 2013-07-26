@@ -10,11 +10,17 @@ from paegan.cdm.dsg.features.base.point import Point
 from shapely.geometry import Point as sPoint
 
 class HadsParser(object):
-    def __init__(self, metadata, raw_data):
+
+    def __init__(self):
+        pass
+
+    def parse(self, metadata, raw_data, var_filter):
 
         self.parsed_metadata = self._parse_metadata(metadata)
-        self.parsed_data     = self._parse_data(raw_data)
-        self.feature = self._build_station_collection(self.parsed_metadata, self.parsed_data)
+        self.parsed_data     = self._parse_data(raw_data, var_filter)
+        self.feature         = self._build_station_collection(self.parsed_metadata, self.parsed_data)
+
+        return self.feature
 
     def _build_station_collection(self, parsed_metadata, parsed_data):
 
@@ -39,8 +45,13 @@ class HadsParser(object):
             s.set_property("owner"                , station_metadata['owner'])
             s.set_property("channel"              , station_metadata['channel'])
 
+            stations.append(s)
+
             # data
-            assert station_code in parsed_data
+
+            # possibility no data for this station, or vars filtered all out
+            if station_code not in parsed_data:
+                continue
 
             # need to group into distinct time/z value pairs
 
@@ -70,7 +81,7 @@ class HadsParser(object):
                 for val in groupvals:
                     std_var = self.get_variable_info(val[0])
                     if std_var is None:
-                        print "NO DICE", val[0]
+                        print "Unknown PE Code, ignoring:", val[0], "(station:", station_code, ")"
                         continue
 
                     p.add_member(Member(value=val[2],
@@ -81,14 +92,14 @@ class HadsParser(object):
 
                 s.add_element(p)
 
-            stations.append(s)
-
         return StationCollection(elements=stations)
 
-    def _parse_data(self, raw_data):
+    def _parse_data(self, raw_data, var_filter):
         """
         Transforms raw HADS observations into a dict: 
             station code -> [(variable, time, value), ...]
+
+        Takes into account the var filter (if set).
         """
 
         retval = defaultdict(list)
@@ -99,7 +110,8 @@ class HadsParser(object):
                 continue
 
             fields = line.split("|")[0:-1]
-            retval[fields[0]].append((fields[2], p.parse(fields[3]), fields[4]))
+            if var_filter is None or fields[2] in var_filter:
+                retval[fields[0]].append((fields[2], p.parse(fields[3]), fields[4]))
 
         return dict(retval)
 

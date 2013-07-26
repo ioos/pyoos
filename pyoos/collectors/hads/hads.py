@@ -16,15 +16,35 @@ class Hads(Collector):
         self.obs_retrieval_url  = kwargs.get('obs_retrieval_url', "http://amazon.nws.noaa.gov/nexhads2/servlet/DecodedData")
 
         self.station_codes      = None
+        self.parser             = HadsParser()
 
     def clear(self):
         super(Hads, self).clear()
 
         self.station_codes      = None
 
+    @Collector.bbox.setter
+    def bbox(self, bbox):
+        Collector.bbox.fset(self, bbox)
+        self.station_codes      = None
+
+    @Collector.features.setter
+    def features(self, features):
+        Collector.features.fset(self, features)
+        self.station_codes      = None
+
     def list_variables(self):
+        """
+        List available variables and applies any filters.
+        """
         station_codes = self._get_station_codes()
-        return self._list_variables(station_codes)
+        station_codes = self._apply_features_filter(station_codes)
+        variables = self._list_variables(station_codes)
+
+        if hasattr(self, '_variables') and self.variables is not None:
+            variables.intersection_update(set(self.variables))
+
+        return list(variables)
 
     def _list_variables(self, station_codes):
         """
@@ -54,27 +74,47 @@ class Hads(Collector):
         return variables
 
     def list_features(self):
-        return self._get_station_codes()
+        station_codes = self._get_station_codes()
+        station_codes = self._apply_features_filter(station_codes)
+
+        return station_codes
 
     def collect(self):
-        raw_data = self.raw()
-        return map(HadsParser, raw_data)
+        var_filter = None
+        if hasattr(self, '_variables'):
+            var_filter = self._variables
+
+        metadata, raw_data = self.raw()
+        return self.parser.parse(metadata, raw_data, var_filter)
 
     def raw(self, format=None):
         """
         Returns a tuple of (metadata, raw data)
         """
-        station_codes = self._get_station_codes()
-        metadata = self._get_metadata(station_codes)
+        station_codes = self._apply_features_filter(self._get_station_codes())
+        metadata      = self._get_metadata(station_codes)
+        raw_data      = self._get_raw_data(station_codes)
 
-        return (metadata, self._get_raw_data(station_codes))
+        return (metadata, raw_data)
+
+    def _apply_features_filter(self, station_codes):
+        """
+        If the features filter is set, this will return the intersection of
+        those filter items and the given station codes.
+        """
+        # apply features filter
+        if hasattr(self, 'features') and self.features is not None:
+            station_codes = set(station_codes)
+            station_codes = list(station_codes.intersection(set(self.features)))
+
+        return station_codes
 
     def _get_metadata(self, station_codes):
-        resp = requests.post(self.metadata_url, data={'state' : 'nil',
-                                                      'hsa'   : 'nil',
-                                                      'of'    : '1',
+        resp = requests.post(self.metadata_url, data={'state'    : 'nil',
+                                                      'hsa'      : 'nil',
+                                                      'of'       : '1',
                                                       'extraids' : " ".join(station_codes),
-                                                      'data' : "Get Meta Data"})
+                                                      'data'     : "Get Meta Data"})
         resp.raise_for_status()
         return resp.text
 
@@ -89,7 +129,7 @@ class Hads(Collector):
 
         state_urls = self._get_state_urls()
 
-        # @TODO: filter by bounding box against a shapefile
+        # filter by bounding box against a shapefile
         state_matches = None
 
         if self.bbox:
@@ -120,9 +160,9 @@ class Hads(Collector):
         return filter(lambda x: len(x) > 0, map(lambda x: x.attrs['href'].split("nesdis_id=")[-1], state_root.find_all('a')))
 
     def _get_raw_data(self, station_codes):
-        resp = requests.post(self.obs_retrieval_url, data={'state' : 'nil',
-                                                           'hsa'   : 'nil',
-                                                           'of'    : '1',
+        resp = requests.post(self.obs_retrieval_url, data={'state'    : 'nil',
+                                                           'hsa'      : 'nil',
+                                                           'of'       : '1',
                                                            'extraids' : " ".join(station_codes),
                                                            'sinceday' : -1})     # @TODO
         resp.raise_for_status()
