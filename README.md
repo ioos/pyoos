@@ -13,6 +13,7 @@ Pyoos will collect and parse the following data services into the [Paegan](https
 * USGS NWIS Water Quality - WqxOutbound via REST (waterqualitydata.us)
 * USGS Instantaneous Values - WaterML via REST
 * NWS AWC Observations - XML via REST (http://www.aviationweather.gov)
+* HADS (http://www.nws.noaa.gov/oh/hads/ - limited to 7 day rolling window of data)
 
 ## Common Interface
 
@@ -164,4 +165,5 @@ python setup.py test
 * Kyle Wilcox <kwilcox@asascience.com>
 * Sean Cowan <scowan@asascience.com>
 * Alex Crosby <acrosby@asascience.com>
+* Dave Foster <dfoster@asascience.com>
 
