@@ -151,6 +151,19 @@ class Hads(Collector):
 
             self.station_codes.extend(self._get_stations_for_state(state_url))
 
+        if self.bbox:
+            # retreive metadata for all stations to properly filter them
+            metadata        = self._get_metadata(self.station_codes)
+            parsed_metadata = self.parser._parse_metadata(metadata)
+
+            def in_bbox(code):
+                lat = parsed_metadata[code]['latitude']
+                lon = parsed_metadata[code]['longitude']
+
+                return lon >= self.bbox[0] and lon <= self.bbox[2] and lat >= self.bbox[1] and lat <= self.bbox[3]
+
+            self.station_codes = filter(in_bbox, self.station_codes)
+
         return self.station_codes
 
     def _get_state_urls(self):
