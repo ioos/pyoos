@@ -139,7 +139,7 @@ class Hads(Collector):
         if self.bbox:
             with collection(os.path.join("resources", "ne_50m_admin_1_states_provinces_lakes_shp.shp"), "r") as c:
                 geom_matches = map(lambda x: x['properties'], c.filter(bbox=self.bbox))
-                state_matches = map(lambda x: x['postal'], filter(lambda x: x['admin'] != u'Canada', geom_matches))
+                state_matches = map(lambda x: x['postal'] if x['admin'] != 'Canada' else u'CN', geom_matches)
 
         self.station_codes = []
 
