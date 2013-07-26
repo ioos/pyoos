@@ -1,6 +1,8 @@
 import os.path
 import re
 import requests
+import pytz
+from datetime import datetime
 from bs4 import BeautifulSoup
 from fiona import collection
 
@@ -84,8 +86,10 @@ class Hads(Collector):
         if hasattr(self, '_variables'):
             var_filter = self._variables
 
+        time_extents = (self.start_time if hasattr(self, 'start_time') else None, self.end_time if hasattr(self, 'end_time') else None)
+
         metadata, raw_data = self.raw()
-        return self.parser.parse(metadata, raw_data, var_filter)
+        return self.parser.parse(metadata, raw_data, var_filter, time_extents)
 
     def raw(self, format=None):
         """
@@ -160,11 +164,24 @@ class Hads(Collector):
         return filter(lambda x: len(x) > 0, map(lambda x: x.attrs['href'].split("nesdis_id=")[-1], state_root.find_all('a')))
 
     def _get_raw_data(self, station_codes):
+        since = 7
+        if hasattr(self, 'start_time') and self.start_time is not None:
+            # calc delta between now and start_time
+            timediff = datetime.utcnow().replace(tzinfo=pytz.utc) - self.start_time
+
+            if timediff.days == 0:
+                if timediff.seconds / 60 / 60 > 0:
+                    since = -(timediff.seconds / 60 / 60)
+                elif timediff.seconds / 60 > 0:
+                    since = -1  # 1 hour minimum resolution
+            else:
+                since = min(7, timediff.days)       # max of 7 days
+
         resp = requests.post(self.obs_retrieval_url, data={'state'    : 'nil',
                                                            'hsa'      : 'nil',
                                                            'of'       : '1',
                                                            'extraids' : " ".join(station_codes),
-                                                           'sinceday' : -1})     # @TODO
+                                                           'sinceday' : since})
         resp.raise_for_status()
 
         return resp.text

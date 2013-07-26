@@ -14,10 +14,10 @@ class HadsParser(object):
     def __init__(self):
         pass
 
-    def parse(self, metadata, raw_data, var_filter):
+    def parse(self, metadata, raw_data, var_filter, time_extents):
 
         self.parsed_metadata = self._parse_metadata(metadata)
-        self.parsed_data     = self._parse_data(raw_data, var_filter)
+        self.parsed_data     = self._parse_data(raw_data, var_filter, time_extents)
         self.feature         = self._build_station_collection(self.parsed_metadata, self.parsed_data)
 
         return self.feature
@@ -94,7 +94,7 @@ class HadsParser(object):
 
         return StationCollection(elements=stations)
 
-    def _parse_data(self, raw_data, var_filter):
+    def _parse_data(self, raw_data, var_filter, time_extents):
         """
         Transforms raw HADS observations into a dict: 
             station code -> [(variable, time, value), ...]
@@ -105,13 +105,17 @@ class HadsParser(object):
         retval = defaultdict(list)
         p = parser()
 
+        begin_time, end_time = time_extents
+
         for line in raw_data.splitlines():
             if len(line) == 0:
                 continue
 
             fields = line.split("|")[0:-1]
             if var_filter is None or fields[2] in var_filter:
-                retval[fields[0]].append((fields[2], p.parse(fields[3]), fields[4]))
+                dt = p.parse(fields[3])
+                if (begin_time is None or dt >= begin_time) and (end_time is None or dt <= end_time):
+                    retval[fields[0]].append((fields[2], dt, fields[4]))
 
         return dict(retval)
 
