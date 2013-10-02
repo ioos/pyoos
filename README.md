@@ -127,11 +127,17 @@ pip install pyoos
 Pyoos requires the following python libraries which will be downloaded and installed through `pip`:
 
 * Paegan>=0.9.9
+  * numpy>=1.7.0
+  * scipy
+  * netCDF4>=1.0.2
+  * Shapely>=1.2.15
+  * pytz
+  * python-dateutil>=1.5
 * OWSLib (install from git with `pip install git+http://github.com/geopython/OWSLib.git`)
 * requests
 * Fiona==0.16.1
 * beautifulsoup4==4.2.1
-* lxml==3.2.1
+* lxml>=3.2.0
 
 If your NetCDF4 and HDF5 libraries are in non-typical locations, you will need to pass the locations to the `pip` command:
 ```bash
