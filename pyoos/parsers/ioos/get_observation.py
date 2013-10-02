@@ -29,8 +29,8 @@ class IoosGetObservation(object):
                 continue
 
         if version == "1.0":
-            from pyoos.parsers.ioos.one.get_observation import IoosGetObservation_1_0
-            return super(IoosGetObservation, cls).__new__(IoosGetObservation_1_0, element=root)
+            from pyoos.parsers.ioos.one.get_observation import GetObservation as GO10
+            return super(IoosGetObservation, cls).__new__(GO10, element=root)
         else:
             raise ValueError("Unsupported IOOS version.  Supported: [1.0]")
 

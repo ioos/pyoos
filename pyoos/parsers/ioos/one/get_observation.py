@@ -19,9 +19,9 @@ namespaces = get_namespaces()
 def nspv(path):
     return nspath_eval(path, namespaces)
 
-class IoosGetObservation_1_0(IoosGetObservation):
+class GetObservation(IoosGetObservation):
     def __init__(self, element):
-        super(IoosGetObservation_1_0, self).__init__(element=element)
+        super(GetObservation, self).__init__(element=element)
 
         self.ioos_version = "1.0"
 
