@@ -1,9 +1,6 @@
-Shapely>=1.2.15
-OWSLib
+paegan>=0.9.9
+OWSLib>=0.8.2
 requests
-pytz
-python-dateutil>=2.1
-paegan>=0.9.7
 Fiona==0.16.1
 beautifulsoup4==4.2.1
 lxml==3.2.1

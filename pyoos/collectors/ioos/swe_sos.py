@@ -2,6 +2,7 @@ from pyoos.collectors.collector import Collector
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from owslib.sos import SensorObservationService as Sos
+from owslib.swe.sensor.sml import SensorML
 
 class IoosSweSos(Collector):
     def __init__(self, url, xml=None):
@@ -11,12 +12,12 @@ class IoosSweSos(Collector):
     def metadata(self, **kwargs):
         callback = kwargs.get("feature_name_callback", None) or str
         kwargs['outputFormat'] = 'text/xml;subtype="sensorML/1.0.1"'
-        
+
         responses = []
         if self.features is not None:
             for feature in self.features:
                 kwargs['procedure'] = callback(feature)
-                responses.append(IoosDescribeSensor(self.server.describe_sensor(**kwargs)))
+                responses.append(SensorML(self.server.describe_sensor(**kwargs)))
 
         return responses
 
@@ -42,7 +43,7 @@ class IoosSweSos(Collector):
             if isinstance(ops, basestring):
                 ops = [ops]
             params["observedProperties"] = ops
-        
+
         return params
 
     def collect(self, **kwargs):

@@ -3,7 +3,7 @@ import csv
 import StringIO
 from datetime import datetime
 
-from owslib.swe.sensor.sml import SystemMetadata
+from owslib.swe.sensor.sml import SensorML
 
 from pyoos.collectors.ndbc.ndbc_sos import NdbcSos
 
@@ -26,7 +26,7 @@ class NdbcSosTest(unittest.TestCase):
         self.c.features = ['41012']
         response = self.c.metadata()
         assert isinstance(response, list)
-        assert isinstance(response[0].systems[0], SystemMetadata)
+        assert isinstance(response[0], SensorML)
 
 
     def test_raw_ndbc_get_observation(self):

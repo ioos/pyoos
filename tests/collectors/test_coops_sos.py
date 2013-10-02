@@ -3,9 +3,10 @@ import csv
 import StringIO
 from datetime import datetime
 
-from owslib.swe.sensor.sml import SystemMetadata
+from owslib.swe.sensor.sml import SensorML
 
 from pyoos.collectors.coops.coops_sos import CoopsSos
+
 
 class CoopsSosTest(unittest.TestCase):
 
@@ -25,9 +26,7 @@ class CoopsSosTest(unittest.TestCase):
     def test_coops_describe_sensor(self):
         self.c.features = ['8454000']
         response = self.c.metadata()
-        assert isinstance(response, list)
-        assert isinstance(response[0].systems[0], SystemMetadata)
-
+        assert isinstance(response[0], SensorML)
 
     def test_raw_coops_get_observation(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
