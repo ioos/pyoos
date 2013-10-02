@@ -67,7 +67,7 @@ class CoopsSosTest(unittest.TestCase):
         assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
         assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.617"
         assert data[0]['vertical_position (m)'] == "1.064"
-        
+
 
     def test_raw_coops_get_observation_with_datum(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
@@ -89,4 +89,4 @@ class CoopsSosTest(unittest.TestCase):
         assert data[0]['datum_id'] == "urn:ogc:def:datum:epsg::5103"
         assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
         assert data[0]['water_surface_height_above_reference_datum (m)'] == "0.863"
-        assert data[0]['vertical_position (m)'] == "1.818"        
+        assert data[0]['vertical_position (m)'] == "1.818"

@@ -73,7 +73,7 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
         assert data[0]['depth (m)'] == ""
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1019.0"
-        
+
 
     def test_raw_ndbc_get_observation_no_stations(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
@@ -98,4 +98,3 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
         assert data[0]['depth (m)'] == ""
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1019.0"
-        

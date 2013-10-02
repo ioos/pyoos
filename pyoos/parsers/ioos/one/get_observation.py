@@ -61,7 +61,7 @@ class OmObservation(object):
             self.bbox = box(float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
         else:
             self.bbox = box(float(lower_left_corner[0]), float(lower_left_corner[1]), float(upper_right_corner[0]), float(upper_right_corner[1]))
-            
+
 
         # LOCATION
         location = self._root.find(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:location"))

@@ -8,7 +8,7 @@ class AwcRest(Collector):
         super(AwcRest, self).__init__()
         self.stations_url = 'http://weather.noaa.gov/data/nsd_cccc.txt'
         self.data_url     = 'http://www.aviationweather.gov/adds/dataserver_current/httpparam'
-        
+
     def get_stations(self):
         if self._features is None:
             r = requests.get(self.stations_url)
@@ -24,7 +24,7 @@ class AwcRest(Collector):
 
     def list_features(self):
         return self.features
-    
+
     def get_raw_response(self, **kwargs):
         r = []
         if ((self.bbox[3]-self.bbox[1]) * (self.bbox[2]-self.bbox[0])) > 4:
@@ -42,7 +42,7 @@ class AwcRest(Collector):
         else:
             r.append(requests.get(self.data_url, params=kwargs).text)
         return r
-        
+
     def setup_params(self, **kwargs):
         params = kwargs
         params["minLat"] = ''

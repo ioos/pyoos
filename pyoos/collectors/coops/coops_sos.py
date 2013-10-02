@@ -64,7 +64,7 @@ class CoopsSos(IoosSweSos):
                 raise ValueError("Not a supported data type.  Use list_datatypes() for options")
 
         if params.get("responseFormat", None) is None:
-            params["responseFormat"] = 'text/csv'            
+            params["responseFormat"] = 'text/csv'
 
         return params
 
