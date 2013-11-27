@@ -11,6 +11,7 @@ from paegan.cdm.dsg.collections.station_collection import StationCollection
 
 from pyoos.utils.etree import etree
 from pyoos.parsers.ioos.one.timeseries import TimeSeries
+from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 
 from owslib.swe.common import DataRecord
@@ -73,3 +74,12 @@ class SweIoosTest(unittest.TestCase):
         assert sorted(map(lambda x: x['standard'], first_members)) == sorted([  "http://mmisw.org/ont/cf/parameter/air_temperature",
                                                                                 "http://mmisw.org/ont/cf/parameter/wind_to_direction",
                                                                                 "http://mmisw.org/ont/cf/parameter/wind_speed"])
+
+    def test_timeseries_profile_single_station(self):
+        swe = open(resource_file('ioos_swe/SWE-SingleStation-TimeSeriesProfile_QC.xml')).read()
+        data_record = etree.fromstring(swe)
+        station = TimeSeriesProfile(data_record).feature
+
+        assert isinstance(station, Station)
+        assert station.location == "fiure"
+
