@@ -67,6 +67,7 @@ class ProfileCache(object):
             new_idx            = bisect_left(cur_points_z, point.z)
             new_point          = Point()
             new_point.location = sPoint(point)
+            new_point.time     = profile.time
             profile.elements.insert(new_idx, new_point)
             return new_point
 
@@ -148,7 +149,7 @@ class TimeSeriesProfile(object):
             self.feature = None
 
     def _parse_sensor_orientation(self, ori_el):
-        orientation = {#'srs':Crs(),    # @TODO
+        orientation = {#'srs':Crs(),    # @TODO (OWSLib cannot parse this Crs yet)
                        'platform_orientation': ori_el.content.get_by_name('platform_orientation').content.value,
                        'platform_pitch_angle': ori_el.content.get_by_name('platform_pitch_angle').content.value,
                        'platform_roll_angle': ori_el.content.get_by_name('platform_roll_angle').content.value

@@ -81,5 +81,45 @@ class SweIoosTest(unittest.TestCase):
         station = TimeSeriesProfile(data_record).feature
 
         assert isinstance(station, Station)
-        assert station.location == "fiure"
+
+        assert station.uid        == "urn:ioos:station:wmo:41001"
+        assert station.name       == "wmo_41001"
+        assert station.location.x == -75.415
+        assert station.location.y == 32.382
+        assert station.location.z == 0.5
+
+        # should have one profile collection returned
+        assert len(station.elements) == 1
+
+        # should have three profiles
+        profile_collection = station.elements[0]
+        assert len(profile_collection.elements) == 3
+        profile_collection.calculate_bounds()
+
+        # should all be at the same point
+        bounds = profile_collection.get_bbox()
+        assert isinstance(bounds, Point)
+        assert bounds.x == -75.415
+        assert bounds.y == 32.382
+
+        # time
+        time_range = profile_collection.get_time_range()
+        assert time_range[0].strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T00:00:00Z"
+        assert time_range[-1].strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T02:00:00Z"
+
+        # depth bounds
+        depth_range = profile_collection.get_depth_range()
+        assert depth_range[0] == -40.0
+        assert depth_range[-1] == -5.0
+
+        # spot check values
+        profile = profile_collection.elements[0]
+
+        assert profile.time.strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T00:00:00Z"
+        assert len(profile.elements) == 4
+        assert [e.location.z for e in profile.elements] == [-40, -20, -10, -5]
+
+        assert len(profile.elements[0].members) == 2
+        assert [m['name'] for m in profile.elements[0].members] == ['direction_of_sea_water_velocity', 'sea_water_speed']
+        assert [m['value'] for m in profile.elements[0].members] == [352.0, 9.6]
 
