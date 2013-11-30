@@ -7,6 +7,7 @@ import pytz
 from shapely.geometry import Point, box
 
 from paegan.cdm.dsg.features.station import Station
+from paegan.cdm.dsg.features.station_profile import StationProfile
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 
 from pyoos.utils.etree import etree
@@ -80,7 +81,7 @@ class SweIoosTest(unittest.TestCase):
         data_record = etree.fromstring(swe)
         station = TimeSeriesProfile(data_record).feature
 
-        assert isinstance(station, Station)
+        assert isinstance(station, StationProfile)
 
         assert station.uid        == "urn:ioos:station:wmo:41001"
         assert station.name       == "wmo_41001"
@@ -88,32 +89,28 @@ class SweIoosTest(unittest.TestCase):
         assert station.location.y == 32.382
         assert station.location.z == 0.5
 
-        # should have one profile collection returned
-        assert len(station.elements) == 1
-
         # should have three profiles
-        profile_collection = station.elements[0]
-        assert len(profile_collection.elements) == 3
-        profile_collection.calculate_bounds()
+        assert len(station.elements) == 3
+        station.calculate_bounds()
 
         # should all be at the same point
-        bounds = profile_collection.get_bbox()
+        bounds = station.get_bbox()
         assert isinstance(bounds, Point)
         assert bounds.x == -75.415
         assert bounds.y == 32.382
 
         # time
-        time_range = profile_collection.get_time_range()
+        time_range = station.get_time_range()
         assert time_range[0].strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T00:00:00Z"
         assert time_range[-1].strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T02:00:00Z"
 
         # depth bounds
-        depth_range = profile_collection.get_depth_range()
+        depth_range = station.get_depth_range()
         assert depth_range[0] == -40.0
         assert depth_range[-1] == -5.0
 
         # spot check values
-        profile = profile_collection.elements[0]
+        profile = station.elements[0]
 
         assert profile.time.strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T00:00:00Z"
         assert len(profile.elements) == 4

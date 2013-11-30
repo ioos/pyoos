@@ -7,7 +7,7 @@ from owslib.namespaces import Namespaces
 from shapely.geometry import Point as sPoint
 
 from paegan.cdm.dsg.member import Member
-from paegan.cdm.dsg.features.station import Station
+from paegan.cdm.dsg.features.station_profile import StationProfile
 from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.features.base.profile import Profile
 from paegan.cdm.dsg.collections.base.profile_collection import ProfileCollection
@@ -81,7 +81,7 @@ class TimeSeriesProfile(object):
         sensors = {}
 
         for station in stations_field.content.field:
-            s      = Station()
+            s      = StationProfile()
             s.name = station.name
             s.uid  = station.content.get_by_name("stationID").content.value
 
@@ -138,7 +138,7 @@ class TimeSeriesProfile(object):
 
         # sensor data is dict of station id -> profile collection
         for station_id, sensor_profile_data in sensor_data.iteritems():
-            stations[station_id].elements.append(sensor_profile_data)
+            stations[station_id].elements.extend(sensor_profile_data._elements)
 
         if len(stations) > 1:
             self.feature = StationCollection(elements=stations)
