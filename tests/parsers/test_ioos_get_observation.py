@@ -12,7 +12,7 @@ from paegan.cdm.dsg.collections.station_collection import StationCollection
 
 from pyoos.utils.etree import etree
 from pyoos.parsers.ioos.one.timeseries import TimeSeries
-from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile
+from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile, breakpoint
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 
 from owslib.swe.common import DataRecord
@@ -119,4 +119,11 @@ class SweIoosTest(unittest.TestCase):
         assert len(profile.elements[0].members) == 2
         assert [m['name'] for m in profile.elements[0].members] == ['direction_of_sea_water_velocity', 'sea_water_speed']
         assert [m['value'] for m in profile.elements[0].members] == [352.0, 9.6]
+
+        sensor = station.sensors['wmo_41001_sensor1']
+        assert 'sensor_orientation' in sensor
+        assert sensor['sensor_orientation']['X']['name'] == 'platform_pitch_angle'
+        assert sensor['sensor_orientation']['Y']['name'] == 'platform_roll_angle'
+        assert sensor['sensor_orientation']['Z']['name'] == 'platform_orientation'
+        
 
