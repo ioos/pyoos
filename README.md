@@ -1,5 +1,7 @@
 # Pyoos - A Python library for collecting Met/Ocean observations
 
+[![Build Status](https://travis-ci.org/asascience-open/pyoos.png?branch=master)](https://travis-ci.org/asascience-open/pyoos)
+
 *Note: Pyoos is very much a work in progress and should considered experimental until a 1.0 release is made!*
 
 Pyoos attempts to fill the need for a high level data collection library for met/ocean data publically available through many different websites and webservices.
