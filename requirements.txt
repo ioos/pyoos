@@ -1,5 +1,5 @@
 paegan>=0.9.9
-OWSLib>=0.8-dev
+-e git://github.com/geopython/OWSLib@ca5021bbaf8c7ef84db31088ccc6c1f8d4ca3b8f#egg=OWSLib
 requests
 Fiona>=0.16.1
 beautifulsoup4>=4.2.1
