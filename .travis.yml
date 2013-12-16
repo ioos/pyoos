@@ -4,6 +4,7 @@ python:
 virtualenv:
   system_site_packages: true
 before_install:
+  - sudo apt-get update
   - sudo apt-get install -qq python-numpy python-scipy libhdf5-serial-dev libgdal1-dev libblas-dev liblapack-dev gfortran
 install:
   - pip install git+https://github.com/geopython/OWSLib.git
