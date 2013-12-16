@@ -161,6 +161,8 @@ Submit a PR with your use case!
 
 
 ## Troubleshooting
+There is a Google Groups mailing list for pyoos: https://groups.google.com/forum/#!forum/pyoos
+
 If you are having trouble getting any of the pyoos functionality to work, try running the tests:
 
 ```bash
