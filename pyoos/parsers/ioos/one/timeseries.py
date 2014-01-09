@@ -39,7 +39,7 @@ class TimeSeries(object):
             # Location
             vector  = station.content.get_by_name("platformLocation").content
             srss = vector.referenceFrame.split("&amp;")
-            s.set_property("horizonal_srs", Crs(srss[0]))
+            s.set_property("horizontal_srs", Crs(srss[0]))
             s.set_property("vertical_srs",  Crs(srss[-1].replace("2=http:", "http:")))
             s.set_property("localFrame",    vector.localFrame)
 
@@ -57,7 +57,7 @@ class TimeSeries(object):
                 if location_quantity.referenceFrame == "#%s_frame" % s.name:
                     # Uses the station as reference frame
                     height          = z + location_quantity.value
-                    horizontal_srs  = s.get_property("horizonal_srs")
+                    horizontal_srs  = s.get_property("horizontal_srs")
                     vertical_srs    = s.get_property("vertical_srs")
                 else:
                     # Uses its own height
