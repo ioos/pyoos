@@ -47,7 +47,7 @@ class TimeSeries(object):
             lon = vector.get_by_name("longitude").content.value
             z   = vector.get_by_name("height").content.value
 
-            loc = [lat, lon]
+            loc = [lon, lat]
             if z:
                 loc.append(z)
 
