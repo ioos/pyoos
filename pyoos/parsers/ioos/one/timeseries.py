@@ -39,9 +39,21 @@ class TimeSeries(object):
             # Location
             vector  = station.content.get_by_name("platformLocation").content
             srss = vector.referenceFrame.split("&amp;")
-            s.set_property("horizontal_srs", Crs(srss[0]))
-            s.set_property("vertical_srs",  Crs(srss[-1].replace("2=http:", "http:")))
-            s.set_property("localFrame",    vector.localFrame)
+            hsrs = None
+            try:
+                hsrs = Crs(srss[0])
+            except ValueError:
+                pass
+
+            vsrs = None
+            try:
+                vsrs = Crs(srss[-1].replace("2=http:", "http:"))
+            except ValueError:
+                pass
+
+            s.set_property("horizontal_srs", hsrs)
+            s.set_property("vertical_srs",   vsrs)
+            s.set_property("localFrame",     vector.localFrame)
 
             lat = vector.get_by_name("latitude").content.value
             lon = vector.get_by_name("longitude").content.value
@@ -69,9 +81,18 @@ class TimeSeries(object):
                     # Uses its own height
                     if location_quantity.value:
                         height      = location_quantity.value
-                    srss            = sensor.referenceFrame.split("&amp;")
-                    horizontal_srs  = Crs(srss[0])
-                    vertical_srs    = Crs(srss[-1].replace("2=http:", "http:"))
+                    horizontal_srs  = None
+                    vertical_srs    = None
+                    if hasattr(sensor, 'referenceFrame'):
+                        srss            = sensor.referenceFrame.split("&amp;")
+                        try:
+                            horizontal_srs = Crs(srss[0])
+                        except ValueError:
+                            pass
+                        try:
+                            vertical_srs = Crs(srss[-1].replace("2=http:", "http:"))
+                        except ValueError:
+                            pass
 
                 loc = [s.location.x, s.location.y]
                 if height:
