@@ -11,5 +11,5 @@ install:
   - pip install -r requirements.txt
 script: py.test
 notifications:
-    flowdock: 2dd835dfbdbc64986ba043fffa654836
+    flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
 
