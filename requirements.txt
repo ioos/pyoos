@@ -1,5 +1,5 @@
-paegan>=0.9.9
-OWSLib>=0.8-dev
+paegan>=1.1
+OWSLib>=0.8.3
 requests
 Fiona>=0.16.1
 beautifulsoup4>=4.2.1
