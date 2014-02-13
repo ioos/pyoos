@@ -12,7 +12,7 @@ from paegan.cdm.dsg.collections.station_collection import StationCollection
 
 from pyoos.utils.etree import etree
 from pyoos.parsers.ioos.one.timeseries import TimeSeries
-from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile, breakpoint
+from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 
 from owslib.swe.common import DataRecord
