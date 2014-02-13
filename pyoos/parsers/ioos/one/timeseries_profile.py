@@ -96,7 +96,11 @@ class TimeSeriesProfile(object):
             lon = vector.get_by_name("longitude").content.value
             z   = vector.get_by_name("height").content.value
 
-            s.location = sPoint(lon, lat, z)
+            loc = [lon, lat]
+            if z:
+                loc.append(z)
+
+            s.location = sPoint(*loc)
 
             # sensors
             for sensor in station.content.get_by_name("sensors").content.field:
@@ -169,10 +173,14 @@ class TimeSeriesProfile(object):
         lon            = vector.get_by_name("longitude").content.value
         z              = vector.get_by_name("height").content.value
 
+        loc = [lon, lat]
+        if z:
+            loc.append(z)
+
         location = {'horizontal_srs' : horizontal_srs,
                     'vertical_srs'   : vertical_srs,
                     'localFrame'     : local_frame,
-                    'point'          : sPoint(lon, lat, z)}
+                    'point'          : sPoint(*loc)}
 
         return location
 
