@@ -88,9 +88,21 @@ class TimeSeriesProfile(object):
             # Location
             vector  = station.content.get_by_name("platformLocation").content
             srss = vector.referenceFrame.split("&amp;")
-            s.set_property("horizontal_srs", Crs(srss[0]))
-            s.set_property("vertical_srs",  Crs(srss[-1].replace("2=http:", "http:")))
-            s.set_property("localFrame",    vector.localFrame)
+            hsrs = None
+            try:
+                hsrs = Crs(srss[0])
+            except ValueError:
+                pass
+
+            vsrs = None
+            try:
+                vsrs = Crs(srss[-1].replace("2=http:", "http:"))
+            except ValueError:
+                pass
+
+            s.set_property("horizontal_srs", hsrs)
+            s.set_property("vertical_srs",   vsrs)
+            s.set_property("localFrame",     vector.localFrame)
 
             lat = vector.get_by_name("latitude").content.value
             lon = vector.get_by_name("longitude").content.value
@@ -165,10 +177,20 @@ class TimeSeriesProfile(object):
         vector         = loc_el.content
 
         srss           = vector.referenceFrame.split("&amp;")
-        horizontal_srs = Crs(srss[0])
-        vertical_srs   = Crs(srss[-1].replace("2                       = http:", "http:"))
-        local_frame    = vector.localFrame
 
+        hsrs = None
+        try:
+            hsrs = Crs(srss[0])
+        except ValueError:
+            pass
+
+        vsrs = None
+        try:
+            vsrs = Crs(srss[-1].replace("2=http:", "http:"))
+        except ValueError:
+            pass
+
+        local_frame    = vector.localFrame
         lat            = vector.get_by_name("latitude").content.value
         lon            = vector.get_by_name("longitude").content.value
         z              = vector.get_by_name("height").content.value
@@ -177,8 +199,8 @@ class TimeSeriesProfile(object):
         if z:
             loc.append(z)
 
-        location = {'horizontal_srs' : horizontal_srs,
-                    'vertical_srs'   : vertical_srs,
+        location = {'horizontal_srs' : hsrs,
+                    'vertical_srs'   : vsrs,
                     'localFrame'     : local_frame,
                     'point'          : sPoint(*loc)}
 
