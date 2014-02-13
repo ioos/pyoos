@@ -56,14 +56,8 @@ class NetworkDS(DescribeSensor):
 
         self.id             = get_named_by_definition(self.system.get_identifiers_by_name("networkID"), "http://mmisw.org/ont/ioos/definition/networkID")
 
-        # Individual procedures
-        self.procedures     = []
-        try:
-            # Using xlink:href to point to individual member procedures
-            self.procedures = sorted(list(set([testXMLAttribute(comp, nsp("xlink:title")) for comp in self.system.components])))
-        except AttributeError:
-            # Verbose method of describing members.  Pull out each individual procedure
-            self.procedures = sorted(list(set([testXMLValue(comp.find(".//" + nsp("sml101:identifier[@name='stationID']/sml101:Term/sml101:value"))) for comp in self.system.components])))
+        # Verbose method of describing members.  Pull out each individual procedure
+        self.procedures = sorted(list(set([testXMLValue(comp.find(".//" + nsp("sml101:identifier[@name='stationID']/sml101:Term/sml101:value"))) for comp in self.system.components])))
 
 class StationDS(DescribeSensor):
     def __init__(self, element):
@@ -72,14 +66,8 @@ class StationDS(DescribeSensor):
         self.id            = get_named_by_definition(self.system.get_identifiers_by_name("stationID"), "http://mmisw.org/ont/ioos/definition/stationID")
         self.platformType  = get_named_by_definition(self.system.get_classifiers_by_name("platformType"), "http://mmisw.org/ont/ioos/definition/platformType")
 
-        # Variables
-        self.variables     = []
-        try:
-            # Using xlink:href to point to individual member sensors
-            self.variables = sorted(list(set([testXMLAttribute(comp, nsp("xlink:title")) for comp in self.system.components])))
-        except AttributeError:
-            # Verbose method of describing members.  Pull out each individual variable definition
-            self.variables = sorted(list(set(itertools.chain.from_iterable([[testXMLAttribute(quan, "definition") for quan in comp.findall(".//" + nsp("swe101:Quantity"))] for comp in self.system.components]))))
+        # Verbose method of describing members.  Pull out each individual variable definition
+        self.variables = sorted(list(set(itertools.chain.from_iterable([[testXMLAttribute(quan, "definition") for quan in comp.findall(".//" + nsp("swe101:Quantity"))] for comp in self.system.components]))))
 
 class SensorDS(DescribeSensor):
     def __init__(self, element):

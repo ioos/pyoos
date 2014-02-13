@@ -1,0 +1,15 @@
+language: python
+python:
+  - "2.7"
+virtualenv:
+  system_site_packages: true
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -qq python-numpy python-scipy libhdf5-serial-dev libgdal1-dev libblas-dev liblapack-dev gfortran
+install:
+  - pip install git+https://github.com/geopython/OWSLib.git
+  - pip install -r requirements.txt
+script: py.test
+notifications:
+    flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
+

@@ -24,9 +24,10 @@ class USGSTest(unittest.TestCase):
         assert station.location.y == 46.34077908
         assert station.location.z == 0
         
-        # Apply time fitler as well
-        starting = datetime.utcnow() - timedelta(hours=6)
-        self.c.filter(start=starting)
+        # Apply time filter as well
+        starting = datetime(2013, 12, 31, 0, 0, 0)
+        ending = starting + timedelta(hours=6)
+        self.c.filter(start=starting, end=ending)
         collection = self.c.collect()
         collection.calculate_bounds()
 

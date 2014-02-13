@@ -60,7 +60,7 @@ class WqpTest(unittest.TestCase):
         assert org.locations[0].id == u"21IOWA-10070005"
         assert org.locations[0].name == u"Cedar River Upstream of Waterloo/Cedar Falls"
         assert org.locations[0].type == u"River/Stream"
-        assert org.locations[0].description == u"Below the dam of Old Highway 218 in Cedar Falls.¿Upstream City Site."
+        assert org.locations[0].description.startswith(u"Below the dam of Old Highway 218 in Cedar Falls")
         assert org.locations[0].huc == u"07080205"
         assert org.locations[0].latitude == u"42.5392"
         assert org.locations[0].longitude == u"-92.4495"

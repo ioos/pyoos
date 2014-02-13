@@ -47,8 +47,30 @@ class IoosSweSos(Collector):
         return params
 
     def collect(self, **kwargs):
-        kwargs["responseFormat"] = 'text/xml;subtype="om/1.0.0/profiles/ioos_sos/1.0"'
-        return IoosGetObservation(self.raw(**kwargs)).feature
+        # there is an unfortunate difference in how 52N and ncSOS handle the response format.
+        # 52N expects subtype, ncSOS expects schema.
+        # consult the observed properties and getcaps to figure out which should be used if none passed
+        if 'responseFormat' not in kwargs:
+
+            # iterate offerings and see if we need to change to subtype
+            off_dict = {off.name:off for off in self.server.offerings}
+
+            response_format = None
+
+            for offering in kwargs.get('offerings', []):
+                if not offering in off_dict:
+                    continue
+
+                ioos_formats = [rf for rf in off_dict[offering].response_formats if 'ioos_sos/1.0' in rf]
+                if not len(ioos_formats):
+                    raise StandardError("No ioos_sos/1.0 response format found for offering %s" % offering)
+
+                if response_format != ioos_formats[0]:
+                    response_format = ioos_formats[0]
+
+            kwargs["responseFormat"] = response_format
+
+        return IoosGetObservation(self.raw(**kwargs)).observations
 
     def raw(self, **kwargs):
         params = self.setup_params(**kwargs)

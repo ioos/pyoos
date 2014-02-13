@@ -46,7 +46,8 @@ class OmObservation(object):
 
         # Can't use a full Xpath expression, so iterate over all metaDataProperties to find the IOOS FeatureType
         self.feature_type = None
-        ft = self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:name"))
+        ft = self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:GenericMetaData/gml311:name"))
+        ft.extend(self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:name")))
         ft_def = "http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.6/cf-conventions.html#discrete-sampling-geometries"
         for f in ft:
             if testXMLAttribute(f,"codeSpace") == ft_def:

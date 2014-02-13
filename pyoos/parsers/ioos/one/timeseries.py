@@ -39,34 +39,66 @@ class TimeSeries(object):
             # Location
             vector  = station.content.get_by_name("platformLocation").content
             srss = vector.referenceFrame.split("&amp;")
-            s.set_property("horizonal_srs", Crs(srss[0]))
-            s.set_property("vertical_srs",  Crs(srss[-1].replace("2=http:", "http:")))
-            s.set_property("localFrame",    vector.localFrame)
+            hsrs = None
+            try:
+                hsrs = Crs(srss[0])
+            except ValueError:
+                pass
+
+            vsrs = None
+            try:
+                vsrs = Crs(srss[-1].replace("2=http:", "http:"))
+            except ValueError:
+                pass
+
+            s.set_property("horizontal_srs", hsrs)
+            s.set_property("vertical_srs",   vsrs)
+            s.set_property("localFrame",     vector.localFrame)
 
             lat = vector.get_by_name("latitude").content.value
             lon = vector.get_by_name("longitude").content.value
             z   = vector.get_by_name("height").content.value
 
-            s.location = sPoint(lon, lat, z)
+            loc = [lon, lat]
+            if z:
+                loc.append(z)
+
+            s.location = sPoint(*loc)
 
             # Sensors
             for sensor in station.content.get_by_name("sensors").content.field:
                 name        = sensor.name
                 uri         = sensor.content.get_by_name("sensorID").content.value
+                height      = None
                 location_quantity = sensor.content.get_by_name("height").content
                 if location_quantity.referenceFrame == "#%s_frame" % s.name:
                     # Uses the station as reference frame
-                    height          = z + location_quantity.value
-                    horizontal_srs  = s.get_property("horizonal_srs")
+                    if location_quantity.value and z:
+                        height      = z + location_quantity.value
+                    horizontal_srs  = s.get_property("horizontal_srs")
                     vertical_srs    = s.get_property("vertical_srs")
                 else:
                     # Uses its own height
-                    height          = location_quantity.value
-                    srss            = sensor.referenceFrame.split("&amp;")
-                    horizontal_srs  = Crs(srss[0])
-                    vertical_srs    = Crs(srss[-1].replace("2=http:", "http:"))
+                    if location_quantity.value:
+                        height      = location_quantity.value
+                    horizontal_srs  = None
+                    vertical_srs    = None
+                    if hasattr(sensor, 'referenceFrame'):
+                        srss            = sensor.referenceFrame.split("&amp;")
+                        try:
+                            horizontal_srs = Crs(srss[0])
+                        except ValueError:
+                            pass
+                        try:
+                            vertical_srs = Crs(srss[-1].replace("2=http:", "http:"))
+                        except ValueError:
+                            pass
 
-                location        = sPoint(s.location.x, s.location.y, height)
+                loc = [s.location.x, s.location.y]
+                if height:
+                    loc.append(height)
+
+                location            = sPoint(*loc)
 
                 sensors[name] = {   'station'           : s.uid,
                                     'name'              : name,
