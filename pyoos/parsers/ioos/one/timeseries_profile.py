@@ -165,11 +165,15 @@ class TimeSeriesProfile(object):
             self.feature = None
 
     def _parse_sensor_orientation(self, ori_el):
-        orientation = {#'srs':Crs(),    # @TODO (OWSLib cannot parse this Crs yet)
-                       'platform_orientation': ori_el.content.get_by_name('platform_orientation').content.value,
-                       'platform_pitch_angle': ori_el.content.get_by_name('platform_pitch_angle').content.value,
-                       'platform_roll_angle': ori_el.content.get_by_name('platform_roll_angle').content.value
-                       }
+        #'srs':Crs(),    # @TODO (OWSLib cannot parse this Crs yet)
+        orientation = {}
+        for coord in ori_el.content.coordinate:
+            orientation[coord.axisID] = {
+                'name' : coord.name,
+                'value' : coord.value,
+                'axis' : coord.axisID,
+                'uom' : coord.uom
+            }
 
         return orientation
 
