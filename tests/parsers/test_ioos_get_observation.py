@@ -106,15 +106,15 @@ class SweIoosTest(unittest.TestCase):
 
         # depth bounds
         depth_range = station.get_depth_range()
-        assert depth_range[0] == -40.0
-        assert depth_range[-1] == -5.0
+        assert depth_range[0] == -39.5
+        assert depth_range[-1] == -4.5
 
         # spot check values
         profile = station.elements[0]
 
         assert profile.time.strftime("%Y-%m-%dT%H:%M:%SZ") == "2009-05-23T00:00:00Z"
         assert len(profile.elements) == 4
-        assert [e.location.z for e in profile.elements] == [-40, -20, -10, -5]
+        assert [e.location.z for e in profile.elements] == [-39.5, -19.5, -9.5, -4.5]
 
         assert len(profile.elements[0].members) == 2
         assert [m['name'] for m in profile.elements[0].members] == ['direction_of_sea_water_velocity', 'sea_water_speed']

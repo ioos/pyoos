@@ -131,7 +131,7 @@ class TimeSeriesProfile(object):
                 # location
                 loc_el = sensor.content.get_by_name("sensorLocation")
                 if loc_el:
-                    location = self._parse_location(loc_el)
+                    location = self._parse_location(loc_el, s.location)
                     sensors[name]['location'] = location
 
                 # profile bins
@@ -173,7 +173,7 @@ class TimeSeriesProfile(object):
 
         return orientation
 
-    def _parse_location(self, loc_el):
+    def _parse_location(self, loc_el, station_point):
         vector         = loc_el.content
 
         srss           = vector.referenceFrame.split("&amp;")
@@ -198,6 +198,8 @@ class TimeSeriesProfile(object):
         loc = [lon, lat]
         if z:
             loc.append(z)
+        else:
+            loc.append(station_point.z)
 
         location = {'horizontal_srs' : hsrs,
                     'vertical_srs'   : vsrs,
