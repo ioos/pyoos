@@ -186,13 +186,14 @@ class TimeSeries(object):
                 i += 1
 
             pt.members = members
+            pt.location = stations[sensors[sensor_key]['station']].location
             sensors[sensor_key]['values'].append(pt)
-           
+
         for k,v in stations.iteritems():
             for sk, sv in sensors.iteritems():
                 # Match on station uid
                 if sv['station'] == k:
-                    v.elements = sv['values']
+                    v.elements = self._merge_points(v.elements or [], sv['values'])
 
         if len(stations) > 1:
             self.feature = StationCollection(elements=stations)
@@ -200,4 +201,22 @@ class TimeSeries(object):
             self.feature = next(stations.itervalues())
         else:
             print "No stations found!"
+
+    def _merge_points(self, pc1, pc2):
+        """
+        Merges points based on time/location.
+
+        @TODO: move to paegan, SO SLOW
+        """
+        res = pc1[:]
+
+        for p in pc2:
+            for sp in res:
+                if sp.time == p.time and (sp.location is None or (sp.location.equals(p.location))):
+                    sp.members.extend(p.members)
+                    break
+            else:
+                res.append(p)
+
+        return res
 
