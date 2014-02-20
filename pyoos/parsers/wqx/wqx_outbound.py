@@ -103,10 +103,10 @@ class WqxOutbound(object):
             self.failed = True
         else:
             for org in orgs:
-                self.organizations.append(WqxOrganzation(org, wqx_ns))
+                self.organizations.append(WqxOrganization(org, wqx_ns))
 
 
-class WqxOrganzation(object):
+class WqxOrganization(object):
     """
         An WQX formatted <wqx:Organization> block
     """
