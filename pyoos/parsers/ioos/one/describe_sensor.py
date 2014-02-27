@@ -38,7 +38,7 @@ class DescribeSensor(IoosDescribeSensor):
         # Location
         try:
             self.location = self.system.location[0]
-        except TypeError: # No location exists
+        except (TypeError, IndexError): # No location exists
             self.location = None
 
         # Timerange
