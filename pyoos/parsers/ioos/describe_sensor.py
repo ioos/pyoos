@@ -46,4 +46,4 @@ class IoosDescribeSensor(object):
                     except AssertionError:
                         raise ValueError("Could not determine if this was a Network, Station, or Sensor SensorML document")
         else:
-            raise ValueError("Unsupported IOOS version.  Supported: [1.0]")
+            raise ValueError("Unsupported IOOS version (%s).  Supported: [1.0]" % version)
