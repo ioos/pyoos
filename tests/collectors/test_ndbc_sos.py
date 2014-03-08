@@ -24,7 +24,7 @@ class NdbcSosTest(unittest.TestCase):
 
     def test_ndbc_describe_sensor(self):
         self.c.features = ['41012']
-        response = self.c.metadata()
+        response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1"')
         assert isinstance(response, list)
         assert isinstance(response[0], SensorML)
 

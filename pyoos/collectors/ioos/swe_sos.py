@@ -9,15 +9,25 @@ class IoosSweSos(Collector):
         super(IoosSweSos,self).__init__()
         self.server = Sos(url, xml=xml)
 
-    def metadata(self, **kwargs):
-        callback = kwargs.get("feature_name_callback", None) or str
-        kwargs['outputFormat'] = 'text/xml;subtype="sensorML/1.0.1"'
+    def metadata(self, output_format=None, feature_name_callback=None, **kwargs):
+        """
+        Gets SensorML objects for all procedures in your filtered features.
+
+        You should override the default output_format for servers that do not
+        respond properly.
+        """
+        callback = feature_name_callback or str
+        if output_format is None:
+            output_format = 'text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"'
 
         responses = []
         if self.features is not None:
             for feature in self.features:
-                kwargs['procedure'] = callback(feature)
-                responses.append(SensorML(self.server.describe_sensor(**kwargs)))
+                ds_kwargs = kwargs.copy()
+                ds_kwargs.update({'outputFormat': output_format,
+                                  'procedure'   : callback(feature)})
+
+                responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
 
         return responses
 

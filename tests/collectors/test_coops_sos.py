@@ -25,7 +25,7 @@ class CoopsSosTest(unittest.TestCase):
 
     def test_coops_describe_sensor(self):
         self.c.features = ['8454000']
-        response = self.c.metadata()
+        response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1"')
         assert isinstance(response[0], SensorML)
 
     def test_raw_coops_get_observation(self):
