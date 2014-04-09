@@ -8,9 +8,12 @@ Pyoos attempts to fill the need for a high level data collection library for met
 
 Pyoos will collect and parse the following data services into the [Paegan](https://github.com/asascience-open/paegan#paegan---the-python-cdm-for-metocean-data) Discrete Geometry CDM:
 
+* IOOS SWE SOS 1.0 Services
+  * ex. [NcSOS](https://github.com/asascience-open/ncsos) instance: [sos.maracoos.org/stable/sos/wflow700-agg.ncml](http://sos.maracoos.org/stable/sos/wflow700-agg.ncml)
+  * ex. [IOOS 52N](http://ioossos.axiomalaska.com/) instance: [ioossos.axiomalaska.com/52n-sos-ioos-stable](http://ioossos.axiomalaska.com/52n-sos-ioos-stable/)
 * NERRS Observations - SOAP
-* NDBC Observations - IOOS SWE SOS 1.0
-* CO-OPS Observations - IOOS SWE SOS 1.0
+* NDBC Observations - SOS
+* CO-OPS Observations - SOS
 * STORET Water Quality - WqxOutbound via REST (waterqualitydata.us)
 * USGS NWIS Water Quality - WqxOutbound via REST (waterqualitydata.us)
 * USGS Instantaneous Values - WaterML via REST
