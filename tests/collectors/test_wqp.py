@@ -16,12 +16,6 @@ class WqpTest(unittest.TestCase):
         <WQX xmlns="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/ http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/index.xsd">
             <Organization>
                 <OrganizationDescription>
-                    <OrganizationIdentifier>ARS</OrganizationIdentifier>
-                    <OrganizationFormalName>Agricultural Research Service</OrganizationFormalName>
-                </OrganizationDescription>
-            </Organization>
-            <Organization>
-                <OrganizationDescription>
                     <OrganizationIdentifier>21IOWA</OrganizationIdentifier>
                     <OrganizationFormalName>Iowa Dept. of  Natural Resources</OrganizationFormalName>
                 </OrganizationDescription>
@@ -56,7 +50,7 @@ class WqpTest(unittest.TestCase):
         self.c.filter(features=["21IOWA-10070005"])
         meta, data = self.c.raw()
 
-        org = WqxOutbound(meta).organizations[1]
+        org = WqxOutbound(meta).organizations[0]
 
         # OrganizationDescription
         assert org.description.name == u"Iowa Dept. of  Natural Resources"
@@ -82,7 +76,7 @@ class WqpTest(unittest.TestCase):
         meta, data = self.c.raw()
         
         # OrganizationDescription
-        org = WqxOutbound(data).organizations[1]
+        org = WqxOutbound(data).organizations[0]
         assert org.description.name == u"Iowa Dept. of  Natural Resources"
         assert org.description.id == u"21IOWA"
 
