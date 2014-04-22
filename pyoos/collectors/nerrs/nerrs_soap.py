@@ -110,8 +110,8 @@ class NerrsSoap(Collector):
                     # Not a date range query
                     soap_env = self._build_exportSingleParamXMLNew(f)
                 
-                if soap_env is not None:    
-                    response = self._makesoap(soap_env)                
+                if soap_env is not None:
+                    response = self._makesoap(soap_env)
                     results[f] = etree.tostring(response)
 
             return results
@@ -125,6 +125,7 @@ class NerrsSoap(Collector):
             <mindate xsi:type="xsd:string">05/29/2013</mindate>
             <maxdate xsi:type="xsd:string">05/31/2013</maxdate>
             <param xsi:type="xsd:string">WSpd,WDir</param>
+            <wildcard xsi:type="xsd:string">123</wildcard>
         </exportAllParamsDateRangeXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
@@ -159,6 +160,7 @@ class NerrsSoap(Collector):
             <station_code xsi:type="xsd:string">FILLME</station_code>
             <recs xsi:type="xsd:string">FILLME</recs>
             <param xsi:type="xsd:string">FILLME</param>
+            <wildcard xsi:type="xsd:string">123</wildcard>
         </exportSingleParamXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
