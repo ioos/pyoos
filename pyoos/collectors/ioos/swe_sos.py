@@ -34,12 +34,8 @@ class IoosSweSos(Collector):
     def setup_params(self, **kwargs):
         params = kwargs
 
-        # TODO: BBOX needs to be implemented as an OGC Filter.
-        # This page has a good example: http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/index.jsp
-        # Click on "Collection" in the POST example to see what it should look like.
-        # Requires changing from GET to POST...
         if self.bbox is not None:
-            print "BBOX requests for IOOS SWE SOS services are not yet implemented"
+            params["featureOfInterest"] = "BBOX:%s,%s,%s,%s" %(self.bbox[0],self.bbox[1],self.bbox[2],self.bbox[3])
 
         if self.start_time is not None:
             params["eventTime"] = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
