@@ -2,6 +2,7 @@ from collections import defaultdict
 from itertools import groupby
 from dateutil.parser import parser
 import time
+import pytz
 
 from paegan.cdm.dsg.member import Member
 from paegan.cdm.dsg.features.station import Station
@@ -113,7 +114,7 @@ class HadsParser(object):
 
             fields = line.split("|")[0:-1]
             if var_filter is None or fields[2] in var_filter:
-                dt = p.parse(fields[3])
+                dt = p.parse(fields[3]).replace(tzinfo=pytz.utc)
                 if (begin_time is None or dt >= begin_time) and (end_time is None or dt <= end_time):
                     retval[fields[0]].append((fields[2], dt, fields[4]))
 
