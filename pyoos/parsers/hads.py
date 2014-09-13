@@ -9,6 +9,8 @@ from paegan.cdm.dsg.features.station import Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.features.base.point import Point
 from shapely.geometry import Point as sPoint
+from numpy import nan as npNan
+
 
 class HadsParser(object):
 
@@ -116,7 +118,8 @@ class HadsParser(object):
             if var_filter is None or fields[2] in var_filter:
                 dt = p.parse(fields[3]).replace(tzinfo=pytz.utc)
                 if (begin_time is None or dt >= begin_time) and (end_time is None or dt <= end_time):
-                    retval[fields[0]].append((fields[2], dt, fields[4]))
+                    value = fields[4] if fields[4] != 'NaN' else npNan
+                    retval[fields[0]].append((fields[2], dt, value))
 
         return dict(retval)
 
