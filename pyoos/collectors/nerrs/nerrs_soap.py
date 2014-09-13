@@ -5,11 +5,11 @@ from owslib.util import testXMLValue
 
 from shapely.geometry import Point, box
 import requests
-from copy import copy  # Note: this is never used
+from copy import copy
 
 class NerrsSoap(Collector):
     def __init__(self, **kwargs):
-        super(NerrsSoap, self).__init__()
+        super(NerrsSoap,self).__init__()
         self.wsdl_url = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
         self.stations = self.get_stations()
         
@@ -73,15 +73,12 @@ class NerrsSoap(Collector):
             s = self.get_station(feature)
             return sorted([v for v in list(set(s['Params_Reported'].split(","))) if v not in ignore_vars], key=str.lower)
         
-    def collect(self, wildcard=None):
-        # 'wildcard' is a token-based optional access mechanism
-        results = self.raw(wildcard=wildcard)
+    def collect(self):
+        results = self.raw()
         return NerrsToPaegan(results, nerrs_stations=self.stations).feature
 
     def raw(self, **kwargs):
-        # 'wildcard' is a token-based optional access mechanism
-        wildcard = kwargs.get("wildcard")
-        
+
         # These are the features we will actually query against
         query_features = []
 
@@ -108,34 +105,30 @@ class NerrsSoap(Collector):
             for f in query_features:
                 if self.start_time is not None and self.end_time is not None:
                     # Date range query
-                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f, wildcard)
+                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f)
                 else:
                     # Not a date range query
-                    soap_env = self._build_exportSingleParamXMLNew(f, wildcard)
+                    soap_env = self._build_exportSingleParamXMLNew(f)
                 
-                if soap_env is not None:
-                    response = self._makesoap(soap_env)
+                if soap_env is not None:    
+                    response = self._makesoap(soap_env)                
                     results[f] = etree.tostring(response)
 
             return results
 
         return None
 
-    def _build_exportAllParamsDateRangeXMLNew(self, feature, wildcard):
+    def _build_exportAllParamsDateRangeXMLNew(self, feature):
         xml_str = """
         <exportAllParamsDateRangeXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">owcowmet</station_code>
             <mindate xsi:type="xsd:string">05/29/2013</mindate>
             <maxdate xsi:type="xsd:string">05/31/2013</maxdate>
             <param xsi:type="xsd:string">WSpd,WDir</param>
-            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportAllParamsDateRangeXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
 
-        if wildcard is not None:
-            xml_obj.find(".//wildcard").text = wildcard
-        
         xml_obj.find(".//mindate").text = self.start_time.strftime('%m/%d/%Y')
         xml_obj.find(".//maxdate").text = self.end_time.strftime('%m/%d/%Y')
 
@@ -160,20 +153,16 @@ class NerrsSoap(Collector):
         return xml_obj
 
 
-    def _build_exportSingleParamXMLNew(self, feature, wildcard):
+    def _build_exportSingleParamXMLNew(self, feature):
         xml_str = """
         <exportSingleParamXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">FILLME</station_code>
             <recs xsi:type="xsd:string">FILLME</recs>
             <param xsi:type="xsd:string">FILLME</param>
-            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportSingleParamXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
 
-        if wildcard is not None:
-            xml_obj.find(".//wildcard").text = wildcard
-        
         # Set parameters
         feature_vars = self.list_variables(feature=feature)
         if len(feature_vars) == 0:
