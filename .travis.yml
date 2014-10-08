@@ -1,14 +1,32 @@
 language: python
 python:
   - "2.7"
-virtualenv:
-  system_site_packages: true
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install -qq python-numpy python-scipy libhdf5-serial-dev libgdal1-dev libblas-dev liblapack-dev gfortran
+  # Install miniconda
+  # -----------------
+  - export CONDA_BASE=http://repo.continuum.io/miniconda/Miniconda
+  - if [[ "$TRAVIS_PYTHON_VERSION" == 2* ]]; then
+      wget ${CONDA_BASE}-3.7.0-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget ${CONDA_BASE}3-3.7.0-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+
+  # Create the basic testing environment
+  # ------------------------------------
+  - conda config --set always_yes yes --set changeps1 no
+  - conda config --set show_channel_urls True
+  - conda update --quiet conda
+  - ENV_NAME='test-environment'
+  - conda create --quiet -n $ENV_NAME python=$TRAVIS_PYTHON_VERSION
+  - source activate $ENV_NAME
+
 install:
-  - pip install git+https://github.com/geopython/OWSLib.git
-  - pip install -r requirements.txt
+  # Customise the testing environment
+  # ---------------------------------
+  - conda install --channel https://conda.binstar.org/rsignell --file requirements.txt
+  - conda install pytest
 script: py.test
 notifications:
     flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
