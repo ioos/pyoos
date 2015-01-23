@@ -169,11 +169,11 @@ class TimeSeries(object):
 
                         elif isinstance(c.content, Time) and c.content.definition == "http://www.opengis.net/def/property/OGC/0/SamplingTime":
                             pt      = Point()
-                            pt.time = parser.parse(v)
+                            pt.time = parser.parse(values[i])
 
                         # For each data column
                         i += 1
-                
+
                 elif isinstance(x.content, AbstractSimpleComponent):
                     m = Member( units=x.content.uom,
                                 name=x.name,
