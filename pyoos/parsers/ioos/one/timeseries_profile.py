@@ -11,13 +11,16 @@ from paegan.cdm.dsg.features.station_profile import StationProfile
 from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.features.base.profile import Profile
 from paegan.cdm.dsg.collections.base.profile_collection import ProfileCollection
+from paegan.cdm.dsg.collections.station_collection import StationCollection
 
-from owslib.swe.common import Time, DataChoice, DataRecord, AbstractSimpleComponent
+from owslib.swe.common import Time, DataChoice, DataRecord
+
 
 def get_namespaces():
     ns = Namespaces()
     return ns.get_namespaces(["swe20"])
 namespaces = get_namespaces()
+
 
 class ProfileCache(object):
     """
@@ -36,7 +39,7 @@ class ProfileCache(object):
         point.members.extend(obs_members)
 
     def get_collections(self):
-        return {k[2]:ProfileCollection(elements=pd.values()) for k, pd in self._cache.iteritems()}
+        return {k[2] : ProfileCollection(elements=pd.values()) for k, pd in self._cache.iteritems()}
 
     def _get_profile(self, sensor, t):
         sens_loc_tuple = (sensor['location']['point'].x, sensor['location']['point'].y, sensor['station'])
@@ -70,6 +73,7 @@ class ProfileCache(object):
             new_point.time     = profile.time
             profile.elements.insert(new_idx, new_point)
             return new_point
+
 
 class TimeSeriesProfile(object):
     def __init__(self, element):
@@ -165,7 +169,7 @@ class TimeSeriesProfile(object):
             self.feature = None
 
     def _parse_sensor_orientation(self, ori_el):
-        #'srs':Crs(),    # @TODO (OWSLib cannot parse this Crs yet)
+        # 'srs':Crs(),    # @TODO (OWSLib cannot parse this Crs yet)
         orientation = {}
         for coord in ori_el.content.coordinate:
             orientation[coord.axisID] = {
@@ -272,8 +276,6 @@ class TimeSeriesProfile(object):
         """
         Returns ProfileCollection
         """
-        ret_val = {}
-
         data_array = obs_el.content
 
         # get column defs
@@ -323,7 +325,7 @@ class TimeSeriesProfile(object):
                     if len(c.quality):
                         # @TODO: do some quality constraint checks
                         i += len(c.quality)
-                        #for qua in c.quality:
+                        # for qua in c.quality:
 
                 elif isinstance(c.content, DataChoice) and c.name == "sensor":
                     sensor_key = values[i]
@@ -342,7 +344,6 @@ class TimeSeriesProfile(object):
                         profile_cache.add_obs(sensor_info_, cur_time, point, members)
 
                     i += nc
-
 
         return profile_cache.get_collections()
 
@@ -380,7 +381,7 @@ class TimeSeriesProfile(object):
                            standard=f.content.definition)
 
                 if hasattr(f.content, 'uom'):
-                    m['units']=f.content.uom
+                    m['units'] = f.content.uom
 
                 try:
                     m['value'] = float(cur_val)
@@ -407,7 +408,7 @@ class TimeSeriesProfile(object):
         Pulls bin/profile height info out and calcs a z.
 
         TODO: currently extremely naive
-        
+
         Returns a 2-tuple: point, remaining obs_recs
         """
         cur_point = sensor_info['location']['point']
@@ -438,5 +439,3 @@ class TimeSeriesProfile(object):
         obs_recs.pop(zidx)
 
         return point, obs_recs
-
-

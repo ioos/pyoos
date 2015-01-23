@@ -4,7 +4,7 @@ import unittest
 from pytest import raises
 from pyoos.collectors.wqp.wqp_rest import WqpRest
 from pyoos.parsers.wqx.wqx_outbound import WqxOutbound
-from datetime import datetime, timedelta
+
 
 class WqpTest(unittest.TestCase):
 
@@ -69,12 +69,11 @@ class WqpTest(unittest.TestCase):
         assert org.locations[0].country == u"US"
         assert org.locations[0].state == u"19"
         assert org.locations[0].county == u"013"
-        
 
     def test_wqp_results_metadata(self):
         self.c.filter(features=["21IOWA-10070005"])
         meta, data = self.c.raw()
-        
+
         # OrganizationDescription
         org = WqxOutbound(data).organizations[0]
         assert org.description.name == u"Iowa Dept. of  Natural Resources"

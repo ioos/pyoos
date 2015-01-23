@@ -6,8 +6,8 @@ from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.features.station import Station as Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
-#from dateutil import parser
 from datetime import datetime
+
 
 class AwcToPaegan(object):
     def __init__(self, awc_list):
@@ -26,7 +26,7 @@ class AwcToPaegan(object):
             stations = []
             station_lookup = []
             times = []
-            
+
             for metar in self._root.iter('METAR'):
                 uid = metar.find("station_id").text
                 if uid not in station_lookup:
@@ -54,10 +54,10 @@ class AwcToPaegan(object):
                     if dt.tzinfo is None:
                         dt = dt.replace(tzinfo=pytz.utc)
                     dt = dt.astimezone(pytz.utc)
-                    
+
                     if dt not in times[station_lookup.index(s.uid)].keys():
                         times[station_lookup.index(s.uid)][dt] = []
-                    
+
                     if metar.find(variable) != None:
                         if variable in set(["raw_text", "flight_category", "wx_string"]):
                             times[station_lookup.index(s.uid)][dt].append(Member(value=metar.find(variable).text, unit=None, name=variable, description=variable, standard=None))
@@ -69,11 +69,11 @@ class AwcToPaegan(object):
                                     alt = cond.attrib["cloud_base_ft_agl"]
                                 except:
                                     alt = None
-                                sky_condition.append({"sky_cover":cover, "cloud_base_ft_agl":alt})
+                                sky_condition.append({"sky_cover" : cover, "cloud_base_ft_agl" : alt})
                             times[station_lookup.index(s.uid)][dt].append(Member(value=sky_condition, unit="ft_above_ground_level", name=variable, description=variable, standard=None))
                         else:
                             times[station_lookup.index(s.uid)][dt].append(Member(value=float(metar.find(variable).text), unit=variable.split("_")[-1], name=variable, description=variable, standard=None))
-                                
+
             for time_dict, station in zip(times, stations):
                 for dts, members in time_dict.iteritems():
                     p = Point()
@@ -81,6 +81,5 @@ class AwcToPaegan(object):
                     p.location = station.location
                     p.members = members
                     station.add_element(p)
-            
+
         self.feature = StationCollection(elements=stations)
-        

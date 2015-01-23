@@ -1,11 +1,11 @@
 from pyoos.collectors.collector import Collector
-from datetime import datetime
 import requests
 from pyoos.parsers.waterml import WaterML11ToPaegan
 
+
 class UsgsRest(Collector):
     def __init__(self, **kwargs):
-        super(UsgsRest,self).__init__()
+        super(UsgsRest, self).__init__()
         self.rest_url = 'http://waterservices.usgs.gov/nwis/iv'
         self._state = None
 
@@ -15,6 +15,7 @@ class UsgsRest(Collector):
                 raise ValueError("Not a recognized state. \
                                   Must be a str or unicode string")
         self._state = state
+
     def get_state(self):
         return self._state
     state = property(get_state, set_state)
@@ -26,7 +27,7 @@ class UsgsRest(Collector):
         return "Find features using this mapping client: http://maps.waterdata.usgs.gov/mapper/"
 
     def clear(self):
-        super(UsgsRest,self).clear()
+        super(UsgsRest, self).clear()
         self._state = None
 
     def setup_params(self, **kwargs):

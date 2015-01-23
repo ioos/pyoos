@@ -1,11 +1,9 @@
 from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue
-from owslib.util import nspath_eval as nspv
-from owslib.crs import Crs
-from shapely.geometry import box
 
 ns = Namespaces()
+
 
 class IoosDescribeSensor(object):
     def __new__(cls, element):
@@ -17,12 +15,11 @@ class IoosDescribeSensor(object):
         if hasattr(root, 'getroot'):
             root = root.getroot()
 
-        XLINK_NS = ns.get_namespace("xlink")
-        SWE_NS = [ns.get_versioned_namespace('swe','1.0.1')]
+        SWE_NS = [ns.get_versioned_namespace('swe', '1.0.1')]
         version = None
         for g in SWE_NS:
             try:
-                version = testXMLValue(root.find(".//{%s}field[@name='ioosTemplateVersion']/{%s}Text/{%s}value" % (g,g,g)))
+                version = testXMLValue(root.find(".//{%s}field[@name='ioosTemplateVersion']/{%s}Text/{%s}value" % (g, g, g)))
                 break
             except:
                 raise

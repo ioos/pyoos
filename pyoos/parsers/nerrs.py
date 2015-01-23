@@ -2,7 +2,6 @@
 
 from pyoos.utils.etree import etree
 from owslib.util import testXMLValue
-from datetime import datetime
 from paegan.cdm.dsg.features.station import Station
 from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.collections.station_collection import StationCollection
@@ -11,6 +10,7 @@ from shapely.geometry import Point as sPoint
 import pytz
 from pyoos.utils.asatime import AsaTime
 from paegan.cdm.dsg.member import Member
+
 
 def units(param):
     # http://cdmo.baruch.sc.edu/documents/manual.pdf
@@ -50,6 +50,7 @@ def units(param):
     }
     return units.get(param)
 
+
 def standard(param):
     # http://cdmo.baruch.sc.edu/documents/manual.pdf
     standards = {
@@ -88,6 +89,7 @@ def standard(param):
     }
     return standards.get(param)
 
+
 class NerrsToPaegan(object):
 
     def __init__(self, response_list, nerrs_stations=None):
@@ -102,10 +104,10 @@ class NerrsToPaegan(object):
                 if s['Station_Code'].lower() == feature.lower():
                     return s
 
-        skip_tags = ["DateTimeStamp","utcStamp","data","MaxWSpdT"]
+        skip_tags = ["DateTimeStamp", "utcStamp", "data", "MaxWSpdT"]
 
         stations = []
-        for feature,response in response_list.iteritems():
+        for feature, response in response_list.iteritems():
             if not isinstance(response, etree._Element):
                 response = etree.fromstring(response)
 
@@ -136,10 +138,9 @@ class NerrsToPaegan(object):
                         except TypeError:
                             # Value was None
                             pass
-                            
 
-                s.add_element(p)  
+                s.add_element(p)
 
-            stations.append(s)            
+            stations.append(s)
 
         self.feature = StationCollection(elements=stations)

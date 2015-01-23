@@ -27,7 +27,7 @@ install:
   # ---------------------------------
   - conda install --channel https://conda.binstar.org/rsignell --file requirements.txt
   - conda install pytest
-script: py.test
+script: py.test -vv
 notifications:
     flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
 

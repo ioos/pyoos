@@ -1,6 +1,5 @@
 from owslib.util import nspath as nsp
-from owslib.util import testXMLAttribute, testXMLValue
-from owslib.crs import Crs
+from owslib.util import testXMLValue
 from pyoos.utils.asatime import AsaTime
 from pyoos.utils.etree import etree
 import pytz
@@ -76,6 +75,7 @@ class WqxToPaegan(object):
 
             self.feature = StationCollection(elements=stations)
 
+
 class WqxOutbound(object):
     """
         An WQX formatted <wqx:WQX> block
@@ -113,10 +113,10 @@ class WqxOrganization(object):
     def __init__(self, element, wqx_ns):
         self._root = element
 
-        self.description = WqxOrganizationDescription(self._root.find(nsp("OrganizationDescription",wqx_ns)), wqx_ns)
+        self.description = WqxOrganizationDescription(self._root.find(nsp("OrganizationDescription", wqx_ns)), wqx_ns)
 
         self.locations = []
-        mls = self._root.findall(nsp("MonitoringLocation",wqx_ns))
+        mls = self._root.findall(nsp("MonitoringLocation", wqx_ns))
         for loc in mls:
             if loc is not None:
                 self.locations.append(WqxMonitoringLocation(loc, wqx_ns))
@@ -153,7 +153,7 @@ class WqxActivity(object):
             if tz is not None:
                 parse_string = "%s %s" % (parse_string, tz)
 
-        self.start_time = AsaTime.parse(parse_string)    
+        self.start_time = AsaTime.parse(parse_string)
         if self.start_time.tzinfo is None:
             self.start_time = self.start_time.replace(tzinfo=pytz.utc)
 
@@ -173,10 +173,11 @@ class WqxActivity(object):
                 self.method_id = testXMLValue(smplcol.find(nsp("MethodIdentifier", wqx_ns)))
                 self.method_context = testXMLValue(smplcol.find(nsp("MethodIdentifierContext", wqx_ns)))
                 self.method_name = testXMLValue(smplcol.find(nsp("MethodName", wqx_ns)))
-            
+
         self.results = []
         for res in self._root.findall(nsp("Result", wqx_ns)):
             self.results.append(WqxResult(res, wqx_ns))
+
 
 class WqxResult(object):
     def __init__(self, element, wqx_ns):
@@ -222,6 +223,7 @@ class WqxResult(object):
 
         # Skipping <ResultLabInformation> for now.
 
+
 class WqxOrganizationDescription(object):
     """
         An WQX formatted <wqx:OrganizationDescription> block
@@ -231,6 +233,7 @@ class WqxOrganizationDescription(object):
 
         self.id = testXMLValue(self._root.find(nsp("OrganizationIdentifier", wqx_ns)))
         self.name = testXMLValue(self._root.find(nsp("OrganizationFormalName", wqx_ns)))
+
 
 class WqxMonitoringLocation(object):
     """
@@ -267,10 +270,10 @@ class WqxMonitoringLocation(object):
             self.map_scale = testXMLValue(geo.find(nsp("SourceMapScaleNumeric", wqx_ns)))
             self.horizontal_collection_method = testXMLValue(geo.find(nsp("HorizontalCollectionMethodName", wqx_ns)))
             self.horizontal_crs_name = testXMLValue(geo.find(nsp("HorizontalCoordinateReferenceSystemDatumName", wqx_ns)))
-            #self.horizontal_crs = Crs("EPSG:" + testXMLValue(geo.find(nsp("HorizontalCoordinateReferenceSystemDatumName", wqx_ns))))
+            # self.horizontal_crs = Crs("EPSG:" + testXMLValue(geo.find(nsp("HorizontalCoordinateReferenceSystemDatumName", wqx_ns))))
             self.vertical_crs_name = testXMLValue(geo.find(nsp("VerticalCollectionMethodName", wqx_ns)))
-            #self.vertical_crs = Crs(testXMLValue("EPSG:" + geo.find(nsp("VerticalCoordinateReferenceSystemDatumName", wqx_ns))))
-        
+            # self.vertical_crs = Crs(testXMLValue("EPSG:" + geo.find(nsp("VerticalCoordinateReferenceSystemDatumName", wqx_ns))))
+
         self.vertical_measure_value = None
         self.vertical_measure_units = None
         vm = geo.find(nsp("VerticalMeasure", wqx_ns))

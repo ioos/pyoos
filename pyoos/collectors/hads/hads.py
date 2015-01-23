@@ -9,6 +9,7 @@ from fiona import collection
 from pyoos.parsers.hads import HadsParser
 from pyoos.collectors.collector import Collector
 
+
 class Hads(Collector):
     def __init__(self, **kwargs):
         super(Hads, self).__init__()
@@ -172,7 +173,6 @@ class Hads(Collector):
         return list(set(map(lambda x: x.attrs.get('href', None), areas)))
 
     def _get_stations_for_state(self, state_url):
-        #print state_url
         state_root = BeautifulSoup(requests.get(state_url).text)
         return filter(lambda x: len(x) > 0, map(lambda x: x.attrs['href'].split("nesdis_id=")[-1], state_root.find_all('a')))
 
@@ -198,4 +198,3 @@ class Hads(Collector):
         resp.raise_for_status()
 
         return resp.text
-

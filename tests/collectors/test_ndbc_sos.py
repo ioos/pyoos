@@ -7,6 +7,7 @@ from owslib.swe.sensor.sml import SensorML
 
 from pyoos.collectors.ndbc.ndbc_sos import NdbcSos
 
+
 class NdbcSosTest(unittest.TestCase):
 
     def setUp(self):
@@ -17,17 +18,15 @@ class NdbcSosTest(unittest.TestCase):
         assert self.c.server.identification.service == 'OGC:SOS'
         assert self.c.server.identification.version == '1.0.0'
         assert self.c.server.identification.abstract == 'National Data Buoy Center SOS'
-        #assert self.c.server.identification.keywords == ['Weather', 'Ocean Currents', 'Air Temperature', 'Water Temperature', 'Conductivity', 'Salinity', 'Barometric Pressure', 'Water Level', 'Waves', 'Winds', 'NDBC']
+        # assert self.c.server.identification.keywords == ['Weather', 'Ocean Currents', 'Air Temperature', 'Water Temperature', 'Conductivity', 'Salinity', 'Barometric Pressure', 'Water Level', 'Waves', 'Winds', 'NDBC']
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
-
 
     def test_ndbc_describe_sensor(self):
         self.c.features = ['41012']
         response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1"')
         assert isinstance(response, list)
         assert isinstance(response[0], SensorML)
-
 
     def test_raw_ndbc_get_observation(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
@@ -48,12 +47,11 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['depth (m)'] == "0.00"
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1009.8"
 
-
     def test_raw_ndbc_get_observation_all_stations(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
         self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
         # TODO: This should not return all stations in the future.  We should make multiple requests.
-        self.c.features     = ['32st0','41012'] # Triggers network-all
+        self.c.features     = ['32st0', '41012']  # Triggers network-all
         self.c.variables    = ['air_pressure_at_sea_level']
 
         response = self.c.raw(responseFormat="text/csv")
@@ -74,11 +72,10 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['depth (m)'] == ""
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1019.0"
 
-
     def test_raw_ndbc_get_observation_no_stations(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
         self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
-        self.c.features     = [] # Triggers network-all
+        self.c.features     = []  # Triggers network-all
         self.c.variables    = ['air_pressure_at_sea_level']
 
         response = self.c.raw(responseFormat="text/csv")

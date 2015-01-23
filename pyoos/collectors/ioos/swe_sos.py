@@ -1,12 +1,12 @@
 from pyoos.collectors.collector import Collector
-from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from owslib.sos import SensorObservationService as Sos
 from owslib.swe.sensor.sml import SensorML
 
+
 class IoosSweSos(Collector):
     def __init__(self, url, xml=None):
-        super(IoosSweSos,self).__init__()
+        super(IoosSweSos, self).__init__()
         self.server = Sos(url, xml=xml)
 
     def metadata(self, output_format=None, feature_name_callback=None, **kwargs):
@@ -35,7 +35,7 @@ class IoosSweSos(Collector):
         params = kwargs
 
         if self.bbox is not None:
-            params["featureOfInterest"] = "BBOX:%s,%s,%s,%s" %(self.bbox[0],self.bbox[1],self.bbox[2],self.bbox[3])
+            params["featureOfInterest"] = "BBOX:%s,%s,%s,%s" % (self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3])
 
         if self.start_time is not None:
             params["eventTime"] = self.start_time.strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -59,12 +59,12 @@ class IoosSweSos(Collector):
         if 'responseFormat' not in kwargs:
 
             # iterate offerings and see if we need to change to subtype
-            off_dict = {off.name:off for off in self.server.offerings}
+            off_dict = {off.name : off for off in self.server.offerings}
 
             response_format = None
 
             for offering in kwargs.get('offerings', []):
-                if not offering in off_dict:
+                if offering not in off_dict:
                     continue
 
                 ioos_formats = [rf for rf in off_dict[offering].response_formats if 'ioos_sos/1.0' in rf]

@@ -1,15 +1,16 @@
 import unittest
 import datetime
-from pytest import raises
+import pytz
 from pyoos.parsers.hads import HadsParser
 from paegan.cdm.dsg.collections.station_collection import StationCollection
+
 
 class HadsParserTest(unittest.TestCase):
 
     def setUp(self):
         self.hp = HadsParser()
 
-        # captured metadata 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268'] 
+        # captured metadata 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268']
         self.metadata = u'|17BC752E|WKGR1|CHIPUXET RIVER AT WEST KINGSTON|41 28 56|-71 33 06|BOX|RI|USGS01|SI|83  |002840|60|HG|15,-9|0.01,-9|0.0|13|0.0|-0.01|VB|60,-9|0.3124,-9|0.311|28|0.0|0.0|\r\n|CE4D0268|FOXR1|FOXPOINT HURRICANE BARRIER|41 48 57|-71 24 07|BOX|RI|CENED1|SU|161 |000100|30|HM|60,-9|0.01,-9|0.0|1|0.0|0.0|PA|60,-9|0.01,-9|0.0|1|0.0|0.0|TA|60,-9|0.1,-9|0.0|1|0.0|0.0|US|60,-9|1,-9|0.0|1|0.0|0.0|UD|60,-9|1,-9|0.0|1|0.0|0.0|\r\n|DD182264|USQR1|USQUEPAUG RIVER NEAR USQUEPAUG|41 28 36|-71 36 19|BOX|RI|USGS01|SI|83  |005830|60|HG|15,-9|0.01,-9|0.0|13|0.0|0.0|VB|60,-9|0.3124,-9|0.311|58|0.0|0.0|\r\n'
 
         # captured data 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268']
@@ -115,27 +116,27 @@ class HadsParserTest(unittest.TestCase):
         assert parsed == res
 
     def test__parse_data(self):
-        res = {u'CE4D0268': [(u'HM', datetime.datetime(2013, 7, 26, 16, 30), u'4.94'),
-                             (u'HM', datetime.datetime(2013, 7, 26, 17, 0), u'4.41'),
-                             (u'PA', datetime.datetime(2013, 7, 26, 16, 30), u'29.93'),
-                             (u'PA', datetime.datetime(2013, 7, 26, 17, 0), u'29.93'),
-                             (u'TA', datetime.datetime(2013, 7, 26, 16, 30), u'66.20'),
-                             (u'TA', datetime.datetime(2013, 7, 26, 17, 0), u'67.30'),
-                             (u'US', datetime.datetime(2013, 7, 26, 16, 30), u'5.00'),
-                             (u'US', datetime.datetime(2013, 7, 26, 17, 0), u'8.00'),
-                             (u'UD', datetime.datetime(2013, 7, 26, 16, 30), u'358.00'),
-                             (u'UD', datetime.datetime(2013, 7, 26, 17, 0), u'353.00')],
-               u'DD182264': [(u'HG', datetime.datetime(2013, 7, 26, 16, 30), u'3.07'),
-                             (u'HG', datetime.datetime(2013, 7, 26, 16, 45), u'3.07')]}
+        res = {u'CE4D0268': [(u'HM', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 4.94),
+                             (u'HM', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 4.41),
+                             (u'PA', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 29.93),
+                             (u'PA', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 29.93),
+                             (u'TA', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 66.20),
+                             (u'TA', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 67.30),
+                             (u'US', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 5.00),
+                             (u'US', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 8.00),
+                             (u'UD', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 358.00),
+                             (u'UD', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 353.00)],
+               u'DD182264': [(u'HG', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 3.07),
+                             (u'HG', datetime.datetime(2013, 7, 26, 16, 45).replace(tzinfo=pytz.utc), 3.07)]}
 
         parsed = self.hp._parse_data(self.raw_data, None, (None, None))
         assert parsed == res
 
     def test__parse_data_with_var_filter(self):
-        res = {u'CE4D0268': [(u'HM', datetime.datetime(2013, 7, 26, 16, 30), u'4.94'),
-                             (u'HM', datetime.datetime(2013, 7, 26, 17, 0), u'4.41'),
-                             (u'UD', datetime.datetime(2013, 7, 26, 16, 30), u'358.00'),
-                             (u'UD', datetime.datetime(2013, 7, 26, 17, 0), u'353.00')]}
+        res = {u'CE4D0268': [(u'HM', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 4.94),
+                             (u'HM', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 4.41),
+                             (u'UD', datetime.datetime(2013, 7, 26, 16, 30).replace(tzinfo=pytz.utc), 358.00),
+                             (u'UD', datetime.datetime(2013, 7, 26, 17, 0).replace(tzinfo=pytz.utc), 353.00)]}
 
         parsed = self.hp._parse_data(self.raw_data, [u'HM', u'UD'], (None, None))
-
+        assert parsed == res
