@@ -4,24 +4,27 @@ from owslib.swe.sensor.sml import SensorML
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue, testXMLAttribute, nspath_eval
 
-from pyoos.utils.etree import etree
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 
 from dateutil import parser
 
+
 def get_namespaces():
     n = Namespaces()
-    return n.get_namespaces(["sml101","gml","xlink","swe101"])
+    return n.get_namespaces(["sml101", "gml", "xlink", "swe101"])
 namespaces = get_namespaces()
+
 
 def nsp(path):
     return nspath_eval(path, namespaces)
+
 
 def get_named_by_definition(element_list, string_def):
     try:
         return next((st.value for st in element_list if st.definition == string_def))
     except:
         return None
+
 
 class DescribeSensor(IoosDescribeSensor):
     def __init__(self, element):
@@ -38,7 +41,7 @@ class DescribeSensor(IoosDescribeSensor):
         # Location
         try:
             self.location = self.system.location[0]
-        except (TypeError, IndexError): # No location exists
+        except (TypeError, IndexError):  # No location exists
             self.location = None
 
         # Timerange
@@ -50,6 +53,7 @@ class DescribeSensor(IoosDescribeSensor):
             self.starting  = None
             self.ending    = None
 
+
 class NetworkDS(DescribeSensor):
     def __init__(self, element):
         super(NetworkDS, self).__init__(element=element)
@@ -58,6 +62,7 @@ class NetworkDS(DescribeSensor):
 
         # Verbose method of describing members.  Pull out each individual procedure
         self.procedures = sorted(list(set([testXMLValue(comp.find(".//" + nsp("sml101:identifier[@name='stationID']/sml101:Term/sml101:value"))) for comp in self.system.components])))
+
 
 class StationDS(DescribeSensor):
     def __init__(self, element):
@@ -68,6 +73,7 @@ class StationDS(DescribeSensor):
 
         # Verbose method of describing members.  Pull out each individual variable definition
         self.variables = sorted(list(set(itertools.chain.from_iterable([[testXMLAttribute(quan, "definition") for quan in comp.findall(".//" + nsp("swe101:Quantity"))] for comp in self.system.components]))))
+
 
 class SensorDS(DescribeSensor):
     def __init__(self, element):

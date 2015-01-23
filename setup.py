@@ -45,4 +45,4 @@ setup(
             'Topic :: Scientific/Engineering',
         ],
     include_package_data = True,
-) 
+)

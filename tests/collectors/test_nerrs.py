@@ -3,7 +3,7 @@ import unittest
 from datetime import datetime, timedelta
 from pytest import raises
 from pyoos.collectors.nerrs.nerrs_soap import NerrsSoap
-from shapely.geometry import Point
+
 
 class NerrTest(unittest.TestCase):
 
@@ -23,7 +23,7 @@ class NerrTest(unittest.TestCase):
 
     def test_nerrs_variable_filter(self):
 
-        self.c.filter(features=['owcowmet','rkbfbwq'])
+        self.c.filter(features=['owcowmet', 'rkbfbwq'])
         self.c.filter(variables=["ATemp"])
         raw = self.c.raw()
         dsg = self.c.collect()
@@ -32,17 +32,17 @@ class NerrTest(unittest.TestCase):
         assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
 
         self.c.clear()
-        self.c.filter(features=['owcowmet','rkbfbwq'])
-        self.c.filter(variables=["ATemp","Temp"])
+        self.c.filter(features=['owcowmet', 'rkbfbwq'])
+        self.c.filter(variables=["ATemp", "Temp"])
         raw = self.c.raw()
         dsg = self.c.collect()
         # both are returned
         assert len(raw) == 2
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet','rkbfbwq']
+        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet', 'rkbfbwq']
 
         # Must specify BBOX or Features subset for NERRS
         self.c.clear()
-        self.c.filter(variables=["ATemp","Temp"])
+        self.c.filter(variables=["ATemp", "Temp"])
         with raises(ValueError):
             self.c.raw()
 
@@ -64,17 +64,16 @@ class NerrTest(unittest.TestCase):
         assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
 
         self.c.clear()
-        self.c.filter(features=['owcowmet','rkbfbwq'])
+        self.c.filter(features=['owcowmet', 'rkbfbwq'])
         raw = self.c.raw()
         dsg = self.c.collect()
         # both are returned
         assert len(raw) == 2
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet','rkbfbwq']
-
+        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet', 'rkbfbwq']
 
     def test_nerrs_time_filter(self):
 
-        self.c.filter(features=['owcowmet','rkbfbwq'])
+        self.c.filter(features=['owcowmet', 'rkbfbwq'])
 
         ending = datetime.utcnow() - timedelta(days=90)
         ending = ending.replace(tzinfo=pytz.utc)
@@ -86,19 +85,18 @@ class NerrTest(unittest.TestCase):
         # both are returned
         assert len(raw) == 2
         sorted_stations = sorted(map(lambda x: x.uid, dsg.elements))
-        assert sorted_stations == ['owcowmet','rkbfbwq']
+        assert sorted_stations == ['owcowmet', 'rkbfbwq']
         station = dsg.elements[0]
         station.calculate_bounds()
         assert sorted(station.time_range)[0] > starting - timedelta(hours=24)
         assert sorted(station.time_range)[0] < ending + timedelta(hours=24)
         assert sorted(station.time_range)[-1] > starting - timedelta(hours=24)
         assert sorted(station.time_range)[-1] < ending + timedelta(hours=24)
-    
 
-    def test_nerrs_filter_chaining(self):     
+    def test_nerrs_filter_chaining(self):
 
         # Test NERRS chaining
-        self.c.filter(features=['owcowmet','rkbfbwq']).filter(variables=["ATemp"])
+        self.c.filter(features=['owcowmet', 'rkbfbwq']).filter(variables=["ATemp"])
         raw = self.c.raw()
         dsg = self.c.collect()
         # only 'owcowmet' returning
@@ -107,7 +105,7 @@ class NerrTest(unittest.TestCase):
 
         # Test multiple filter types on one call to 'filter'
         self.c.clear()
-        self.c.filter(features=['owcowmet','rkbfbwq'], variables=["ATemp"])
+        self.c.filter(features=['owcowmet', 'rkbfbwq'], variables=["ATemp"])
         raw = self.c.raw()
         dsg = self.c.collect()
         # only 'owcowmet' returning

@@ -8,9 +8,10 @@ from paegan.cdm.dsg.features.station import Station as Station
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
 
+
 class WaterML11ToPaegan(object):
     def __init__(self, waterml_data):
-        
+
         if isinstance(waterml_data, str) or isinstance(waterml_data, unicode):
             try:
                 self._root = etree.fromstring(str(waterml_data))
@@ -60,7 +61,6 @@ class WaterML11ToPaegan(object):
                 stations.append(s)
                 station_lookup.append(s.uid)
 
-
             times = {}
             variable = timeseries.variable
             for variable_timeseries in timeseries.values:
@@ -69,18 +69,18 @@ class WaterML11ToPaegan(object):
                     if dt.tzinfo is None:
                         dt = dt.replace(tzinfo=pytz.utc)
                     dt = dt.astimezone(pytz.utc)
-                    
+
                     if dt not in times.keys():
                         times[dt] = []
 
                     times[dt].append(Member(value=r.value, unit=variable.unit.code, name=variable.variable_name, description=variable.variable_description, standard=variable.variable_code))
 
             station = stations[station_lookup.index(station_code)]
-            for dts,members in times.iteritems():
+            for dts, members in times.iteritems():
                 p = Point()
                 p.time = dts
                 p.location = station.location
                 p.members = members
                 station.add_element(p)
-        
+
         self.feature = StationCollection(elements=stations)

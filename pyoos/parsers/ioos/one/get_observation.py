@@ -1,7 +1,5 @@
-from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue, testXMLAttribute, extract_time
-from owslib.util import nspath as nsp
 from owslib.util import nspath_eval
 from owslib.crs import Crs
 
@@ -11,13 +9,16 @@ from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from pyoos.parsers.ioos.one.timeseries import TimeSeries
 from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile
 
+
 def get_namespaces():
     ns = Namespaces()
     return ns.get_namespaces(["om10", "swe101", "swe20", "gml311", "xlink"])
 namespaces = get_namespaces()
 
+
 def nspv(path):
     return nspath_eval(path, namespaces)
+
 
 class GetObservation(IoosGetObservation):
     def __init__(self, element):
@@ -50,19 +51,18 @@ class OmObservation(object):
         ft.extend(self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:name")))
         ft_def = "http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.6/cf-conventions.html#discrete-sampling-geometries"
         for f in ft:
-            if testXMLAttribute(f,"codeSpace") == ft_def:
+            if testXMLAttribute(f, "codeSpace") == ft_def:
                 self.feature_type = testXMLValue(f)
 
         # BBOX
         envelope = self._root.find(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:boundedBy/gml311:Envelope"))
-        self.bbox_srs = Crs(testXMLAttribute(envelope,'srsName'))
+        self.bbox_srs = Crs(testXMLAttribute(envelope, 'srsName'))
         lower_left_corner = testXMLValue(envelope.find(nspv('gml311:lowerCorner'))).split(" ")
         upper_right_corner = testXMLValue(envelope.find(nspv('gml311:upperCorner'))).split(" ")
         if self.bbox_srs.axisorder == "yx":
             self.bbox = box(float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
         else:
             self.bbox = box(float(lower_left_corner[0]), float(lower_left_corner[1]), float(upper_right_corner[0]), float(upper_right_corner[1]))
-
 
         # LOCATION
         location = self._root.find(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:location"))
@@ -88,11 +88,10 @@ class OmObservation(object):
                 n, p = get_point(point, self.location_srs)
                 self.location[n] = p
 
-
         # Now the fields change depending on the FeatureType
         self.results = self._root.find(nspv("om10:result"))
 
-        #TODO: This should be implemented as a Factory
+        # TODO: This should be implemented as a Factory
         self.feature = None
         data = self.results.find(nspv("swe20:DataRecord"))
         if data is not None:

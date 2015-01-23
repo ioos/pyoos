@@ -1,20 +1,23 @@
 from pyoos.collectors.ioos.swe_sos import IoosSweSos
 
+
 class CoopsSos(IoosSweSos):
     def __init__(self, **kwargs):
         kwargs["url"] = 'http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS'
-        super(CoopsSos,self).__init__(**kwargs)
+        super(CoopsSos, self).__init__(**kwargs)
         self._datum = None
         self._dataType = None
 
     def set_datatype(self, datatype):
         self._dataType = datatype
+
     def get_datatype(self):
         return self._dataType
     dataType = property(get_datatype, set_datatype)
 
     def set_datum(self, datum):
         self._datum = datum
+
     def get_datum(self):
         return self._datum
     datum = property(get_datum, set_datum)
@@ -41,7 +44,7 @@ class CoopsSos(IoosSweSos):
                 "NAVD"]
 
     def setup_params(self, **kwargs):
-        params = super(CoopsSos,self).setup_params(**kwargs)
+        params = super(CoopsSos, self).setup_params(**kwargs)
 
         if self.features is None or len(self.features) != 1:
             params["offerings"] = ["urn:ioos:network:NOAA.NOS.CO-OPS:All"]
@@ -70,4 +73,4 @@ class CoopsSos(IoosSweSos):
 
     def metadata(self, **kwargs):
         callback = lambda x: "urn:ioos:station:NOAA.NOS.CO-OPS:%s" % x
-        return super(CoopsSos,self).metadata(feature_name_callback=callback, **kwargs)
+        return super(CoopsSos, self).metadata(feature_name_callback=callback, **kwargs)

@@ -22,7 +22,6 @@ class CoopsSosTest(unittest.TestCase):
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
 
-
     def test_coops_describe_sensor(self):
         self.c.features = ['8454000']
         response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1"')
@@ -47,7 +46,6 @@ class CoopsSosTest(unittest.TestCase):
         assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.465"
         assert data[0]['vertical_position (m)'] == "1.064"
 
-
     def test_raw_coops_get_observation_with_dataType(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
         self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
@@ -67,7 +65,6 @@ class CoopsSosTest(unittest.TestCase):
         assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
         assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.617"
         assert data[0]['vertical_position (m)'] == "1.064"
-
 
     def test_raw_coops_get_observation_with_datum(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")

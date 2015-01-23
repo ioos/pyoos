@@ -1,12 +1,9 @@
 from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue
-from owslib.util import nspath as nsp
-from owslib.util import nspath_eval as nspv
-from owslib.crs import Crs
-from shapely.geometry import box
 
 ns = Namespaces()
+
 
 class IoosGetObservation(object):
     def __new__(cls, element):
@@ -19,7 +16,7 @@ class IoosGetObservation(object):
             root = root.getroot()
 
         XLINK_NS = ns.get_namespace("xlink")
-        GML_NS = [ns.get_versioned_namespace('gml','3.1.1')]
+        GML_NS = [ns.get_versioned_namespace('gml', '3.1.1')]
         version = None
         for g in GML_NS:
             try:

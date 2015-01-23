@@ -1,7 +1,7 @@
 from pyoos.collectors.collector import Collector
-#from pyoos.utils.etree import etree
 from pyoos.parsers.awc import AwcToPaegan
 import requests
+
 
 class AwcRest(Collector):
     def __init__(self, **kwargs):
@@ -17,6 +17,7 @@ class AwcRest(Collector):
                 self._stations.pop()
             self._features = self._stations
         return self._features
+
     def set_stations(self, codes):
         self._features = codes
         self._stations = codes
@@ -49,7 +50,7 @@ class AwcRest(Collector):
         params["minLon"] = ''
         params["maxLat"] = ''
         params["maxLon"] = ''
-        if self.bbox is not None: # Must be in format: (minx, miny, maxx, maxy)
+        if self.bbox is not None:  # Must be in format: (minx, miny, maxx, maxy)
             params["minLat"] = str(self.bbox[1])
             params["minLon"] = str(self.bbox[0])
             params["maxLat"] = str(self.bbox[3])

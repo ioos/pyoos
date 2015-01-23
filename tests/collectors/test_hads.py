@@ -1,7 +1,6 @@
 import unittest
-from pytest import raises
 from pyoos.collectors.hads.hads import Hads
-from datetime import datetime, timedelta
+
 
 class HadsTest(unittest.TestCase):
 
@@ -26,13 +25,13 @@ class HadsTest(unittest.TestCase):
         self.c.station_codes = [1, 2]
         self.c.bbox = (1, 2, 3, 4)
 
-        assert self.c.station_codes == None
+        assert self.c.station_codes is None
 
     def test_set_features_property_clears_cached_station_codes(self):
         self.c.station_codes = [1, 2]
         self.c.features = ["one", "two"]
 
-        assert self.c.station_codes == None
+        assert self.c.station_codes is None
 
     def test_list_features(self):
         codes = self.c.list_features()
@@ -45,4 +44,3 @@ class HadsTest(unittest.TestCase):
         codes = self.c.list_features()
 
         assert set(codes) == set(features)
-

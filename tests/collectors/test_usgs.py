@@ -2,13 +2,14 @@ import unittest
 from pyoos.collectors.usgs.usgs_rest import UsgsRest
 from datetime import datetime, timedelta
 
+
 class USGSTest(unittest.TestCase):
 
     def setUp(self):
         self.c = UsgsRest()
 
     def test_by_bbox(self):
-        self.c.filter(bbox=(-87,46,-85,48))
+        self.c.filter(bbox=(-87, 46, -85, 48))
         collection = self.c.collect()
         collection.calculate_bounds()
 
@@ -23,7 +24,7 @@ class USGSTest(unittest.TestCase):
         assert station.location.x == -86.8501514
         assert station.location.y == 46.34077908
         assert station.location.z == 0
-        
+
         # Apply time filter as well
         starting = datetime(2013, 12, 31, 0, 0, 0)
         ending = starting + timedelta(hours=6)
@@ -67,4 +68,3 @@ class USGSTest(unittest.TestCase):
         assert station.location.x == -89.1459196999999932
         assert station.location.y == 47.9212792000000007
         assert station.location.z == 0
-

@@ -15,6 +15,7 @@ class Collector(object):
             This should be overwritten by subclasses
         """
         return self._start_time
+
     def set_start_time(self, time):
         if time is not None:
             if not time.tzinfo:
@@ -28,6 +29,7 @@ class Collector(object):
             The end time to collect data to
         """
         return self._end_time
+
     def set_end_time(self, time):
         if time is not None:
             if not time.tzinfo:
@@ -41,6 +43,7 @@ class Collector(object):
             The bbox to collect data from as a (minx, miny, maxx, maxy) tuple
         """
         return self._bbox
+
     def set_bbox(self, bbox):
         if bbox is not None:
             if isinstance(bbox, list) or isinstance(bbox, tuple):
@@ -56,6 +59,7 @@ class Collector(object):
             The variables to collect data from as a list of strings.
         """
         return self._variables
+
     def set_variables(self, variables):
         if variables is not None:
             if isinstance(variables, list) or isinstance(variables, tuple):
@@ -66,12 +70,12 @@ class Collector(object):
         self._variables = variables
     variables = property(get_variables, set_variables)
 
-
     def get_features(self):
         """
             The unique features to collect data from as a list of strings.
         """
         return self._features
+
     def set_features(self, features):
         if features is not None:
             if isinstance(features, list) or isinstance(features, tuple):
@@ -100,8 +104,8 @@ class Collector(object):
 
         if len(kwargs) > 0:
             # Apply custom filters that are left
-            for k,v in kwargs.iteritems():
-                setattr(self,k,v)
+            for k, v in kwargs.iteritems():
+                setattr(self, k, v)
 
         # Return self to enable chaining
         return self
@@ -136,7 +140,7 @@ class Collector(object):
 
     def raw(self, format=None):
         """
-            Do the actual work and return the raw response object from 
+            Do the actual work and return the raw response object from
             This should be overwritten by subclasses!
         """
-        raise NotImplementedError        
+        raise NotImplementedError

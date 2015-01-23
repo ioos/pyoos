@@ -19,8 +19,10 @@ def get_namespaces():
     return ns.get_namespaces(["swe20"])
 namespaces = get_namespaces()
 
+
 def nspv(path):
     return nspath_eval(path, namespaces)
+
 
 class TimeSeries(object):
     def __init__(self, element):
@@ -106,12 +108,11 @@ class TimeSeries(object):
                                     'horizontal_srs'    : horizontal_srs,
                                     'vertical_srs'      : vertical_srs,
                                     'location'          : location,
-                                    'columns'           : [], # Array of Members representing the columns
-                                    'values'            : []  # Array of Points (the actual data)
+                                    'columns'           : [],  # Array of Members representing the columns
+                                    'values'            : []   # Array of Points (the actual data)
                                 }
 
             stations[s.uid] = s
-
 
         # Start building the column structure
         data_array = record.get_by_name("observationData").content
@@ -158,7 +159,7 @@ class TimeSeries(object):
                     sensor_key = values[i]
                     dc_cols = sensors[sensor_key]['columns']
 
-                    for j,c in enumerate(dc_cols):
+                    for j, c in enumerate(dc_cols):
                         if isinstance(c.content, AbstractSimpleComponent):
                             m = Member( units=c.content.uom,
                                         name=c.name,
@@ -189,7 +190,7 @@ class TimeSeries(object):
             pt.location = stations[sensors[sensor_key]['station']].location
             sensors[sensor_key]['values'].append(pt)
 
-        for k,v in stations.iteritems():
+        for k, v in stations.iteritems():
             for sk, sv in sensors.iteritems():
                 # Match on station uid
                 if sv['station'] == k:

@@ -1,16 +1,16 @@
 import unittest
 import datetime
 import pytz
-from pytest import raises
 from pyoos.parsers.hads import HadsParser
 from paegan.cdm.dsg.collections.station_collection import StationCollection
+
 
 class HadsParserTest(unittest.TestCase):
 
     def setUp(self):
         self.hp = HadsParser()
 
-        # captured metadata 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268'] 
+        # captured metadata 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268']
         self.metadata = u'|17BC752E|WKGR1|CHIPUXET RIVER AT WEST KINGSTON|41 28 56|-71 33 06|BOX|RI|USGS01|SI|83  |002840|60|HG|15,-9|0.01,-9|0.0|13|0.0|-0.01|VB|60,-9|0.3124,-9|0.311|28|0.0|0.0|\r\n|CE4D0268|FOXR1|FOXPOINT HURRICANE BARRIER|41 48 57|-71 24 07|BOX|RI|CENED1|SU|161 |000100|30|HM|60,-9|0.01,-9|0.0|1|0.0|0.0|PA|60,-9|0.01,-9|0.0|1|0.0|0.0|TA|60,-9|0.1,-9|0.0|1|0.0|0.0|US|60,-9|1,-9|0.0|1|0.0|0.0|UD|60,-9|1,-9|0.0|1|0.0|0.0|\r\n|DD182264|USQR1|USQUEPAUG RIVER NEAR USQUEPAUG|41 28 36|-71 36 19|BOX|RI|USGS01|SI|83  |005830|60|HG|15,-9|0.01,-9|0.0|13|0.0|0.0|VB|60,-9|0.3124,-9|0.311|58|0.0|0.0|\r\n'
 
         # captured data 26 July 2013 for stations ['DD182264', '17BC752E', 'CE4D0268']

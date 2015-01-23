@@ -1,5 +1,6 @@
 from pyoos.collectors.ioos.swe_sos import IoosSweSos
 
+
 class NdbcSos(IoosSweSos):
     def __init__(self, **kwargs):
         if kwargs.get("test", None) is True:
@@ -7,12 +8,12 @@ class NdbcSos(IoosSweSos):
         else:
             kwargs["url"] = 'http://sdf.ndbc.noaa.gov/sos/server.php'
 
-        super(NdbcSos,self).__init__(**kwargs)
+        super(NdbcSos, self).__init__(**kwargs)
         self._datum = None
         self._dataType = None
 
     def setup_params(self, **kwargs):
-        params = super(NdbcSos,self).setup_params(**kwargs)
+        params = super(NdbcSos, self).setup_params(**kwargs)
 
         if self.bbox is not None:
             params["featureofinterest"] = "BBOX:%s" % ",".join(map(lambda x: unicode(x), self.bbox))
@@ -35,10 +36,10 @@ class NdbcSos(IoosSweSos):
             ops = ",".join(self.variables)
             if isinstance(ops, basestring):
                 ops = [ops]
-            params["observedProperties"] = ops            
+            params["observedProperties"] = ops
 
         return params
 
     def metadata(self, **kwargs):
         callback = lambda x: "urn:ioos:station:wmo:%s" % x
-        return super(NdbcSos,self).metadata(feature_name_callback=callback, **kwargs)
+        return super(NdbcSos, self).metadata(feature_name_callback=callback, **kwargs)

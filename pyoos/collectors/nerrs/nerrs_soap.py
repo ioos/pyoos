@@ -5,14 +5,14 @@ from owslib.util import testXMLValue
 
 from shapely.geometry import Point, box
 import requests
-from copy import copy
+
 
 class NerrsSoap(Collector):
     def __init__(self, **kwargs):
-        super(NerrsSoap,self).__init__()
+        super(NerrsSoap, self).__init__()
         self.wsdl_url = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
         self.stations = self.get_stations()
-        
+
     def get_station(self, feature):
         for s in self.stations:
             if s['Station_Code'].lower() == feature.lower():
@@ -34,10 +34,9 @@ class NerrsSoap(Collector):
 
         return stats
 
-
     def _makesoap(self, xmlelement):
         request = """<?xml version="1.0" encoding="UTF-8"?>
-        <SOAP-ENV:Envelope  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" 
+        <SOAP-ENV:Envelope  SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
                             xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
                             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -60,9 +59,9 @@ class NerrsSoap(Collector):
 
     def list_features(self):
         return sorted(map(lambda s: s['Station_Code'], self.stations), key=str.lower)
-        
+
     def list_variables(self, feature=None):
-        ignore_vars = ["",None]
+        ignore_vars = ["", None]
         if feature is None:
             stationvars = map(lambda s: s['Params_Reported'].split(","), self.stations)
             # Combine the sublists, ignoring bad names
@@ -72,7 +71,7 @@ class NerrsSoap(Collector):
         else:
             s = self.get_station(feature)
             return sorted([v for v in list(set(s['Params_Reported'].split(","))) if v not in ignore_vars], key=str.lower)
-        
+
     def collect(self):
         results = self.raw()
         return NerrsToPaegan(results, nerrs_stations=self.stations).feature
@@ -90,7 +89,7 @@ class NerrsSoap(Collector):
 
         # BBox takes precedence over features
         if self.bbox is not None:
-            test_box = box(self.bbox[0],self.bbox[1],self.bbox[2],self.bbox[3])
+            test_box = box(self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3])
             # Set the features and call collect again
             for s in self.stations:
                 p = Point(float(s["Longitude"]), float(s["Latitude"]))
@@ -109,9 +108,9 @@ class NerrsSoap(Collector):
                 else:
                     # Not a date range query
                     soap_env = self._build_exportSingleParamXMLNew(f)
-                
-                if soap_env is not None:    
-                    response = self._makesoap(soap_env)                
+
+                if soap_env is not None:
+                    response = self._makesoap(soap_env)
                     results[f] = etree.tostring(response)
 
             return results
@@ -151,7 +150,6 @@ class NerrsSoap(Collector):
         # Set station and recs
         xml_obj.find(".//station_code").text = feature
         return xml_obj
-
 
     def _build_exportSingleParamXMLNew(self, feature):
         xml_str = """

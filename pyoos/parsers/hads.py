@@ -99,7 +99,7 @@ class HadsParser(object):
 
     def _parse_data(self, raw_data, var_filter, time_extents):
         """
-        Transforms raw HADS observations into a dict: 
+        Transforms raw HADS observations into a dict:
             station code -> [(variable, time, value), ...]
 
         Takes into account the var filter (if set).
@@ -141,17 +141,17 @@ class HadsParser(object):
                       'owner',
                       'manufacturer',
                       'channel',
-                      'init_transmit', # HHMM
-                      'trans_interval'] #min
+                      'init_transmit',  # HHMM
+                      'trans_interval']  # min
 
         # repeat in blocks of 7 after field_keys
         var_keys = ['pe_code',
-                    'data_interval', #min
+                    'data_interval',  # min
                     'coefficient',
                     'constant',
-                    'time_offset', #min
-                    'base_elevation', #ft
-                    'gauge_correction'] #ft
+                    'time_offset',  # min
+                    'base_elevation',  # ft
+                    'gauge_correction']  # ft
 
         lines = metadata.splitlines()
         for line in lines:
@@ -174,9 +174,9 @@ class HadsParser(object):
 
                 var_dict['base_elevation'] = float(var_dict['base_elevation'])
                 var_dict['gauge_correction'] = float(var_dict['gauge_correction'])
-                del var_dict['pe_code'] # no need to duplicate
+                del var_dict['pe_code']  # no need to duplicate
 
-            line_val = {'variables':variables}
+            line_val = {'variables' : variables}
             line_val.update(fields)
 
             # conversions
@@ -200,10 +200,10 @@ class HadsParser(object):
         if hads_var_name == "UR":
             return ("wind_gust_from_direction", "degrees from N", "Wind Gust from Direction", "Direction from which wind gust is blowing when maximum wind speed is observed.  Meteorological Convention. Wind is motion of air relative to the surface of the earth.")
         elif hads_var_name in ["VJA", "TX"]:
-            return ("air_temperature_maximum", "f", "Air Temperature Maximum","")
+            return ("air_temperature_maximum", "f", "Air Temperature Maximum", "")
         elif hads_var_name in ["VJB", "TN"]:
             return ("air_temperature_minimum", "f", "Air Temperature Minumum", "")
-        elif hads_var_name == "PC": # PC2?
+        elif hads_var_name == "PC":  # PC2?
             return ("precipitation_accumulated", "in", "Precipitation Accumulated", "Amount of liquid equivalent precipitation accumulated or totaled for a defined period of time, usually hourly, daily, or annually.")
         elif hads_var_name == "PP":
             return ("precipitation_rate", "in", "Precipitation Rate", "Amount of wet equivalent precipitation per unit time.")
@@ -241,7 +241,7 @@ class HadsParser(object):
             return ("dissolved_oxygen_saturation", "percent", "Dissolved Oxygen Saturation", "")
         elif hads_var_name == "TD":
             return ("dew_point_temperature", "f", "Dew Point Temperature", "the temperature at which a parcel of air reaches saturation upon being cooled at constant pressure and specific humidity.")
-        elif hads_var_name == "HG": # HG2?
+        elif hads_var_name == "HG":  # HG2?
             return ("stream_gage_height", "ft", "Stream Gage Height", "")
         elif hads_var_name == "HP":
             return ("water_surface_height_above_reference_datum", "ft", "Water Surface Height Above Reference Datum", "means the height of the upper surface of a body of liquid water, such as sea, lake or river, above an arbitrary reference datum.")
@@ -259,4 +259,3 @@ class HadsParser(object):
             return ("soil_temperature", "f", "Soil Temperature", "Soil temperature is the bulk temperature of the soil, not the surface (skin) temperature.")
 
         return None
-
