@@ -19,6 +19,7 @@ Pyoos will collect and parse the following data services into the [Paegan](https
 * USGS Instantaneous Values - WaterML via REST
 * NWS AWC Observations - XML via REST (http://www.aviationweather.gov)
 * HADS (http://www.nws.noaa.gov/oh/hads/ - limited to 7 day rolling window of data)
+* WIS hindcast node data (http://wis.usace.army.mil/)
 
 ## Common Interface
 
