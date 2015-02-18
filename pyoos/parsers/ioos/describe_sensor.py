@@ -1,7 +1,5 @@
 from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
-from owslib.util import testXMLValue
-import warnings
 
 ns = Namespaces()
 SML_NS = ns.get_versioned_namespace('sml', '1.0.1')
@@ -27,6 +25,7 @@ class IoosDescribeSensor(object):
         for ds_type, constructor in [('networkID', NetworkDS), ('stationID', StationDS), ('sensorID', SensorDS)]:
             if root.find(sml_str % ds_type) is not None:
                 return super(IoosDescribeSensor, cls).__new__(constructor)
-        # if we don't find the proper request, try to use DescribeSensor
+        # if we don't find the proper request from the IOOS definitions,
+        # try to adapt a generic DescribeSensor request to the dataset
         from pyoos.parsers.ioos.one.describe_sensor import GenericSensor
         return super(IoosDescribeSensor, cls).__new__(GenericSensor)
