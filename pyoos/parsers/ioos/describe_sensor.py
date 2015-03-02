@@ -25,6 +25,12 @@ class IoosDescribeSensor(object):
         for ds_type, constructor in [('networkID', NetworkDS), ('stationID', StationDS), ('sensorID', SensorDS)]:
             if root.find(sml_str % ds_type) is not None:
                 return super(IoosDescribeSensor, cls).__new__(constructor)
+
+        # NOAA CO-OPS
+        sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='urn:ioos:def:identifier:NOAA::networkID']".format(SML_NS)
+        if root.find(sml_str) is not None:
+            return super(IoosDescribeSensor, cls).__new__(NetworkDS)
+
         # if we don't find the proper request from the IOOS definitions,
         # try to adapt a generic DescribeSensor request to the dataset
         from pyoos.parsers.ioos.one.describe_sensor import GenericSensor
