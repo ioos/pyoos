@@ -72,12 +72,14 @@ class NerrsSoap(Collector):
             s = self.get_station(feature)
             return sorted([v for v in list(set(s['Params_Reported'].split(","))) if v not in ignore_vars], key=str.lower)
 
-    def collect(self):
-        results = self.raw()
+    def collect(self, wildcard=None):
+        # 'wildcard' is an optional, token-based access mechanism
+        results = self.raw(wildcard=wildcard)
         return NerrsToPaegan(results, nerrs_stations=self.stations).feature
 
     def raw(self, **kwargs):
-
+        # 'wildcard' is an optional, token-based access mechanism
+        wildcard = kwargs.get("wildcard")
         # These are the features we will actually query against
         query_features = []
 
@@ -104,10 +106,10 @@ class NerrsSoap(Collector):
             for f in query_features:
                 if self.start_time is not None and self.end_time is not None:
                     # Date range query
-                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f)
+                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f, wildcard)
                 else:
                     # Not a date range query
-                    soap_env = self._build_exportSingleParamXMLNew(f)
+                    soap_env = self._build_exportSingleParamXMLNew(f, wildcard)
 
                 if soap_env is not None:
                     response = self._makesoap(soap_env)
@@ -117,16 +119,20 @@ class NerrsSoap(Collector):
 
         return None
 
-    def _build_exportAllParamsDateRangeXMLNew(self, feature):
+    def _build_exportAllParamsDateRangeXMLNew(self, feature, wildcard):
         xml_str = """
         <exportAllParamsDateRangeXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">owcowmet</station_code>
             <mindate xsi:type="xsd:string">05/29/2013</mindate>
             <maxdate xsi:type="xsd:string">05/31/2013</maxdate>
             <param xsi:type="xsd:string">WSpd,WDir</param>
+            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportAllParamsDateRangeXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
+
+        if wildcard is not None:
+            xml_obj.find(".//wildcard").text = wildcard
 
         xml_obj.find(".//mindate").text = self.start_time.strftime('%m/%d/%Y')
         xml_obj.find(".//maxdate").text = self.end_time.strftime('%m/%d/%Y')
@@ -151,15 +157,19 @@ class NerrsSoap(Collector):
         xml_obj.find(".//station_code").text = feature
         return xml_obj
 
-    def _build_exportSingleParamXMLNew(self, feature):
+    def _build_exportSingleParamXMLNew(self, feature, wildcard):
         xml_str = """
         <exportSingleParamXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">FILLME</station_code>
             <recs xsi:type="xsd:string">FILLME</recs>
             <param xsi:type="xsd:string">FILLME</param>
+            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportSingleParamXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
+
+        if wildcard is not None:
+            xml_obj.find(".//wildcard").text = wildcard
 
         # Set parameters
         feature_vars = self.list_variables(feature=feature)
