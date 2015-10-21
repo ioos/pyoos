@@ -9,8 +9,12 @@ import requests
 
 class NerrsSoap(Collector):
     def __init__(self, **kwargs):
+        """
+        :param wildcard: string for optional token-based access mechanism.
+        """
         super(NerrsSoap, self).__init__()
         self.wsdl_url = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
+        self.wildcard = kwargs.get("wildcard")
         self.stations = self.get_stations()
 
     def get_station(self, feature):
@@ -19,8 +23,19 @@ class NerrsSoap(Collector):
                 return s
 
     def get_stations(self):
-        """<exportStationCodesXMLNew />"""
-        env = self._makesoap(etree.Element("exportStationCodesXMLNew"))
+        if self.wildcard is not None:
+            xml_str = """
+            <exportStationCodesXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
+            </exportStationCodesXMLNew>
+            """
+            xml_obj = etree.fromstring(xml_str)
+            xml_obj.find(".//wildcard").text = self.wildcard
+        else:
+            """<exportStationCodesXMLNew />"""
+            xml_obj = etree.Element("exportStationCodesXMLNew")
+
+        env = self._makesoap(xml_obj)
 
         stats = []
         for data in env.findall(".//data"):
@@ -72,14 +87,11 @@ class NerrsSoap(Collector):
             s = self.get_station(feature)
             return sorted([v for v in list(set(s['Params_Reported'].split(","))) if v not in ignore_vars], key=str.lower)
 
-    def collect(self, wildcard=None):
-        # 'wildcard' is an optional, token-based access mechanism
-        results = self.raw(wildcard=wildcard)
+    def collect(self):
+        results = self.raw()
         return NerrsToPaegan(results, nerrs_stations=self.stations).feature
 
     def raw(self, **kwargs):
-        # 'wildcard' is an optional, token-based access mechanism
-        wildcard = kwargs.get("wildcard")
         # These are the features we will actually query against
         query_features = []
 
@@ -106,10 +118,10 @@ class NerrsSoap(Collector):
             for f in query_features:
                 if self.start_time is not None and self.end_time is not None:
                     # Date range query
-                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f, wildcard)
+                    soap_env = self._build_exportAllParamsDateRangeXMLNew(f)
                 else:
                     # Not a date range query
-                    soap_env = self._build_exportSingleParamXMLNew(f, wildcard)
+                    soap_env = self._build_exportSingleParamXMLNew(f)
 
                 if soap_env is not None:
                     response = self._makesoap(soap_env)
@@ -119,7 +131,7 @@ class NerrsSoap(Collector):
 
         return None
 
-    def _build_exportAllParamsDateRangeXMLNew(self, feature, wildcard):
+    def _build_exportAllParamsDateRangeXMLNew(self, feature):
         xml_str = """
         <exportAllParamsDateRangeXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">owcowmet</station_code>
@@ -131,8 +143,8 @@ class NerrsSoap(Collector):
         """
         xml_obj = etree.fromstring(xml_str)
 
-        if wildcard is not None:
-            xml_obj.find(".//wildcard").text = wildcard
+        if self.wildcard is not None:
+            xml_obj.find(".//wildcard").text = self.wildcard
 
         xml_obj.find(".//mindate").text = self.start_time.strftime('%m/%d/%Y')
         xml_obj.find(".//maxdate").text = self.end_time.strftime('%m/%d/%Y')
@@ -157,7 +169,7 @@ class NerrsSoap(Collector):
         xml_obj.find(".//station_code").text = feature
         return xml_obj
 
-    def _build_exportSingleParamXMLNew(self, feature, wildcard):
+    def _build_exportSingleParamXMLNew(self, feature):
         xml_str = """
         <exportSingleParamXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             <station_code xsi:type="xsd:string">FILLME</station_code>
@@ -168,8 +180,8 @@ class NerrsSoap(Collector):
         """
         xml_obj = etree.fromstring(xml_str)
 
-        if wildcard is not None:
-            xml_obj.find(".//wildcard").text = wildcard
+        if self.wildcard is not None:
+            xml_obj.find(".//wildcard").text = self.wildcard
 
         # Set parameters
         feature_vars = self.list_variables(feature=feature)
