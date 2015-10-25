@@ -47,6 +47,9 @@ class NerrsSoap(Collector):
                 s[child.tag] = val
             stats.append(s)
 
+        stats['Longitude'] = -float(stats['Longitude'])
+        stats['Latitude'] = float(stats['Latitude'])
+
         return stats
 
     def _makesoap(self, xmlelement):
