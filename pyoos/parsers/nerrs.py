@@ -54,8 +54,7 @@ def units(param):
 
 def standard(param):
     # http://cdmo.baruch.sc.edu/documents/manual.pdf
-    # 10/21/2015, EM: Some of these don't seem to appear on the SOAP service!
-    # eg, cDepth; and Depth is not found in this list!!
+    # 10/24/2015, EM: Some of these don't seem to appear on SOAP service; eg, cDepth
     standards = {
         # Water Quality
         'Temp'      :       'sea_water_temperature',
