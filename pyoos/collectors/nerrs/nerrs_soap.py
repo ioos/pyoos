@@ -45,10 +45,9 @@ class NerrsSoap(Collector):
                 if val is None:
                     val = ""
                 s[child.tag] = val
+            s['Longitude'] = -float(s['Longitude'])
+            s['Latitude'] = float(s['Latitude'])
             stats.append(s)
-
-        stats['Longitude'] = -float(stats['Longitude'])
-        stats['Latitude'] = float(stats['Latitude'])
 
         return stats
 

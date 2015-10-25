@@ -137,7 +137,8 @@ class NerrsToPaegan(object):
                     if child.tag not in skip_tags:
                         try:
                             val = float(child.text)
-                            p.add_member(Member(value=val, unit=units(child.tag), name=child.tag, description=child.tag, standard=standard(child.tag)))
+                            p.add_member(Member(value=val, name=child.tag, description=child.tag,
+                                                unit=units(child.tag), standard=standard(child.tag)))
                         except TypeError:
                             # Value was None
                             pass
