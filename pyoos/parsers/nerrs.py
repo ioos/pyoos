@@ -21,13 +21,14 @@ def units(param):
         'Sal'       :       'ppt',
         'DO_pct'    :       '%',
         'DO_mgl'    :       'mg/L',
+        'Depth'     :       'm',
         'cDepth'    :       'm',
         'Level'     :       'm',
         'cLevel'    :       'm',
         'pH'        :       '',
         'Turb'      :       'NTU',
-        'ChlFluor'  :       'ug/L',
-        # Meterological
+        'ChlFluor'  :       'µg/L',
+        # Meteorological
         'ATemp'     :       '°C',
         'RH'        :       '%',
         'BP'        :       'mb',
@@ -53,6 +54,8 @@ def units(param):
 
 def standard(param):
     # http://cdmo.baruch.sc.edu/documents/manual.pdf
+    # 10/21/2015, EM: Some of these don't seem to appear on the SOAP service!
+    # eg, cDepth; and Depth is not found in this list!!
     standards = {
         # Water Quality
         'Temp'      :       'sea_water_temperature',
@@ -60,17 +63,18 @@ def standard(param):
         'Sal'       :       'sea_water_salinity',
         'DO_pct'    :       'oxygen_concentration_in_sea_water',
         'DO_mgl'    :       'oxygen_concentration_in_sea_water',
+        'Depth'     :       'depth',
         'cDepth'    :       'depth',
         'Level'     :       'depth',
         'cLevel'    :       'depth',
         'pH'        :       'sea_water_acidity',
         'Turb'      :       'sea_water_turbidity',
         'ChlFluor'  :       'chlorophyll_fluorescence_in_sea_water',
-        # Meterological
+        # Meteorological
         'ATemp'     :       'air_temperature',
         'RH'        :       'relative_humidity',
         'BP'        :       'air_pressure',
-        'WSpd'      :       'wind_sped',
+        'WSpd'      :       'wind_speed',
         'MaxWSpd'   :       'wind_speed_of_gust',
         'MaxWSpdT'  :       'time_of_max_wind_speed',
         'Wdir'      :       'wind_direction_from_true_north',
@@ -81,10 +85,10 @@ def standard(param):
         'TotSoRad'  :       'total_solar_radiation',
         # Nutrient and Pigment
         'PO4F'      :       'orthophosphate_concentration_in_sea_water',
-        'NH4F'      :       'ammomium_concentration_in_sea_water',
+        'NH4F'      :       'ammonium_concentration_in_sea_water',
         'NO2F'      :       'nitrite_concentration_in_sea_water',
         'NO3F'      :       'nitrate_concentration_in_sea_water',
-        'NO23F'     :       'nirire_and_nirtrate_concentration_in_sea_water',
+        'NO23F'     :       'nitrite_and_nitrate_concentration_in_sea_water',
         'CHLA_N'    :       'chlorophyll_concentration_in_sea_water'
     }
     return standards.get(param)
@@ -116,7 +120,7 @@ class NerrsToPaegan(object):
             s = Station()
             s.uid = feature['Station_Code']
             s.name = feature['Station_Name']
-            s.location = sPoint(float(feature['Longitude']), float(feature['Latitude']), 0)
+            s.location = sPoint(feature['Longitude'], feature['Latitude'], 0)
             s.set_property("state", feature['State'])
             s.set_property("siteid", feature['NERR_Site_ID'])
             s.set_property("horizontal_crs", "EPSG:4326")
