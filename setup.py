@@ -1,10 +1,23 @@
 from __future__ import with_statement
+import os
 import sys
 
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
-from pyoos import __version__
+def extract_version(module='pyoos'):
+    version = None
+    fdir = os.path.dirname(__file__)
+    fnme = os.path.join(fdir, module, '__init__.py')
+    with open(fnme) as fd:
+        for line in fd:
+            if (line.startswith('__version__')):
+                _, version = line.split('=')
+                # Remove quotation characters.
+                version = version.strip()[1:-1]
+                break
+    return version
+
 
 def readme():
     with open('README.md') as f:
@@ -24,7 +37,7 @@ class PyTest(TestCommand):
 
 setup(
     name                = "pyoos",
-    version             = __version__,
+    version             = extract_version(),
     description         = "A Python library for collecting Met/Ocean observations",
     long_description    = readme(),
     license             = 'GPLv3',

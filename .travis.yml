@@ -1,33 +1,23 @@
+sudo: false
 language: python
-python:
-  - "2.7"
+
+env:
+    - CONDA="python=2.7"
+    - CONDA="python=3.4"
+    - CONDA="python=3.5"
+
 before_install:
-  # Install miniconda
-  # -----------------
-  - export CONDA_BASE=http://repo.continuum.io/miniconda/Miniconda
-  - if [[ "$TRAVIS_PYTHON_VERSION" == 2* ]]; then
-      wget ${CONDA_BASE}-3.7.0-Linux-x86_64.sh -O miniconda.sh;
-    else
-      wget ${CONDA_BASE}3-3.7.0-Linux-x86_64.sh -O miniconda.sh;
-    fi
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
+    - wget http://bit.ly/miniconda -O miniconda.sh
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - conda update --all --yes
+    - conda config --add channels ioos -f
+    - travis_retry conda create --yes -n test $CONDA --file requirements.txt
+    - source activate test
+    - travis_retry conda install --yes pytest
 
-  # Create the basic testing environment
-  # ------------------------------------
-  - conda config --set always_yes yes --set changeps1 no
-  - conda config --set show_channel_urls True
-  - conda update --quiet conda
-  - ENV_NAME='test-environment'
-  - conda create --quiet -n $ENV_NAME python=$TRAVIS_PYTHON_VERSION
-  - source activate $ENV_NAME
+script:
+    - py.test -vv
 
-install:
-  # Customise the testing environment
-  # ---------------------------------
-  - conda install --channel https://conda.binstar.org/rsignell --file requirements.txt
-  - conda install pytest
-script: py.test -vv
 notifications:
     flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
-
