@@ -9,8 +9,12 @@ import requests
 
 class NerrsSoap(Collector):
     def __init__(self, **kwargs):
+        """
+        :param wildcard: string for optional token-based access mechanism.
+        """
         super(NerrsSoap, self).__init__()
         self.wsdl_url = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
+        self.wildcard = kwargs.get("wildcard")
         self.stations = self.get_stations()
 
     def get_station(self, feature):
@@ -19,8 +23,19 @@ class NerrsSoap(Collector):
                 return s
 
     def get_stations(self):
-        """<exportStationCodesXMLNew />"""
-        env = self._makesoap(etree.Element("exportStationCodesXMLNew"))
+        if self.wildcard is not None:
+            xml_str = """
+            <exportStationCodesXMLNew xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
+            </exportStationCodesXMLNew>
+            """
+            xml_obj = etree.fromstring(xml_str)
+            xml_obj.find(".//wildcard").text = self.wildcard
+        else:
+            """<exportStationCodesXMLNew />"""
+            xml_obj = etree.Element("exportStationCodesXMLNew")
+
+        env = self._makesoap(xml_obj)
 
         stats = []
         for data in env.findall(".//data"):
@@ -30,6 +45,8 @@ class NerrsSoap(Collector):
                 if val is None:
                     val = ""
                 s[child.tag] = val
+            s['Longitude'] = -float(s['Longitude'])
+            s['Latitude'] = float(s['Latitude'])
             stats.append(s)
 
         return stats
@@ -77,7 +94,6 @@ class NerrsSoap(Collector):
         return NerrsToPaegan(results, nerrs_stations=self.stations).feature
 
     def raw(self, **kwargs):
-
         # These are the features we will actually query against
         query_features = []
 
@@ -124,9 +140,13 @@ class NerrsSoap(Collector):
             <mindate xsi:type="xsd:string">05/29/2013</mindate>
             <maxdate xsi:type="xsd:string">05/31/2013</maxdate>
             <param xsi:type="xsd:string">WSpd,WDir</param>
+            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportAllParamsDateRangeXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
+
+        if self.wildcard is not None:
+            xml_obj.find(".//wildcard").text = self.wildcard
 
         xml_obj.find(".//mindate").text = self.start_time.strftime('%m/%d/%Y')
         xml_obj.find(".//maxdate").text = self.end_time.strftime('%m/%d/%Y')
@@ -157,9 +177,13 @@ class NerrsSoap(Collector):
             <station_code xsi:type="xsd:string">FILLME</station_code>
             <recs xsi:type="xsd:string">FILLME</recs>
             <param xsi:type="xsd:string">FILLME</param>
+            <wildcard xsi:type="xsd:string">OPTIONALVALUE</wildcard>
         </exportSingleParamXMLNew>
         """
         xml_obj = etree.fromstring(xml_str)
+
+        if self.wildcard is not None:
+            xml_obj.find(".//wildcard").text = self.wildcard
 
         # Set parameters
         feature_vars = self.list_variables(feature=feature)
