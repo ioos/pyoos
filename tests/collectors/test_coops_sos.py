@@ -18,20 +18,20 @@ class CoopsSosTest(unittest.TestCase):
         assert self.c.server.identification.service == 'OGC:SOS'
         assert self.c.server.identification.version == '1.0.0'
         assert self.c.server.identification.abstract == 'NOAA.NOS.CO-OPS Sensor Observation Service (SOS) Server'
-        assert self.c.server.identification.keywords == ['Air Temperature', 'Barometric Pressure', 'Conductivity', 'Currents', 'Datums', 'Rain Fall', 'Relative Humidity', 'Harmonic Constituents', 'Salinity', 'Visibility', 'Water Level', 'Water Level Predictions', 'Water Temperature', 'Winds']
+        assert self.c.server.identification.keywords == ['Air Temperature', 'Barometric Pressure', 'Conductivity', 'Currents', 'Datum', 'Harmonic Constituents', 'Rain Fall', 'Relative Humidity', 'Salinity', 'Visibility', 'Water Level', 'Water Level Predictions', 'Water Temperature', 'Winds']
         assert self.c.server.identification.fees == 'NONE'
         assert self.c.server.identification.accessconstraints == 'NONE'
 
     def test_coops_describe_sensor(self):
         self.c.features = ['8454000']
-        response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1"')
+        response = self.c.metadata(output_format='text/xml;subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"')
         assert isinstance(response[0], SensorML)
 
     def test_raw_coops_get_observation(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
         self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
         self.c.features     = ['8454000']
-        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']
+        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']  # noqa
 
         response = self.c.raw(responseFormat="text/csv")
         assert isinstance(response, basestring)

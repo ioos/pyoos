@@ -43,8 +43,10 @@ class USGSTest(unittest.TestCase):
         self.c.filter(state="ri")
         collection = self.c.collect()
 
-        # Returns 41 stations
-        assert len(collection.elements) == 41
+        # Returns 43 stations.
+        # FIXME: This is a flaky test.  The station number changed from 41,
+        # to 42 and now 43.
+        assert len(collection.elements) == 43
 
         station = collection.elements[0]
         assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"
