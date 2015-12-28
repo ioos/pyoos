@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import string_types
+
 from pyoos.collectors.collector import Collector
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from owslib.sos import SensorObservationService as Sos
@@ -46,7 +49,7 @@ class IoosSweSos(Collector):
             raise ValueError("You must set a filter for at least one variable (observedProperty)")
         else:
             ops = ",".join(self.variables)
-            if isinstance(ops, basestring):
+            if isinstance(ops, string_types):
                 ops = [ops]
             params["observedProperties"] = ops
 
@@ -69,7 +72,7 @@ class IoosSweSos(Collector):
 
                 ioos_formats = [rf for rf in off_dict[offering].response_formats if 'ioos_sos/1.0' in rf]
                 if not len(ioos_formats):
-                    raise StandardError("No ioos_sos/1.0 response format found for offering %s" % offering)
+                    raise Exception("No ioos_sos/1.0 response format found for offering {}".format(offering))
 
                 if response_format != ioos_formats[0]:
                     response_format = ioos_formats[0]

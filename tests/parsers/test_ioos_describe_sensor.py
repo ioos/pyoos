@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import os
 import unittest
 from datetime import datetime
@@ -12,7 +14,7 @@ from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 class IoosDescribeSensorTest(unittest.TestCase):
 
     def test_network(self):
-        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Network.xml')), "rU").read()
+        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Network.xml')), "rb").read()
         d    = IoosDescribeSensor(data)
 
         assert d.ioos_version == "1.0"
@@ -22,7 +24,7 @@ class IoosDescribeSensorTest(unittest.TestCase):
         assert d.ending       == datetime(2012, 12, 27, 19, tzinfo=pytz.utc)
 
     def test_station(self):
-        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Station.xml')), "rU").read()
+        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Station.xml')), "rb").read()
         d = IoosDescribeSensor(data)
 
         assert d.ioos_version == "1.0"
@@ -35,7 +37,7 @@ class IoosDescribeSensorTest(unittest.TestCase):
         assert d.ending       == datetime(2012, 12, 27, 19, tzinfo=pytz.utc)
 
     def test_sensor(self):
-        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Sensor.xml')), "rU").read()
+        data = open(resource_file(os.path.join('ioos_swe', 'SML-DescribeSensor-Sensor.xml')), "rb").read()
         d = IoosDescribeSensor(data)
 
         assert d.ioos_version == "1.0"

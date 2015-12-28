@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import text_type
+
 import itertools
 
 from owslib.swe.sensor.sml import SensorML
@@ -7,7 +10,11 @@ from owslib.util import testXMLValue, testXMLAttribute, nspath_eval
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 
 from dateutil import parser
-from urlparse import urljoin
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
+# FIXME: Should we enforce lxml?
 from lxml import etree
 import warnings
 
@@ -49,7 +56,7 @@ class DescribeSensor(IoosDescribeSensor):
 
     def __init__(self, element):
         """ Common things between all describe sensor requests """
-        if isinstance(element, str):
+        if isinstance(element, bytes):
             root = etree.fromstring(element)
         else:
             root = element
@@ -67,7 +74,7 @@ class DescribeSensor(IoosDescribeSensor):
 
         self.shortName = self.get_ioos_def('shortName', 'identifier', ont)
         self.longName = self.get_ioos_def('longName', 'identifier', ont)
-        self.keywords = map(unicode, self.system.keywords)
+        self.keywords = list(map(str, self.system.keywords))
 
         # Location
         try:

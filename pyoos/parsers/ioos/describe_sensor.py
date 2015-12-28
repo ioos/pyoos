@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 
@@ -8,7 +10,7 @@ SWE_NS = [ns.get_versioned_namespace('swe', '1.0.1')]
 class IoosDescribeSensor(object):
 
     def __new__(cls, element):
-        if isinstance(element, str):
+        if isinstance(element, bytes):
             root = etree.fromstring(element)
         else:
             root = element

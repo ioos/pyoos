@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import pytz
 import unittest
 from datetime import datetime, timedelta
@@ -32,7 +34,7 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # 'rkbfbwq' does not have ATemp, so it not returned
         assert len(raw) == 1
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet']
 
         self.c.clear()
         self.c.filter(features=['owcowmet', 'rkbfbwq'])
@@ -41,7 +43,7 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # both are returned
         assert len(raw) == 2
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet', 'rkbfbwq']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet', 'rkbfbwq']
 
         # Must specify BBOX or Features subset for NERRS
         self.c.clear()
@@ -66,7 +68,7 @@ class NerrTest(unittest.TestCase):
         raw = self.c.raw()
         dsg = self.c.collect()
         assert len(raw) == 1
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet']
 
         self.c.clear()
         self.c.filter(features=['owcowmet', 'rkbfbwq'])
@@ -74,7 +76,7 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # both are returned
         assert len(raw) == 2
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet', 'rkbfbwq']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet', 'rkbfbwq']
 
     @pytest.mark.xfail
     def test_nerrs_time_filter(self):
@@ -90,7 +92,7 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # both are returned
         assert len(raw) == 2
-        sorted_stations = sorted(map(lambda x: x.uid, dsg.elements))
+        sorted_stations = sorted([x.uid for x in dsg.elements])
         assert sorted_stations == ['owcowmet', 'rkbfbwq']
         station = dsg.elements[0]
         station.calculate_bounds()
@@ -108,7 +110,7 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # only 'owcowmet' returning
         assert len(raw) == 1
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet']
 
         # Test multiple filter types on one call to 'filter'
         self.c.clear()
@@ -117,4 +119,4 @@ class NerrTest(unittest.TestCase):
         dsg = self.c.collect()
         # only 'owcowmet' returning
         assert len(raw) == 1
-        assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet']
+        assert sorted([x.uid for x in dsg.elements]) == ['owcowmet']

@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from dateutil import parser
 from copy import copy
 
@@ -141,7 +143,7 @@ class TimeSeries(object):
         data_values = data_array.values
         self.raw_data = copy(data_values)
 
-        for row in filter(lambda x: x != "", data_values.split(blockSeparator)):
+        for row in [x for x in data_values.split(blockSeparator) if x != ""]:
 
             pt = None
             members     = []
@@ -182,7 +184,7 @@ class TimeSeries(object):
                     members.append(m)
 
                 else:
-                    print "WHAT AM I"
+                    print("WHAT AM I?")
 
                 i += 1
 
@@ -190,8 +192,8 @@ class TimeSeries(object):
             pt.location = stations[sensors[sensor_key]['station']].location
             sensors[sensor_key]['values'].append(pt)
 
-        for k, v in stations.iteritems():
-            for sk, sv in sensors.iteritems():
+        for k, v in stations.items():
+            for sk, sv in sensors.items():
                 # Match on station uid
                 if sv['station'] == k:
                     v.elements = self._merge_points(v.elements or [], sv['values'])
@@ -199,9 +201,9 @@ class TimeSeries(object):
         if len(stations) > 1:
             self.feature = StationCollection(elements=stations)
         elif len(stations) == 1:
-            self.feature = next(stations.itervalues())
+            self.feature = next(iter(stations.values()))
         else:
-            print "No stations found!"
+            print("No stations found!")
 
     def _merge_points(self, pc1, pc2):
         """

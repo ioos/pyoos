@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from pyoos.collectors.collector import Collector
 from pyoos.utils.etree import etree
 from pyoos.parsers.wqx.wqx_outbound import WqxToPaegan
@@ -10,7 +12,7 @@ class WqpRest(Collector):
         self.results_url = kwargs.get('results_url', "http://www.waterqualitydata.us/Result/search")
         self.characteristics_url = kwargs.get("characteristics_url", "http://www.waterqualitydata.us/Codes/Characteristicname")
         self.characteristic_types_url = kwargs.get("characteristic_types_url", "http://www.waterqualitydata.us/Codes/Characteristictype")
-        
+
     def get_characterisic_types(self, **kwargs):
         root = etree.fromstring(requests.get(self.characteristic_types_url).text)
         return (x.get('value') for x in root.findall('Code'))
@@ -46,7 +48,7 @@ class WqpRest(Collector):
         if self.end_time is not None:
             params["startDateHi"] = self.end_time.strftime("%m-%d-%Y")
         if self.bbox is not None:
-            params["bbox"] = ",".join(map(lambda x: unicode(x), self.bbox))
+            params["bbox"] = ",".join([str(x) for x in self.bbox])
         if self.variables is not None:
             params["characteristicName"] = ";".join(self.variables)
         if self.features is not None:

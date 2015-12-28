@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from collections import defaultdict
 from itertools import groupby
 from dateutil.parser import parser
@@ -28,7 +30,7 @@ class HadsParser(object):
     def _build_station_collection(self, parsed_metadata, parsed_data):
 
         stations = []
-        for station_code, station_metadata in parsed_metadata.iteritems():
+        for station_code, station_metadata in parsed_metadata.items():
             s = Station()
             s.uid = station_code
             s.name = station_metadata['nwsli']
@@ -62,13 +64,11 @@ class HadsParser(object):
             zandtime = lambda x: str(x[3]) + "-" + str(time.mktime(x[1].timetuple()))
 
             # annotate data with z values, sort, group by keyfunc (z/time)
-            grouped_data = groupby(sorted(map(lambda x: (x[0],
-                                                         x[1],
-                                                         x[2],
-                                                         parsed_metadata[station_code]['variables'][x[0]]['base_elevation']),
-                                              parsed_data[station_code]),
-                                          key=zandtime),
-                                   zandtime)
+            grouped_data = groupby(sorted([(x[0],
+                                            x[1],
+                                            x[2],
+                                            parsed_metadata[station_code]['variables'][x[0]]['base_elevation']) for
+            x in parsed_data[station_code]], key=zandtime), zandtime)
 
             for _, group in grouped_data:
 
@@ -84,7 +84,7 @@ class HadsParser(object):
                 for val in groupvals:
                     std_var = self.get_variable_info(val[0])
                     if std_var is None:
-                        print "Unknown PE Code, ignoring:", val[0], "(station:", station_code, ")"
+                        print("Unknown PE Code, ignoring: {} (station: {}).".format(val[0], station_code))
                         continue
 
                     p.add_member(Member(value=val[2],
@@ -160,15 +160,15 @@ class HadsParser(object):
 
             raw_fields = line.split("|")
 
-            fields = dict(zip(field_keys, raw_fields[1:len(field_keys)]))
+            fields = dict(list(zip(field_keys, raw_fields[1:len(field_keys)])))
 
             # how many blocks of var_keys after initial fields
             var_offset = len(field_keys) + 1
-            var_blocks = (len(raw_fields) - var_offset) / len(var_keys)     # how many variables
+            var_blocks = (len(raw_fields) - var_offset) // len(var_keys)     # how many variables
             vars_only  = raw_fields[var_offset:]
             variables  = {}
 
-            for offset in xrange(var_blocks):
+            for offset in range(var_blocks):
                 var_dict = dict(zip(var_keys, vars_only[offset*len(var_keys):(offset+1)*len(var_keys)]))
                 variables[var_dict['pe_code']] = var_dict
 

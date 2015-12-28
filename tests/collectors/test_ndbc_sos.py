@@ -1,6 +1,9 @@
+from __future__ import (absolute_import, division, print_function)
+from six import string_types
+
 import unittest
 import csv
-import StringIO
+import io
 from datetime import datetime
 
 from owslib.swe.sensor.sml import SensorML
@@ -34,13 +37,13 @@ class NdbcSosTest(unittest.TestCase):
         self.c.features     = ['41012']
         self.c.variables    = ['air_pressure_at_sea_level']
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"depth (m)","air_pressure_at_sea_level (hPa)"
         urn:ioos:station:wmo:41012,urn:ioos:sensor:wmo:41012::baro1,30.04,-80.55,2012-10-01T00:50:00Z,0.00,1009.8
         """
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         assert data[0]['station_id'] == 'urn:ioos:station:wmo:41012'
         assert data[0]['sensor_id'] == 'urn:ioos:sensor:wmo:41012::baro1'
         assert data[0]['date_time'] == "2012-10-01T00:50:00Z"
@@ -54,10 +57,10 @@ class NdbcSosTest(unittest.TestCase):
         self.c.features     = ['32st0', '41012']  # Triggers network-all
         self.c.variables    = ['air_pressure_at_sea_level']
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
 
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         stations = list(set([x['station_id'] for x in data]))
         # 265 stations measured air_pressure that day
         assert len(stations) == 265
@@ -78,10 +81,10 @@ class NdbcSosTest(unittest.TestCase):
         self.c.features     = []  # Triggers network-all
         self.c.variables    = ['air_pressure_at_sea_level']
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
 
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         stations = list(set([x['station_id'] for x in data]))
         # 265 stations measured air_pressure that day
         assert len(stations) == 265

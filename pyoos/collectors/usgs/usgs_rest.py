@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import string_types
+
 from pyoos.collectors.collector import Collector
 import requests
 from pyoos.parsers.waterml import WaterML11ToPaegan
@@ -11,7 +14,7 @@ class UsgsRest(Collector):
 
     def set_state(self, state):
         if state is not None:
-            if not isinstance(state, unicode) and not isinstance(state, str):
+            if not isinstance(state, string_types):
                 raise ValueError("Not a recognized state. \
                                   Must be a str or unicode string")
         self._state = state
@@ -33,10 +36,10 @@ class UsgsRest(Collector):
     def setup_params(self, **kwargs):
         params = kwargs
 
-        majors = filter(None, [self.bbox, self.features, self.state])
+        majors = [_f for _f in [self.bbox, self.features, self.state] if _f]
         if len(majors) > 1:
             raise ValueError("""USGS does not allow filtering by more than one 'major' filter.
-                                State, BBox, and Features (sites) are all considered 'major' filters. 
+                                State, BBox, and Features (sites) are all considered 'major' filters.
                                 Please set all but one of the filters to None and try again.""")
 
         if self.start_time is not None:
@@ -44,7 +47,7 @@ class UsgsRest(Collector):
         if self.end_time is not None:
             params["endDT"] = self.end_time.strftime('%Y-%m-%dT%H:%M')
         if self.bbox is not None:
-            params["bBox"] = ",".join(map(lambda x: unicode(x), self.bbox))
+            params["bBox"] = ",".join([str(x) for x in self.bbox])
         if self.variables is not None and len(self.variables) > 0:
             params["parameterCd"] = ",".join(self.variables)
         if self.features is not None and len(self.features) > 0:

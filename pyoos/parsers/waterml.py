@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import text_type
+
 import pytz
 from owslib.etree import etree
 
@@ -12,9 +15,11 @@ from paegan.cdm.dsg.member import Member
 class WaterML11ToPaegan(object):
     def __init__(self, waterml_data):
 
-        if isinstance(waterml_data, str) or isinstance(waterml_data, unicode):
+        if isinstance(waterml_data, text_type):
             try:
-                self._root = etree.fromstring(str(waterml_data))
+                # FIXME: Ideally we would pass bytes here rather than encoding.
+                # to be consistent with the rest of the code and ditch the hack below.
+                self._root = etree.fromstring(str(waterml_data).encode())
             except ValueError:
                 # Strip out the XML header due to UTF8 encoding declaration
                 self._root = etree.fromstring(waterml_data[56:])
@@ -49,7 +54,7 @@ class WaterML11ToPaegan(object):
                     location = info.location.geo_coords[0]
                     srs = info.location.srs[0]
                 except:
-                    print "Could not find a location for %s... skipping station" % s.uid
+                    print("Could not find a location for {}... skipping station".format(s.uid))
                     continue
 
                 s.location = sPoint(float(location[0]), float(location[1]), vertical)
@@ -76,7 +81,7 @@ class WaterML11ToPaegan(object):
                     times[dt].append(Member(value=r.value, unit=variable.unit.code, name=variable.variable_name, description=variable.variable_description, standard=variable.variable_code))
 
             station = stations[station_lookup.index(station_code)]
-            for dts, members in times.iteritems():
+            for dts, members in times.items():
                 p = Point()
                 p.time = dts
                 p.location = station.location

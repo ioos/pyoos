@@ -4,3 +4,4 @@ requests
 Fiona>=0.16.1
 beautifulsoup4>=4.2.1
 lxml>=3.2.0
+six
