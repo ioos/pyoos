@@ -16,7 +16,7 @@ def units(param):
     # http://cdmo.baruch.sc.edu/documents/manual.pdf
     units = {
         # Water Quality
-        'Temp'      :       '°C',
+        'Temp'      :       u'°C',
         'SpCond'    :       'mS/cm',
         'Sal'       :       'ppt',
         'DO_pct'    :       '%',
@@ -27,15 +27,15 @@ def units(param):
         'cLevel'    :       'm',
         'pH'        :       '',
         'Turb'      :       'NTU',
-        'ChlFluor'  :       'µg/L',
+        'ChlFluor'  :       u'µg/L',
         # Meteorological
-        'ATemp'     :       '°C',
+        'ATemp'     :       u'°C',
         'RH'        :       '%',
         'BP'        :       'mb',
         'WSpd'      :       'm/s',
         'MaxWSpd'   :       'm/s',
         'MaxWSpdT'  :       'hh:mm',
-        'Wdir'      :       '°TN',
+        'Wdir'      :       u'°TN',
         'SDWDir'    :       'sd',
         'TotPAR'    :       'mmoles/m^2',
         'TotPrcp'   :       'mm',
@@ -47,7 +47,7 @@ def units(param):
         'NO2F'      :       'mg/L',
         'NO3F'      :       'mg/L',
         'NO23F'     :       'mg/L',
-        'CHLA_N'    :       'µg/L'
+        'CHLA_N'    :       u'µg/L'
     }
     return units.get(param)
 
