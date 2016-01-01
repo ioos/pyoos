@@ -44,9 +44,9 @@ class USGSTest(unittest.TestCase):
         collection = self.c.collect()
 
         # Returns 43 stations.
-        # FIXME: This is a flaky test.  The station number changed from 41,
-        # to 42 and now 43.
-        assert len(collection.elements) == 43
+        # FIXME: This is a flaky test.  The station number changed from
+        #41, to 42 and now 43. (And back to 42!)
+        assert len(collection.elements) == 42
 
         station = collection.elements[0]
         assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"

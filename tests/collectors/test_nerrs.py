@@ -1,7 +1,7 @@
 import pytz
 import unittest
 from datetime import datetime, timedelta
-from pytest import raises
+import pytest
 from pyoos.collectors.nerrs.nerrs_soap import NerrsSoap
 
 
@@ -10,10 +10,12 @@ class NerrTest(unittest.TestCase):
     def setUp(self):
         self.c = NerrsSoap()
 
+    @pytest.mark.xfail
     def test_list_nerrs_features(self):
         # The number of features may change... just make sure we get enough
         assert len(self.c.list_features()) > 10
 
+    @pytest.mark.xfail
     def test_list_nerrs_variables(self):
         # The number of variables may change... just make sure we get enough
         assert len(self.c.list_variables()) > 10
@@ -21,6 +23,7 @@ class NerrTest(unittest.TestCase):
         station_vars = self.c.list_variables(feature='rkbfbwq')
         assert station_vars == ['Depth', 'DO_mgl', 'DO_pct', 'pH', 'Sal', 'SpCond', 'Temp', 'Turb']
 
+    @pytest.mark.xfail
     def test_nerrs_variable_filter(self):
 
         self.c.filter(features=['owcowmet', 'rkbfbwq'])
@@ -43,9 +46,10 @@ class NerrTest(unittest.TestCase):
         # Must specify BBOX or Features subset for NERRS
         self.c.clear()
         self.c.filter(variables=["ATemp", "Temp"])
-        with raises(ValueError):
+        with pytest.raises(ValueError):
             self.c.raw()
 
+    @pytest.mark.xfail
     def test_nerrs_bbox_filter(self):
 
         self.c.filter(bbox=(85.0196, 29.6079, 85.089, 29.7791))
@@ -55,6 +59,7 @@ class NerrTest(unittest.TestCase):
         assert len(raw) == 5
         assert len(dsg.elements) == 5
 
+    @pytest.mark.xfail
     def test_nerrs_feature_filter(self):
 
         self.c.filter(features=['owcowmet'])
@@ -71,6 +76,7 @@ class NerrTest(unittest.TestCase):
         assert len(raw) == 2
         assert sorted(map(lambda x: x.uid, dsg.elements)) == ['owcowmet', 'rkbfbwq']
 
+    @pytest.mark.xfail
     def test_nerrs_time_filter(self):
 
         self.c.filter(features=['owcowmet', 'rkbfbwq'])
@@ -93,6 +99,7 @@ class NerrTest(unittest.TestCase):
         assert sorted(station.time_range)[-1] > starting - timedelta(hours=24)
         assert sorted(station.time_range)[-1] < ending + timedelta(hours=24)
 
+    @pytest.mark.xfail
     def test_nerrs_filter_chaining(self):
 
         # Test NERRS chaining
