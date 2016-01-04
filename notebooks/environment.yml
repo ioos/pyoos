@@ -1,15 +1,11 @@
-name: sscsw
+name: pyoos
 channels:
     - ioos
 dependencies:
     - python=2.7
-    - bokeh
-    - folium
     - jupyter
     - matplotlib
-    - owslib
+    - bokeh
+    - folium
     - pandas
     - pyoos
-    - pysgrid
-    - pyugrid
-    - gridgeo
