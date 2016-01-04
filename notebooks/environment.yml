@@ -1,0 +1,11 @@
+name: pyoos
+channels:
+    - ioos
+dependencies:
+    - python=2.7
+    - jupyter
+    - matplotlib
+    - bokeh
+    - folium
+    - pandas
+    - pyoos
