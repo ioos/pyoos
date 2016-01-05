@@ -5,6 +5,7 @@ import sys
 from setuptools import setup, find_packages
 from setuptools.command.test import test as TestCommand
 
+
 def extract_version(module='pyoos'):
     version = None
     fdir = os.path.dirname(__file__)
@@ -20,30 +21,32 @@ def extract_version(module='pyoos'):
 
 
 def readme():
-    with open('README.md') as f:
+    with open('README.rst') as f:
         return f.read()
 
 reqs = [line.strip() for line in open('requirements.txt')]
+
 
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
         self.test_args = []
         self.test_suite = True
+
     def run_tests(self):
         import pytest
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
 setup(
-    name                = "pyoos",
+    name                = 'pyoos',
     version             = extract_version(),
-    description         = "A Python library for collecting Met/Ocean observations",
+    description         = 'A Python library for collecting Met/Ocean observations',
     long_description    = readme(),
     license             = 'GPLv3',
-    author              = "Kyle Wilcox",
-    author_email        = "kwilcox@sasascience.com",
-    url                 = "https://github.com/asascience-open/pyoos",
+    author              = 'Kyle Wilcox',
+    author_email        = 'kyle@axiomdatascience.com',
+    url                 = 'https://github.com/ioos/pyoos.git',
     packages            = find_packages(),
     install_requires    = reqs,
     tests_require       = ['pytest'],
