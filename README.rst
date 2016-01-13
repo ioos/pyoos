@@ -256,13 +256,13 @@ Contributors
 -  Kyle Wilcox kyle@axiomdatascience.com
 -  Sean Cowan scowan@asascience.com
 -  Alex Crosby acrosby@asascience.com
--  Dave Foster dfoster@asascience.com
+-  Dave Foster dave@axiomdatascience.com
+-  Filipe Pires Alvarenga Fernandes ocefpaf@gmail.com
 
 Copyright and licence
 ---------------------
 
-Copyright (C) 2012, 2013 Applied Science Associates
-Copyright (C) 2012, 2013 Kyle Wilcox wilcox.kyle@gmail.com
+Copyright (C) 2012-2016 RPS ASA
 
 This file is part of Pyoos.
 
