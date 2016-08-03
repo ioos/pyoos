@@ -9,7 +9,7 @@ ns = Namespaces()
 
 class IoosGetObservation(object):
     def __new__(cls, element):
-        if isinstance(element, bytes):
+        if isinstance(element, (str, bytes)):
             root = etree.fromstring(element)
         else:
             root = element
@@ -29,13 +29,13 @@ class IoosGetObservation(object):
 
         if version == "1.0":
             from pyoos.parsers.ioos.one.get_observation import GetObservation as GO10
-            return super(IoosGetObservation, cls).__new__(GO10, element=root)
+            return super(IoosGetObservation, cls).__new__(GO10)
         else:
             raise ValueError("Unsupported IOOS version {}.  Supported: [1.0]".format(version))
 
     def __init__(self, element):
         # Get individual om:Observations has a hash or name:ob
-        if isinstance(element, str):
+        if isinstance(element, (str, bytes)):
             self._root = etree.fromstring(element)
         else:
             self._root = element
