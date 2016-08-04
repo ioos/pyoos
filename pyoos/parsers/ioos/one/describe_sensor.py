@@ -18,7 +18,6 @@ except ImportError:
 from lxml import etree
 import warnings
 
-from six import string_types
 
 def get_namespaces():
     n = Namespaces()
@@ -57,7 +56,7 @@ class DescribeSensor(IoosDescribeSensor):
 
     def __init__(self, element):
         """ Common things between all describe sensor requests """
-        if isinstance(element, string_types):
+        if isinstance(element, (str, bytes)):
             root = etree.fromstring(element)
         else:
             root = element

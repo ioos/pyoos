@@ -4,14 +4,12 @@ from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue
 
-from six import string_types
-
 ns = Namespaces()
 
 
 class IoosGetObservation(object):
     def __new__(cls, element):
-        if isinstance(element, string_types):
+        if isinstance(element, (str, bytes)):
             root = etree.fromstring(element)
         else:
             root = element
@@ -37,7 +35,7 @@ class IoosGetObservation(object):
 
     def __init__(self, element):
         # Get individual om:Observations has a hash or name:ob
-        if isinstance(element, string_types):
+        if isinstance(element, (str, bytes)):
             self._root = etree.fromstring(element)
         else:
             self._root = element
