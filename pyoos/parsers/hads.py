@@ -160,7 +160,7 @@ class HadsParser(object):
 
             raw_fields = line.split("|")
 
-            fields = dict(list(zip(field_keys, raw_fields[1:len(field_keys)])))
+            fields = dict(zip(field_keys, raw_fields[1:len(field_keys)]))
 
             # how many blocks of var_keys after initial fields
             var_offset = len(field_keys) + 1

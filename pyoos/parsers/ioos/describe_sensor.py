@@ -3,6 +3,8 @@ from __future__ import (absolute_import, division, print_function)
 from pyoos.utils.etree import etree
 from owslib.namespaces import Namespaces
 
+from six import string_types
+
 ns = Namespaces()
 SML_NS = ns.get_versioned_namespace('sml', '1.0.1')
 SWE_NS = [ns.get_versioned_namespace('swe', '1.0.1')]
@@ -10,7 +12,7 @@ SWE_NS = [ns.get_versioned_namespace('swe', '1.0.1')]
 class IoosDescribeSensor(object):
 
     def __new__(cls, element):
-        if isinstance(element, bytes):
+        if isinstance(element, string_types):
             root = etree.fromstring(element)
         else:
             root = element
