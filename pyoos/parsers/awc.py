@@ -1,5 +1,4 @@
 from __future__ import (absolute_import, division, print_function)
-from six import string_types
 
 import pytz
 from owslib.etree import etree
@@ -15,16 +14,7 @@ from datetime import datetime
 class AwcToPaegan(object):
     def __init__(self, awc_list):
         for awc_data in awc_list:
-            if isinstance(awc_data, string_types):
-                try:
-                    # FIXME: Ideally we would pass bytes here rather than encoding.
-                    # to be consistent with the rest of the code and ditch the hack below.
-                    self._root = etree.fromstring(str(awc_data).encode())
-                except ValueError:
-                    # Strip out the XML header due to UTF8 encoding declaration
-                    self._root = etree.fromstring(awc_data[56:])
-            else:
-                raise ValueError("Cannot parse response into ElementTree xml object")
+            self._root = etree.fromstring(awc_data.encode())
 
             '''Code to get station iterator goes here.'''
             stations = []

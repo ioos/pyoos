@@ -1,8 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
-from six import text_type
 
 import pytz
-from owslib.etree import etree
+from owslib.etree import ElementType, etree
 
 from owslib.waterml.wml11 import WaterML_1_1
 from shapely.geometry import Point as sPoint
@@ -15,16 +14,10 @@ from paegan.cdm.dsg.member import Member
 class WaterML11ToPaegan(object):
     def __init__(self, waterml_data):
 
-        if isinstance(waterml_data, text_type):
-            try:
-                # FIXME: Ideally we would pass bytes here rather than encoding.
-                # to be consistent with the rest of the code and ditch the hack below.
-                self._root = etree.fromstring(str(waterml_data).encode())
-            except ValueError:
-                # Strip out the XML header due to UTF8 encoding declaration
-                self._root = etree.fromstring(waterml_data[56:])
-        else:
+        if isinstance(waterml_data, ElementType):
             self._root = waterml_data
+        else:
+            self._root = etree.fromstring(waterml_data.encode())
 
         response = WaterML_1_1(self._root).response
 
