@@ -14,8 +14,7 @@ try:
     from urlparse import urljoin
 except ImportError:
     from urllib.parse import urljoin
-# FIXME: Should we enforce lxml?
-from lxml import etree
+from pyoos.utils import ElementType, etree
 import warnings
 
 
@@ -56,10 +55,10 @@ class DescribeSensor(IoosDescribeSensor):
 
     def __init__(self, element):
         """ Common things between all describe sensor requests """
-        if isinstance(element, (str, bytes)):
-            root = etree.fromstring(element)
-        else:
+        if isinstance(element, ElementType):
             root = element
+        else:
+            root = etree.fromstring(element)
 
         sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(SML_NS)
 
