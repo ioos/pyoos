@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import pytz
 from owslib.etree import etree
 
@@ -12,17 +14,9 @@ from datetime import datetime
 class AwcToPaegan(object):
     def __init__(self, awc_list):
         for awc_data in awc_list:
-            if isinstance(awc_data, str) or isinstance(awc_data, unicode):
-                try:
-                    self._root = etree.fromstring(str(awc_data))
-                except ValueError:
-                    # Strip out the XML header due to UTF8 encoding declaration
-                    self._root = etree.fromstring(awc_data[56:])
-            else:
-                raise ValueError("Cannot parse response into ElementTree xml object")
+            self._root = etree.fromstring(awc_data.encode())
 
-            '''Code to get station iterator goes here
-            '''
+            '''Code to get station iterator goes here.'''
             stations = []
             station_lookup = []
             times = []
@@ -55,7 +49,7 @@ class AwcToPaegan(object):
                         dt = dt.replace(tzinfo=pytz.utc)
                     dt = dt.astimezone(pytz.utc)
 
-                    if dt not in times[station_lookup.index(s.uid)].keys():
+                    if dt not in list(times[station_lookup.index(s.uid)].keys()):
                         times[station_lookup.index(s.uid)][dt] = []
 
                     if metar.find(variable) != None:
@@ -75,7 +69,7 @@ class AwcToPaegan(object):
                             times[station_lookup.index(s.uid)][dt].append(Member(value=float(metar.find(variable).text), unit=variable.split("_")[-1], name=variable, description=variable, standard=None))
 
             for time_dict, station in zip(times, stations):
-                for dts, members in time_dict.iteritems():
+                for dts, members in time_dict.items():
                     p = Point()
                     p.time = dts
                     p.location = station.location

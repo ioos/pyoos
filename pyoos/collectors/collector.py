@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import pytz
 
 class Collector(object):
@@ -104,7 +106,7 @@ class Collector(object):
 
         if len(kwargs) > 0:
             # Apply custom filters that are left
-            for k, v in kwargs.iteritems():
+            for k, v in kwargs.items():
                 setattr(self, k, v)
 
         # Return self to enable chaining

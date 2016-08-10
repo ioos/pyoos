@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function)
 
 from pyoos.utils.etree import etree
 from owslib.util import testXMLValue
@@ -110,7 +111,7 @@ class NerrsToPaegan(object):
         skip_tags = ["DateTimeStamp", "utcStamp", "data", "MaxWSpdT"]
 
         stations = []
-        for feature, response in response_list.iteritems():
+        for feature, response in response_list.items():
             if not isinstance(response, etree._Element):
                 response = etree.fromstring(response)
 

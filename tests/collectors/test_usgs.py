@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import unittest
 from pyoos.collectors.usgs.usgs_rest import UsgsRest
 from datetime import datetime, timedelta
@@ -15,7 +17,7 @@ class USGSTest(unittest.TestCase):
 
         # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
         assert len(collection.elements) == 4
-        assert sorted(map(lambda x: x.uid, collection.elements)) == ["04044724", "04045500", "04046000", "04056500"]
+        assert sorted([x.uid for x in collection.elements]) == ["04044724", "04045500", "04046000", "04056500"]
 
         station = collection.elements[0]
         assert station.name == "AU TRAIN RIVER AT FOREST LAKE, MI"
@@ -34,7 +36,7 @@ class USGSTest(unittest.TestCase):
 
         # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
         assert len(collection.elements) == 4
-        assert sorted(map(lambda x: x.uid, collection.elements)) == ["04044724", "04045500", "04046000", "04056500"]
+        assert sorted([x.uid for x in collection.elements]) == ["04044724", "04045500", "04046000", "04056500"]
 
     def test_by_state(self):
         # Clear filters
@@ -44,8 +46,8 @@ class USGSTest(unittest.TestCase):
         collection = self.c.collect()
 
         # Returns 43 stations.
-        # FIXME: This is a flaky test.  The station number changed from
-        #41, to 42 and now 43. (And back to 42!)
+        # FIXME: This is a very flaky test!  The station number changed from
+        # 41, to 42 and now 43. (And back to 42!)
         assert len(collection.elements) == 42
 
         station = collection.elements[0]

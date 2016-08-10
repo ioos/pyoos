@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from dateutil import parser
 from collections import OrderedDict, defaultdict
 from bisect import bisect_left
@@ -39,7 +41,7 @@ class ProfileCache(object):
         point.members.extend(obs_members)
 
     def get_collections(self):
-        return {k[2] : ProfileCollection(elements=pd.values()) for k, pd in self._cache.iteritems()}
+        return {k[2] : ProfileCollection(elements=list(pd.values())) for k, pd in self._cache.items()}
 
     def _get_profile(self, sensor, t):
         sens_loc_tuple = (sensor['location']['point'].x, sensor['location']['point'].y, sensor['station'])
@@ -157,15 +159,15 @@ class TimeSeriesProfile(object):
         sensor_data = self._parse_sensor_data(record.get_by_name('observationData'), sensors)
 
         # sensor data is dict of station id -> profile collection
-        for station_id, sensor_profile_data in sensor_data.iteritems():
+        for station_id, sensor_profile_data in sensor_data.items():
             stations[station_id].elements.extend(sensor_profile_data._elements)
 
         if len(stations) > 1:
             self.feature = StationCollection(elements=stations)
         elif len(stations) == 1:
-            self.feature = next(stations.itervalues())
+            self.feature = next(iter(stations.values()))
         else:
-            print "No stations found!"
+            print("No stations found!")
             self.feature = None
 
     def _parse_sensor_orientation(self, ori_el):
@@ -261,7 +263,7 @@ class TimeSeriesProfile(object):
         collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
 
         data_values = data_array.values
-        lines = filter(lambda x: x != '', data_values.split(blockSeparator))
+        lines = [x for x in data_values.split(blockSeparator) if x != '']
 
         ret_val = []
 
@@ -303,7 +305,7 @@ class TimeSeriesProfile(object):
         collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
 
         data_values = data_array.values
-        lines = filter(lambda x: x != '', data_values.split(blockSeparator))
+        lines = [x for x in data_values.split(blockSeparator) if x != '']
 
         # profile cacher!
         profile_cache = ProfileCache()
@@ -370,7 +372,7 @@ class TimeSeriesProfile(object):
 
         parsed = []
 
-        for recnum in xrange(count):
+        for recnum in range(count):
             cur  = []
 
             for f in sensor_data_array.elementType.field:

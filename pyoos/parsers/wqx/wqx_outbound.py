@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import text_type
+
 from owslib.util import nspath as nsp
 from owslib.util import testXMLValue
 from pyoos.utils.asatime import AsaTime
@@ -83,7 +86,7 @@ class WqxOutbound(object):
     def __init__(self, element):
         wqx_ns = "http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/"
 
-        if isinstance(element, str) or isinstance(element, unicode):
+        if isinstance(element, text_type):
             try:
                 self._root = etree.fromstring(element)
             except ValueError:

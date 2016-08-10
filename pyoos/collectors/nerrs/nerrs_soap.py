@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from pyoos.parsers.nerrs import NerrsToPaegan
 from pyoos.collectors.collector import Collector
 from pyoos.utils.etree import etree
@@ -76,15 +78,15 @@ class NerrsSoap(Collector):
         return etree.fromstring(r.text[38:]).find(".//returnData")
 
     def list_features(self):
-        return sorted(map(lambda s: s['Station_Code'], self.stations), key=str.lower)
+        return sorted([s['Station_Code'] for s in self.stations], key=str.lower)
 
     def list_variables(self, feature=None):
         ignore_vars = ["", None]
         if feature is None:
-            stationvars = map(lambda s: s['Params_Reported'].split(","), self.stations)
-            # Combine the sublists, ignoring bad names
+            stationvars = [s['Params_Reported'].split(",") for s in self.stations]
+            # Combine the sublists, ignoring bad names.
             allvars = [v for sublist in stationvars for v in sublist if v not in ignore_vars]
-            # Unique the var list
+            # Unique the var list.
             return sorted(list(set(allvars)), key=str.lower)
         else:
             s = self.get_station(feature)
@@ -102,7 +104,7 @@ class NerrsSoap(Collector):
             raise ValueError("NERRS requires a BBOX or Feature filter")
 
         if self.bbox is not None and self.features is not None:
-            print "Both a BBox and Feature filter is defined, BBOX takes precedence"
+            print("Both a BBox and Feature filter is defined, BBOX takes precedence.")
 
         # BBox takes precedence over features
         if self.bbox is not None:

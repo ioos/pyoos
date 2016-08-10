@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import text_type, string_types
+
 from pyoos.collectors.ioos.swe_sos import IoosSweSos
 
 
@@ -16,13 +19,13 @@ class NdbcSos(IoosSweSos):
         params = super(NdbcSos, self).setup_params(**kwargs)
 
         if self.bbox is not None:
-            params["featureofinterest"] = "BBOX:%s" % ",".join(map(lambda x: unicode(x), self.bbox))
+            params["featureofinterest"] = "BBOX:%s" % ",".join([text_type(x) for x in self.bbox])
 
         if self.features is None or len(self.features) < 1:
             params["offerings"] = ["urn:ioos:network:noaa.nws.ndbc:all"]
         elif len(self.features) > 1:
             # TODO: Send many requests, one for each station, rather than a network:all
-            print "NDBC does not support filtering by > 1 station at a time... returning all stations."
+            print("NDBC does not support filtering by > 1 station at a time... returning all stations.")
             params["offerings"] = ["urn:ioos:network:noaa.nws.ndbc:all"]
         elif len(self.features) == 1:
             params["offerings"] = ["urn:ioos:station:wmo:%s" % self.features[0]]
@@ -34,7 +37,7 @@ class NdbcSos(IoosSweSos):
             raise ValueError("You must set a filter for at least one variable (observedProperty)")
         else:
             ops = ",".join(self.variables)
-            if isinstance(ops, basestring):
+            if isinstance(ops, string_types):
                 ops = [ops]
             params["observedProperties"] = ops
 

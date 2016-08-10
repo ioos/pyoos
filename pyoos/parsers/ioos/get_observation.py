@@ -1,4 +1,6 @@
-from pyoos.utils.etree import etree
+from __future__ import (absolute_import, division, print_function)
+
+from pyoos.utils.etree import ElementType, etree
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue
 
@@ -7,10 +9,10 @@ ns = Namespaces()
 
 class IoosGetObservation(object):
     def __new__(cls, element):
-        if isinstance(element, str):
-            root = etree.fromstring(element)
-        else:
+        if isinstance(element, ElementType):
             root = element
+        else:
+            root = etree.fromstring(element)
 
         if hasattr(root, 'getroot'):
             root = root.getroot()
@@ -27,16 +29,16 @@ class IoosGetObservation(object):
 
         if version == "1.0":
             from pyoos.parsers.ioos.one.get_observation import GetObservation as GO10
-            return super(IoosGetObservation, cls).__new__(GO10, element=root)
+            return super(IoosGetObservation, cls).__new__(GO10)
         else:
-            raise ValueError("Unsupported IOOS version.  Supported: [1.0]")
+            raise ValueError("Unsupported IOOS version {}.  Supported: [1.0]".format(version))
 
     def __init__(self, element):
-        # Get individual om:Observations has a hash or name:ob
-        if isinstance(element, str):
-            self._root = etree.fromstring(element)
-        else:
+        # Get individual om:Observations has a hash or name:ob.
+        if isinstance(element, ElementType):
             self._root = element
+        else:
+            self._root = etree.fromstring(element)
 
         if hasattr(self._root, 'getroot'):
             self._root = self._root.getroot()

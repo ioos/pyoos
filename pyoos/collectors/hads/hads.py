@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import os.path
 import re
 import requests
@@ -73,7 +75,7 @@ class Hads(Collector):
                                                            'sinceday' : -1})
         resp.raise_for_status()
 
-        map(variables.add, rvar.findall(resp.text))
+        list(map(variables.add, rvar.findall(resp.text)))
         return variables
 
     def list_features(self):
@@ -139,8 +141,8 @@ class Hads(Collector):
 
         if self.bbox:
             with collection(os.path.join("resources", "ne_50m_admin_1_states_provinces_lakes_shp.shp"), "r") as c:
-                geom_matches = map(lambda x: x['properties'], c.filter(bbox=self.bbox))
-                state_matches = map(lambda x: x['postal'] if x['admin'] != 'Canada' else u'CN', geom_matches)
+                geom_matches = [x['properties'] for x in c.filter(bbox=self.bbox)]
+                state_matches = [x['postal'] if x['admin'] != 'Canada' else 'CN' for x in geom_matches]
 
         self.station_codes = []
 
@@ -163,18 +165,18 @@ class Hads(Collector):
 
                 return lon >= self.bbox[0] and lon <= self.bbox[2] and lat >= self.bbox[1] and lat <= self.bbox[3]
 
-            self.station_codes = filter(in_bbox, self.station_codes)
+            self.station_codes = list(filter(in_bbox, self.station_codes))
 
         return self.station_codes
 
     def _get_state_urls(self):
         root = BeautifulSoup(requests.get(self.states_url).text)
         areas = root.find_all("area")
-        return list(set(map(lambda x: x.attrs.get('href', None), areas)))
+        return list(set([x.attrs.get('href', None) for x in areas]))
 
     def _get_stations_for_state(self, state_url):
         state_root = BeautifulSoup(requests.get(state_url).text)
-        return filter(lambda x: len(x) > 0, map(lambda x: x.attrs['href'].split("nesdis_id=")[-1], state_root.find_all('a')))
+        return [x for x in [x.attrs['href'].split("nesdis_id=")[-1] for x in state_root.find_all('a')] if len(x) > 0]
 
     def _get_raw_data(self, station_codes):
         since = 7

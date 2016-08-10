@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from pyoos.collectors.collector import Collector
 from pyoos.parsers.awc import AwcToPaegan
 import requests

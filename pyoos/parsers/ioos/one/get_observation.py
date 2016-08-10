@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 from owslib.namespaces import Namespaces
 from owslib.util import testXMLValue, testXMLAttribute, extract_time
 from owslib.util import nspath_eval
@@ -100,4 +102,4 @@ class OmObservation(object):
             elif self.feature_type == 'timeSeriesProfile':
                 self.feature = TimeSeriesProfile(data).feature
             else:
-                print "No feature type found"
+                print("No feature type found.")

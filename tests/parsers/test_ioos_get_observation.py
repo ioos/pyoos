@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import os
 import unittest
 from datetime import datetime
@@ -19,7 +21,7 @@ from pyoos.parsers.ioos.get_observation import IoosGetObservation
 class SweIoosTest(unittest.TestCase):
 
     def test_o_and_m_get_observation(self):
-        data = open(resource_file(os.path.join('ioos_swe', 'OM-GetObservation.xml')), "rU").read()
+        data = open(resource_file(os.path.join('ioos_swe', 'OM-GetObservation.xml')), "rb").read()
 
         d = IoosGetObservation(data)
         assert d.ioos_version       == "1.0"
@@ -45,7 +47,7 @@ class SweIoosTest(unittest.TestCase):
         assert ts.location["urn:ioos:station:wmo:41002"].equals(Point(-75.415, 32.382))
 
     def test_timeseries_multi_station_multi_sensor(self):
-        swe = open(resource_file('ioos_swe/SWE-MultiStation-TimeSeries.xml')).read()
+        swe = open(resource_file('ioos_swe/SWE-MultiStation-TimeSeries.xml'), 'rb').read()
         data_record = etree.fromstring(swe)
         collection = TimeSeries(data_record).feature
 
@@ -53,7 +55,7 @@ class SweIoosTest(unittest.TestCase):
         assert len(collection.elements) == 3
 
     def test_timeseries_single_station_single_sensor(self):
-        swe = open(resource_file('ioos_swe/SWE-SingleStation-SingleProperty-TimeSeries.xml')).read()
+        swe = open(resource_file('ioos_swe/SWE-SingleStation-SingleProperty-TimeSeries.xml'), 'rb').read()
         data_record = etree.fromstring(swe)
         station = TimeSeries(data_record).feature
 
@@ -65,16 +67,16 @@ class SweIoosTest(unittest.TestCase):
         assert station.location.y   == 32.382
         assert station.location.z   == 0.5
 
-        assert sorted(map(lambda x: x.time.strftime("%Y-%m-%dT%H:%M:%SZ"), station.elements)) == sorted(["2009-05-23T00:00:00Z", "2009-05-23T01:00:00Z", "2009-05-23T02:00:00Z"])
+        assert sorted([x.time.strftime("%Y-%m-%dT%H:%M:%SZ") for x in station.elements]) == sorted(["2009-05-23T00:00:00Z", "2009-05-23T01:00:00Z", "2009-05-23T02:00:00Z"])
 
         first_members = station.elements[0].members
-        assert sorted(map(lambda x: x['value'],    first_members)) == sorted([2.0, 15.4, 280])
-        assert sorted(map(lambda x: x['standard'], first_members)) == sorted([  "http://mmisw.org/ont/cf/parameter/air_temperature",
-                                                                                "http://mmisw.org/ont/cf/parameter/wind_to_direction",
-                                                                                "http://mmisw.org/ont/cf/parameter/wind_speed"])
+        assert sorted([x['value'] for x in first_members]) == sorted([2.0, 15.4, 280])
+        assert sorted([x['standard'] for x in first_members]) == sorted(["http://mmisw.org/ont/cf/parameter/air_temperature",
+                                                                         "http://mmisw.org/ont/cf/parameter/wind_to_direction",
+                                                                         "http://mmisw.org/ont/cf/parameter/wind_speed"])
 
     def test_timeseries_profile_single_station(self):
-        swe = open(resource_file('ioos_swe/SWE-SingleStation-TimeSeriesProfile_QC.xml')).read()
+        swe = open(resource_file('ioos_swe/SWE-SingleStation-TimeSeriesProfile_QC.xml'), 'rb').read()
         data_record = etree.fromstring(swe)
         station = TimeSeriesProfile(data_record).feature
 

@@ -1,6 +1,9 @@
+from __future__ import (absolute_import, division, print_function)
+from six import string_types
+
 import unittest
 import csv
-import StringIO
+import io
 from datetime import datetime
 
 from owslib.swe.sensor.sml import SensorML
@@ -33,13 +36,13 @@ class CoopsSosTest(unittest.TestCase):
         self.c.features     = ['8454000']
         self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']  # noqa
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
         urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:A1,41.8071,-71.4012,2012-10-01T00:00:00Z,1.465,urn:ioos:def:datum:noaa::MLLW,1.064
         """
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
         assert data[0]['datum_id'] == "urn:ioos:def:datum:noaa::MLLW"
         assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
@@ -53,13 +56,13 @@ class CoopsSosTest(unittest.TestCase):
         self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']
         self.c.dataType     = "VerifiedHighLow"
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
         urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:W3,41.8071,-71.4012,2012-10-01T01:00:00Z,1.617,urn:ioos:def:datum:noaa::MLLW,1.064
         """
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
         assert data[0]['datum_id'] == "urn:ioos:def:datum:noaa::MLLW"
         assert data[0]['date_time'] == "2012-10-01T01:00:00Z"
@@ -74,13 +77,13 @@ class CoopsSosTest(unittest.TestCase):
         self.c.dataType     = "VerifiedHighLow"
         self.c.datum        = "NAVD"
 
-        response = self.c.raw(responseFormat="text/csv")
-        assert isinstance(response, basestring)
+        response = self.c.raw(responseFormat="text/csv").decode()
+        assert isinstance(response, string_types)
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
         urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:W3,41.8071,-71.4012,2012-10-01T01:00:00Z,0.863,urn:ogc:def:datum:epsg::5103,1.818
         """
-        data = list(csv.DictReader(StringIO.StringIO(response)))
+        data = list(csv.DictReader(io.StringIO(response)))
         assert len(data) == 4
         assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
         assert data[0]['datum_id'] == "urn:ogc:def:datum:epsg::5103"

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import (absolute_import, division, print_function)
 
 import unittest
 from pytest import raises
@@ -84,7 +85,7 @@ class WqpTest(unittest.TestCase):
         rmeta, data = self.c.raw()
 
         with raises(AttributeError):
-            print data.organization
+            print(data.organization)
 
     def test_into_dsg(self):
         # First feature filter

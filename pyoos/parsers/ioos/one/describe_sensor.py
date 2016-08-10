@@ -1,3 +1,6 @@
+from __future__ import (absolute_import, division, print_function)
+from six import text_type
+
 import itertools
 
 from owslib.swe.sensor.sml import SensorML
@@ -7,8 +10,11 @@ from owslib.util import testXMLValue, testXMLAttribute, nspath_eval
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 
 from dateutil import parser
-from urlparse import urljoin
-from lxml import etree
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
+from pyoos.utils import ElementType, etree
 import warnings
 
 
@@ -49,10 +55,10 @@ class DescribeSensor(IoosDescribeSensor):
 
     def __init__(self, element):
         """ Common things between all describe sensor requests """
-        if isinstance(element, str):
-            root = etree.fromstring(element)
-        else:
+        if isinstance(element, ElementType):
             root = element
+        else:
+            root = etree.fromstring(element)
 
         sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(SML_NS)
 
@@ -67,7 +73,7 @@ class DescribeSensor(IoosDescribeSensor):
 
         self.shortName = self.get_ioos_def('shortName', 'identifier', ont)
         self.longName = self.get_ioos_def('longName', 'identifier', ont)
-        self.keywords = map(unicode, self.system.keywords)
+        self.keywords = list(map(str, self.system.keywords))
 
         # Location
         try:

@@ -1,3 +1,5 @@
+from __future__ import (absolute_import, division, print_function)
+
 import unittest
 from pyoos.collectors.collector import Collector
 from datetime import datetime
