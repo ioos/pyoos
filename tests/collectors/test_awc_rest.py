@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 
 import unittest
+import pytest
+
 from pyoos.collectors.awc.awc_rest import AwcRest
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 
@@ -10,7 +12,9 @@ class AwcRestTest(unittest.TestCase):
     def setUp(self):
         self.c = AwcRest()
 
+    @pytest.mark.xfail
     def test_nwc_stations(self):
+        # See https://github.com/ioos/pyoos/issues/63
         stations = self.c.stations
         assert stations[0] == 'AGGH'
         assert stations[-1] == 'ZYTX'
