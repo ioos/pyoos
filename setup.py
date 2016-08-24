@@ -49,7 +49,7 @@ setup(
     author              = 'Kyle Wilcox',
     author_email        = 'kyle@axiomdatascience.com',
     url                 = 'https://github.com/ioos/pyoos.git',
-    packages            = find_packages(),
+    packages            = find_packages(exclude=['tests.*', 'tests']),
     install_requires    = reqs,
     tests_require       = ['pytest'],
     cmdclass            = {'test': PyTest},
