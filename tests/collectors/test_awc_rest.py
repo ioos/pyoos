@@ -1,6 +1,8 @@
 from __future__ import (absolute_import, division, print_function)
 
 import unittest
+import pytest
+
 from pyoos.collectors.awc.awc_rest import AwcRest
 from paegan.cdm.dsg.collections.station_collection import StationCollection
 
