@@ -10,7 +10,9 @@ class AwcRestTest(unittest.TestCase):
     def setUp(self):
         self.c = AwcRest()
 
+    @pytest.mark.xfail
     def test_nwc_stations(self):
+        # See https://github.com/ioos/pyoos/issues/63
         stations = self.c.stations
         assert stations[0] == 'AGGH'
         assert stations[-1] == 'ZYTX'
