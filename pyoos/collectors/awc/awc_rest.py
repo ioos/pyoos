@@ -8,15 +8,16 @@ import requests
 class AwcRest(Collector):
     def __init__(self, **kwargs):
         super(AwcRest, self).__init__()
-        self.stations_url = 'http://weather.noaa.gov/data/nsd_cccc.txt'
+        self.stations_url = 'https://www.aviationweather.gov/docs/metar/stations.txt'
         self.data_url     = 'http://www.aviationweather.gov/adds/dataserver_current/httpparam'
 
     def get_stations(self):
         if self._features is None:
             r = requests.get(self.stations_url)
-            self._stations = [line.split(';')[0] for line in r.text.split('\n')]
-            if self._stations[-1] == '':
-                self._stations.pop()
+            # Arghhhh Fortran-like fixed format!!!
+            _stations = [line[20:24] for line in r.text.split('\n')
+                         if len(line) == 83 and not line.startswith('!')]
+            self._stations = sorted(filter(lambda code: code.strip(), _stations))
             self._features = self._stations
         return self._features
 
