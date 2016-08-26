@@ -1,6 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
 
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 
 # Package level logger
 import logging
