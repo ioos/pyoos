@@ -118,7 +118,10 @@ class HadsParser(object):
             if var_filter is None or fields[2] in var_filter:
                 dt = p.parse(fields[3]).replace(tzinfo=pytz.utc)
                 if (begin_time is None or dt >= begin_time) and (end_time is None or dt <= end_time):
-                    value = float(fields[4]) if fields[4] != 'NaN' else npNan
+                    try:
+                        value = float(fields[4]) if fields[4] != 'NaN' else npNan
+                    except ValueError:
+                        value = npNan
                     retval[fields[0]].append((fields[2], dt, value))
 
         return dict(retval)
