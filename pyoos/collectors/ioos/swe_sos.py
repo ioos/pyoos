@@ -5,6 +5,7 @@ from pyoos.collectors.collector import Collector
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from owslib.sos import SensorObservationService as Sos
 from owslib.swe.sensor.sml import SensorML
+from owslib.util import ServiceException
 
 
 class IoosSweSos(Collector):
@@ -33,6 +34,35 @@ class IoosSweSos(Collector):
                 responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
 
         return responses
+
+    def metadata_plus_exceptions(self, output_format=None, feature_name_callback=None, **kwargs):
+        """
+        Gets SensorML objects for all procedures in your filtered features.
+
+        Include any errors returned from SOS DescribeSensor request in a second return value
+        dictionary object
+
+        You should override the default output_format for servers that do not
+        respond properly.
+        """
+        callback = feature_name_callback or str
+        if output_format is None:
+            output_format = 'text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"'
+
+        responses = []
+        response_failures = {}
+        if self.features is not None:
+            for feature in self.features:
+                ds_kwargs = kwargs.copy()
+                ds_kwargs.update({'outputFormat': output_format,
+                                  'procedure'   : callback(feature)})
+                print("swe_sos.py metadata: {feature}".format(feature=feature))
+                try:
+                    responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
+                except ServiceException as e:
+                    response_failures[feature] = str(e)
+
+        return (responses, response_failures)
 
     def setup_params(self, **kwargs):
         params = kwargs
