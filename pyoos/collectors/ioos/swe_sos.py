@@ -3,6 +3,7 @@ from six import string_types
 
 from pyoos.collectors.collector import Collector
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
+from owslib.ows import ExceptionReport
 from owslib.sos import SensorObservationService as Sos
 from owslib.swe.sensor.sml import SensorML
 from owslib.util import ServiceException
@@ -58,7 +59,7 @@ class IoosSweSos(Collector):
                                   'procedure'   : callback(feature)})
                 try:
                     responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
-                except ServiceException as e:
+                except (ServiceException, ExceptionReport) as e:
                     response_failures[feature] = str(e)
 
         return (responses, response_failures)
