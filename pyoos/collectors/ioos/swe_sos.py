@@ -56,7 +56,6 @@ class IoosSweSos(Collector):
                 ds_kwargs = kwargs.copy()
                 ds_kwargs.update({'outputFormat': output_format,
                                   'procedure'   : callback(feature)})
-                print("swe_sos.py metadata: {feature}".format(feature=feature))
                 try:
                     responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
                 except ServiceException as e:
