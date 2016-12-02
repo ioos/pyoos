@@ -40,8 +40,9 @@ class IoosSweSos(Collector):
         """
         Gets SensorML objects for all procedures in your filtered features.
 
-        Include any errors returned from SOS DescribeSensor request in a second return value
-        dictionary object
+        Return two dictionaries for service responses keyed by 'feature':
+            responses: values are SOS DescribeSensor response text
+            response_failures: values are exception text content furnished from ServiceException, ExceptionReport
 
         You should override the default output_format for servers that do not
         respond properly.
@@ -50,7 +51,7 @@ class IoosSweSos(Collector):
         if output_format is None:
             output_format = 'text/xml; subtype="sensorML/1.0.1/profiles/ioos_sos/1.0"'
 
-        responses = []
+        responses = {}
         response_failures = {}
         if self.features is not None:
             for feature in self.features:
@@ -58,7 +59,7 @@ class IoosSweSos(Collector):
                 ds_kwargs.update({'outputFormat': output_format,
                                   'procedure'   : callback(feature)})
                 try:
-                    responses.append(SensorML(self.server.describe_sensor(**ds_kwargs)))
+                    responses[feature] = (SensorML(self.server.describe_sensor(**ds_kwargs)))
                 except (ServiceException, ExceptionReport) as e:
                     response_failures[feature] = str(e)
 
