@@ -16,8 +16,8 @@ class USGSTest(unittest.TestCase):
         collection.calculate_bounds()
 
         # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
-        assert len(collection.elements) == 4
-        assert sorted([x.uid for x in collection.elements]) == ["04044724", "04045500", "04046000", "04056500"]
+        assert len(collection.elements) == 5
+        assert sorted([x.uid for x in collection.elements]) == ['04044724', '04044755', '04045500', '04046000', '04056500']
 
         station = collection.elements[0]
         assert station.name == "AU TRAIN RIVER AT FOREST LAKE, MI"
