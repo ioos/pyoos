@@ -5,7 +5,7 @@ from pyoos.collectors.ioos.swe_sos import IoosSweSos
 
 class CoopsSos(IoosSweSos):
     def __init__(self, **kwargs):
-        kwargs["url"] = 'http://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS'
+        kwargs["url"] = 'https://opendap.co-ops.nos.noaa.gov/ioos-dif-sos/SOS'
         super(CoopsSos, self).__init__(**kwargs)
         self._datum = None
         self._dataType = None
