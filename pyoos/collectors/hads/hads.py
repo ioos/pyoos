@@ -16,9 +16,9 @@ class Hads(Collector):
     def __init__(self, **kwargs):
         super(Hads, self).__init__()
 
-        self.states_url         = kwargs.get('states_url', "http://amazon.nws.noaa.gov/hads/goog_earth/")
-        self.metadata_url       = kwargs.get('metadata_url',  "http://amazon.nws.noaa.gov/nexhads2/servlet/DCPInfo")
-        self.obs_retrieval_url  = kwargs.get('obs_retrieval_url', "http://amazon.nws.noaa.gov/nexhads2/servlet/DecodedData")
+        self.states_url         = kwargs.get('states_url', "https://hads.ncep.noaa.gov/hads/goog_earth/")
+        self.metadata_url       = kwargs.get('metadata_url',  "https://hads.ncep.noaa.gov/nexhads2/servlet/DCPInfo")
+        self.obs_retrieval_url  = kwargs.get('obs_retrieval_url', "https://hads.ncep.noaa.gov/nexhads2/servlet/DecodedData")
 
         self.station_codes      = None
         self.parser             = HadsParser()

@@ -15,7 +15,7 @@ class HadsTest(unittest.TestCase):
         self.c._list_variables = list_vars
 
         def state_urls():
-            return ["http://amazon.nws.noaa.gov/hads/charts/RI.html"]
+            return ["https://hads.ncep.noaa.gov/charts/RI.html"]
         self.c._get_state_urls = state_urls
 
         def get_stations_for_state(url):
