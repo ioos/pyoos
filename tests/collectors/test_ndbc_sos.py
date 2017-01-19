@@ -62,8 +62,8 @@ class NdbcSosTest(unittest.TestCase):
 
         data = list(csv.DictReader(io.StringIO(response)))
         stations = list(set([x['station_id'] for x in data]))
-        # 265 stations measured air_pressure that day
-        assert len(stations) == 265
+        # 264 stations measured air_pressure that day
+        assert len(stations) == 264
 
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"depth (m)","air_pressure_at_sea_level (hPa)"
@@ -86,8 +86,8 @@ class NdbcSosTest(unittest.TestCase):
 
         data = list(csv.DictReader(io.StringIO(response)))
         stations = list(set([x['station_id'] for x in data]))
-        # 265 stations measured air_pressure that day
-        assert len(stations) == 265
+        # 264 stations measured air_pressure that day
+        assert len(stations) == 264
 
         """
         station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"depth (m)","air_pressure_at_sea_level (hPa)"

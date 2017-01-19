@@ -47,7 +47,8 @@ class SweIoosTest(unittest.TestCase):
         assert ts.location["urn:ioos:station:wmo:41002"].equals(Point(-75.415, 32.382))
 
     def test_timeseries_multi_station_multi_sensor(self):
-        swe = open(resource_file('ioos_swe/SWE-MultiStation-TimeSeries.xml'), 'rb').read()
+        swe = open(resource_file('ioos_swe/SWE-MultiStation-TimeSeries.xml'),
+                   'rb').read()
         data_record = etree.fromstring(swe)
         collection = TimeSeries(data_record).feature
 
@@ -67,7 +68,10 @@ class SweIoosTest(unittest.TestCase):
         assert station.location.y   == 32.382
         assert station.location.z   == 0.5
 
-        assert sorted([x.time.strftime("%Y-%m-%dT%H:%M:%SZ") for x in station.elements]) == sorted(["2009-05-23T00:00:00Z", "2009-05-23T01:00:00Z", "2009-05-23T02:00:00Z"])
+        assert sorted([x.time.strftime("%Y-%m-%dT%H:%M:%SZ") for x in
+                       station.elements]) == sorted(["2009-05-23T00:00:00Z",
+                                                     "2009-05-23T01:00:00Z",
+                                                     "2009-05-23T02:00:00Z"])
 
         first_members = station.elements[0].members
         assert sorted([x['value'] for x in first_members]) == sorted([2.0, 15.4, 280])
