@@ -84,23 +84,23 @@ class Hads(Collector):
 
         return station_codes
 
-    def collect(self):
+    def collect(self, **kwargs):
         var_filter = None
         if hasattr(self, '_variables'):
             var_filter = self._variables
 
         time_extents = (self.start_time if hasattr(self, 'start_time') else None, self.end_time if hasattr(self, 'end_time') else None)
 
-        metadata, raw_data = self.raw()
+        metadata, raw_data = self.raw(**kwargs)
         return self.parser.parse(metadata, raw_data, var_filter, time_extents)
 
-    def raw(self, format=None):
+    def raw(self, format=None, **kwargs):
         """
         Returns a tuple of (metadata, raw data)
         """
         station_codes = self._apply_features_filter(self._get_station_codes())
-        metadata      = self._get_metadata(station_codes)
-        raw_data      = self._get_raw_data(station_codes)
+        metadata      = self._get_metadata(station_codes, **kwargs)
+        raw_data      = self._get_raw_data(station_codes, **kwargs)
 
         return (metadata, raw_data)
 
@@ -116,12 +116,18 @@ class Hads(Collector):
 
         return station_codes
 
-    def _get_metadata(self, station_codes):
+    def _get_metadata(self, station_codes, **kwargs):
+        if 'verify' in kwargs:
+            verify_cert = kwargs['verify']
+        else:
+            verify_cert = True  # the default for requests
+
         resp = requests.post(self.metadata_url, data={'state'    : 'nil',
                                                       'hsa'      : 'nil',
                                                       'of'       : '1',
                                                       'extraids' : " ".join(station_codes),
-                                                      'data'     : "Get Meta Data"})
+                                                      'data'     : "Get Meta Data"},
+                             verify=verify_cert)
         resp.raise_for_status()
         return resp.text
 
@@ -155,7 +161,7 @@ class Hads(Collector):
             self.station_codes.extend(self._get_stations_for_state(state_url))
 
         if self.bbox:
-            # retreive metadata for all stations to properly filter them
+            # retrieve metadata for all stations to properly filter them
             metadata        = self._get_metadata(self.station_codes)
             parsed_metadata = self.parser._parse_metadata(metadata)
 
@@ -178,7 +184,12 @@ class Hads(Collector):
         state_root = BeautifulSoup(requests.get(state_url).text)
         return [x for x in [x.attrs['href'].split("nesdis_id=")[-1] for x in state_root.find_all('a')] if len(x) > 0]
 
-    def _get_raw_data(self, station_codes):
+    def _get_raw_data(self, station_codes, **kwargs):
+        if 'verify' in kwargs:
+            verify_cert = kwargs['verify']
+        else:
+            verify_cert = True  # the default for requests
+
         since = 7
         if hasattr(self, 'start_time') and self.start_time is not None:
             # calc delta between now and start_time
@@ -196,7 +207,8 @@ class Hads(Collector):
                                                            'hsa'      : 'nil',
                                                            'of'       : '1',
                                                            'extraids' : " ".join(station_codes),
-                                                           'sinceday' : since})
+                                                           'sinceday' : since},
+                             verify=verify_cert)
         resp.raise_for_status()
 
         return resp.text
