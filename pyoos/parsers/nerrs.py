@@ -19,7 +19,7 @@ def units(param):
         # Water Quality
         'Temp'      :       u'°C',
         'SpCond'    :       'mS/cm',
-        'Sal'       :       'ppt',
+        'Sal'       :       'psu',
         'DO_pct'    :       '%',
         'DO_mgl'    :       'mg/L',
         'Depth'     :       'm',
@@ -61,7 +61,7 @@ def standard(param):
         'Temp'      :       'sea_water_temperature',
         'SpCond'    :       'specific_conductance',
         'Sal'       :       'sea_water_salinity',
-        'DO_pct'    :       'oxygen_concentration_in_sea_water',
+        'DO_pct'    :       'fractional_saturation_of_oxygen_in_sea_water',
         'DO_mgl'    :       'oxygen_concentration_in_sea_water',
         'Depth'     :       'depth',
         'cDepth'    :       'depth',
