@@ -72,7 +72,7 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['station_id'] == 'urn:ioos:station:wmo:32st0'
         assert data[0]['sensor_id'] == 'urn:ioos:sensor:wmo:32st0::baro1'
         assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
-        assert data[0]['depth (m)'] == ""
+        assert data[0]['depth (m)'] == "-2.44"
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1019.0"
 
     def test_raw_ndbc_get_observation_no_stations(self):
@@ -96,5 +96,5 @@ class NdbcSosTest(unittest.TestCase):
         assert data[0]['station_id'] == 'urn:ioos:station:wmo:32st0'
         assert data[0]['sensor_id'] == 'urn:ioos:sensor:wmo:32st0::baro1'
         assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
-        assert data[0]['depth (m)'] == ""
+        assert data[0]['depth (m)'] == "-2.44"
         assert data[0]['air_pressure_at_sea_level (hPa)'] == "1019.0"

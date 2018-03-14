@@ -1,23 +1,46 @@
-sudo: false
 language: python
 
-env:
-    - CONDA="python=2.7"
-    - CONDA="python=3.4"
-    - CONDA="python=3.5"
+sudo: false
+
+matrix:
+  include:
+  - python: 2.7
+    env: TEST_TARGET=default
+  - python: 3.5
+    env: TEST_TARGET=default
+  - python: 3.6
+    env: TEST_TARGET=default
+  - python: 3.6
+    env: TEST_TARGET=coding_standards
+  allow_failures:
+  - python: 3.6
+    env: TEST_TARGET=coding_standards
 
 before_install:
-    - wget http://bit.ly/miniconda -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - conda update --all --yes
-    - conda config --add channels conda-forge -f
-    - travis_retry conda create --yes -n test $CONDA --file requirements.txt
-    - source activate test
-    - travis_retry conda install --yes pytest
+  - wget http://bit.ly/miniconda -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
+  - conda update conda
+  - conda config --add channels conda-forge --force
+  - conda create --name TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
+  - source activate TEST
+
+# Test source distribution.
+install:
+  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install pyoos-${version}.tar.gz && popd
 
 script:
-    - py.test -vv
+  - if [[ $TEST_TARGET == 'default' ]]; then
+      cp -r tests /tmp && cd /tmp ;
+      py.test -s -rxs -vv tests ;
+    fi
+
+
+  - if [[ $TEST_TARGET == 'coding_standards' ]]; then
+      flake8 --max-line-length=105 pyoos ;
+      flake8 --max-line-length=105 tests ;
+    fi
 
 notifications:
-    flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
+  flowdock: 2dd835dfbdbc64986ba043fffa654836,1d5af475ae38ec1d874c752c23558d2d
