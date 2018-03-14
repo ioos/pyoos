@@ -15,9 +15,9 @@ class USGSTest(unittest.TestCase):
         collection = self.c.collect()
         collection.calculate_bounds()
 
-        # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
-        assert len(collection.elements) == 5
-        assert sorted([x.uid for x in collection.elements]) == ['04044724', '04044755', '04045500', '04046000', '04056500']
+        # Another flaky test.
+        assert len(collection.elements) == 7
+        assert sorted([x.uid for x in collection.elements]) == ['04044724', '04044755', '04045500', '04046000', '04052500', '04052600', '04056500']
 
         station = collection.elements[0]
         assert station.name == "AU TRAIN RIVER AT FOREST LAKE, MI"
@@ -45,10 +45,8 @@ class USGSTest(unittest.TestCase):
         self.c.filter(state="ri")
         collection = self.c.collect()
 
-        # Returns 43 stations.
-        # FIXME: This is a very flaky test!  The station number changed from
-        # 41, to 42 and now 43. (And back to 42!)
-        assert len(collection.elements) == 42
+        # FIXME: This is a very flaky test!
+        assert len(collection.elements) == 58
 
         station = collection.elements[0]
         assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"

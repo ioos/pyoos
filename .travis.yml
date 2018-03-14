@@ -31,7 +31,7 @@ install:
 script:
   - if [[ $TEST_TARGET == 'default' ]]; then
       cp -r tests /tmp && cd /tmp ;
-      py.test -s -rxs -v tests ;
+      py.test -s -rxs -vv tests ;
     fi
 
 
