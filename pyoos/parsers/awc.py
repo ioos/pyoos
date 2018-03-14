@@ -1,5 +1,7 @@
 from __future__ import (absolute_import, division, print_function)
 
+import warnings
+
 import pytz
 from owslib.etree import etree
 
@@ -14,7 +16,11 @@ from datetime import datetime
 class AwcToPaegan(object):
     def __init__(self, awc_list):
         for awc_data in awc_list:
-            self._root = etree.fromstring(awc_data.encode())
+            try:
+                self._root = etree.fromstring(awc_data.encode())
+            except Exception as e:
+                warnings.warn('Could not read from {!r}, got {}'.format(awc_data, e)) 
+                continue
 
             '''Code to get station iterator goes here.'''
             stations = []
