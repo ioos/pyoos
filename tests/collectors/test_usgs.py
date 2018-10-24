@@ -52,8 +52,8 @@ class USGSTest(unittest.TestCase):
         assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"
         # Measures 2 variables
         assert len(station.get_unique_members()) == 2
-        assert station.location.x == -71.3511649
-        assert station.location.y == 41.83093376
+        assert station.location.x == -71.3503315
+        assert station.location.y == 41.83093377
         assert station.location.z == 0
 
     def test_by_site_code(self):
