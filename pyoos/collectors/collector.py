@@ -48,14 +48,12 @@ class Collector(object):
         return self._bbox
 
     def set_bbox(self, bbox):
+        bbox = tuple(bbox)
         dx, dy = -1, -1
-        if bbox:
-            if len(bbox) == 4:
-                dx = bbox[2] - bbox[0]
-                dy = bbox[3] - bbox[1]
-        if dx > 0 and dy > 0:
-            bbox = tuple(bbox)
-        else:
+        if len(bbox) == 4:
+            dx = bbox[2] - bbox[0]
+            dy = bbox[3] - bbox[1]
+        if not dx > 0 and not dy > 0:
             raise ValueError(
                 "Not a recognized bbox: {!r}. Must be in format: (minx, miny, maxx, maxy)".format(bbox)
             )
