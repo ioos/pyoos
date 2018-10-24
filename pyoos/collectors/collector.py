@@ -2,8 +2,6 @@ from __future__ import (absolute_import, division, print_function)
 
 import pytz
 
-import numpy as np
-
 
 class Collector(object):
 
@@ -50,12 +48,17 @@ class Collector(object):
         return self._bbox
 
     def set_bbox(self, bbox):
-        if bbox is not None:
-            if isinstance(bbox, (list, tuple, np.array)) and len(bbox) == 4:
-                bbox = tuple(bbox)
-            else:
-                raise ValueError("Not a recognized bbox. \
-                                  Must be in format: (minx, miny, maxx, maxy)")
+        dx, dy = -1, -1
+        if bbox:
+            if len(bbox) == 4:
+                dx = bbox[2] - bbox[0]
+                dy = bbox[3] - bbox[1]
+        if dx > 0 and dy > 0:
+            bbox = tuple(bbox)
+        else:
+            raise ValueError(
+                "Not a recognized bbox: {!r}. Must be in format: (minx, miny, maxx, maxy)".format(bbox)
+            )
         self._bbox = bbox
     bbox = property(get_bbox, set_bbox)
 
