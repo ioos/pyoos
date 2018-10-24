@@ -2,6 +2,9 @@ from __future__ import (absolute_import, division, print_function)
 
 import pytz
 
+import numpy as np
+
+
 class Collector(object):
 
     def __init__(self):
@@ -48,7 +51,7 @@ class Collector(object):
 
     def set_bbox(self, bbox):
         if bbox is not None:
-            if isinstance(bbox, list) or isinstance(bbox, tuple):
+            if isinstance(bbox, (list, tuple, np.array)) and len(bbox) == 4:
                 bbox = tuple(bbox)
             else:
                 raise ValueError("Not a recognized bbox. \
