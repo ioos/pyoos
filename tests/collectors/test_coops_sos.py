@@ -31,23 +31,19 @@ class CoopsSosTest(unittest.TestCase):
         assert isinstance(response[0], SensorML)
 
     def test_raw_coops_get_observation(self):
-        self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
-        self.c.end_time     = datetime.strptime("2012-10-02", "%Y-%m-%d")
-        self.c.features     = ['8454000']
-        self.c.variables    = ['http://mmisw.org/ont/cf/parameter/water_surface_height_above_reference_datum']  # noqa
+        self.c.start_time   = datetime.strptime("2018-10-07", "%Y-%m-%d")
+        self.c.end_time     = datetime.strptime("2018-10-12", "%Y-%m-%d")
+        self.c.features     = ['8728690']
+        self.c.variables    = ['water_surface_height_above_reference_datum']  # noqa
 
         response = self.c.raw(responseFormat="text/csv").decode()
         assert isinstance(response, string_types)
-        """
-        station_id,sensor_id,"latitude (degree)","longitude (degree)",date_time,"water_surface_height_above_reference_datum (m)",datum_id,"vertical_position (m)"
-        urn:ioos:station:NOAA.NOS.CO-OPS:8454000,urn:ioos:sensor:NOAA.NOS.CO-OPS:8454000:A1,41.8071,-71.4012,2012-10-01T00:00:00Z,1.465,urn:ioos:def:datum:noaa::MLLW,1.064
-        """
         data = list(csv.DictReader(io.StringIO(response)))
-        assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8454000'
-        assert data[0]['datum_id'] == "urn:ioos:def:datum:noaa::MLLW"
-        assert data[0]['date_time'] == "2012-10-01T00:00:00Z"
-        assert data[0]['water_surface_height_above_reference_datum (m)'] == "1.465"
-        assert data[0]['vertical_position (m)'] == "1.064"
+        assert data[0]['station_id'] == 'urn:ioos:station:NOAA.NOS.CO-OPS:8728690'
+        assert data[0]['datum_id'] == 'urn:ioos:def:datum:noaa::MLLW'
+        assert data[0]['date_time'] == '2018-10-07T00:00:00Z'
+        assert data[0]['water_surface_height_above_reference_datum (m)'] == '0.385'
+        assert data[0]['vertical_position (m)'] == '1.307'
 
     def test_raw_coops_get_observation_with_dataType(self):
         self.c.start_time   = datetime.strptime("2012-10-01", "%Y-%m-%d")
