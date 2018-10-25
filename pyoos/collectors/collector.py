@@ -53,7 +53,7 @@ class Collector(object):
         if len(bbox) == 4:
             dx = bbox[2] - bbox[0]
             dy = bbox[3] - bbox[1]
-        if not dx > 0 and not dy > 0:
+        if dx <= 0 or dy <= 0:
             raise ValueError(
                 "Not a recognized bbox: {!r}. Must be in format: (minx, miny, maxx, maxy)".format(bbox)
             )
