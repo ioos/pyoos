@@ -11,9 +11,6 @@ matrix:
       env: PY=3.7
     - name: "coding_standards"
       env: PY=3.7
-  allow_failures:
-    - name: "coding_standards"
-      env: PY=3.7
 
 before_install:
   - wget http://bit.ly/miniconda -O miniconda.sh
