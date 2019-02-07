@@ -1,12 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
-from pyoos.parsers.nerrs import NerrsToPaegan
-from pyoos.collectors.collector import Collector
-from pyoos.utils.etree import etree
-from owslib.util import testXMLValue
-
-from shapely.geometry import Point, box
 import requests
+from owslib.util import testXMLValue
+from shapely.geometry import Point, box
+
+from pyoos.collectors.collector import Collector
+from pyoos.parsers.nerrs import NerrsToPaegan
+from pyoos.utils.etree import etree
 
 
 class NerrsSoap(Collector):
@@ -15,13 +15,15 @@ class NerrsSoap(Collector):
         :param wildcard: string for optional token-based access mechanism.
         """
         super(NerrsSoap, self).__init__()
-        self.wsdl_url = 'http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl'
+        self.wsdl_url = (
+            "http://cdmo.baruch.sc.edu/webservices2/requests.cfc?wsdl"
+        )
         self.wildcard = kwargs.get("wildcard")
         self.stations = self.get_stations()
 
     def get_station(self, feature):
         for s in self.stations:
-            if s['Station_Code'].lower() == feature.lower():
+            if s["Station_Code"].lower() == feature.lower():
                 return s
 
     def get_stations(self):
@@ -47,9 +49,9 @@ class NerrsSoap(Collector):
                 if val is None:
                     val = ""
                 s[child.tag] = val
-            lon = float(s['Longitude'])
-            s['Longitude'] = lon if lon < 0 else -lon
-            s['Latitude'] = float(s['Latitude'])
+            lon = float(s["Longitude"])
+            s["Longitude"] = lon if lon < 0 else -lon
+            s["Latitude"] = float(s["Latitude"])
             stats.append(s)
 
         return stats
@@ -68,29 +70,47 @@ class NerrsSoap(Collector):
         """
         enve = etree.fromstring(request)
 
-        body = enve.find(".//{%s}Body" % "http://schemas.xmlsoap.org/soap/envelope/")
+        body = enve.find(
+            ".//{%s}Body" % "http://schemas.xmlsoap.org/soap/envelope/"
+        )
         body.append(xmlelement)
 
-        headers = {
-            "SOAPAction"        : "\"\"",
-        }
-        r = requests.post(self.wsdl_url, data=etree.tostring(enve), headers=headers)
+        headers = {"SOAPAction": '""'}
+        r = requests.post(
+            self.wsdl_url, data=etree.tostring(enve), headers=headers
+        )
         return etree.fromstring(r.text[38:]).find(".//returnData")
 
     def list_features(self):
-        return sorted([s['Station_Code'] for s in self.stations], key=str.lower)
+        return sorted(
+            [s["Station_Code"] for s in self.stations], key=str.lower
+        )
 
     def list_variables(self, feature=None):
         ignore_vars = ["", None]
         if feature is None:
-            stationvars = [s['Params_Reported'].split(",") for s in self.stations]
+            stationvars = [
+                s["Params_Reported"].split(",") for s in self.stations
+            ]
             # Combine the sublists, ignoring bad names.
-            allvars = [v for sublist in stationvars for v in sublist if v not in ignore_vars]
+            allvars = [
+                v
+                for sublist in stationvars
+                for v in sublist
+                if v not in ignore_vars
+            ]
             # Unique the var list.
             return sorted(list(set(allvars)), key=str.lower)
         else:
             s = self.get_station(feature)
-            return sorted([v for v in list(set(s['Params_Reported'].split(","))) if v not in ignore_vars], key=str.lower)
+            return sorted(
+                [
+                    v
+                    for v in list(set(s["Params_Reported"].split(",")))
+                    if v not in ignore_vars
+                ],
+                key=str.lower,
+            )
 
     def collect(self):
         results = self.raw()
@@ -104,16 +124,20 @@ class NerrsSoap(Collector):
             raise ValueError("NERRS requires a BBOX or Feature filter")
 
         if self.bbox is not None and self.features is not None:
-            print("Both a BBox and Feature filter is defined, BBOX takes precedence.")
+            print(
+                "Both a BBox and Feature filter is defined, BBOX takes precedence."
+            )
 
         # BBox takes precedence over features
         if self.bbox is not None:
-            test_box = box(self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3])
+            test_box = box(
+                self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3]
+            )
             # Set the features and call collect again
             for s in self.stations:
                 p = Point(float(s["Longitude"]), float(s["Latitude"]))
                 if test_box.intersects(p):
-                    query_features.append(s['Station_Code'])
+                    query_features.append(s["Station_Code"])
         else:
             query_features = self.features
 
@@ -151,8 +175,8 @@ class NerrsSoap(Collector):
         if self.wildcard is not None:
             xml_obj.find(".//wildcard").text = self.wildcard
 
-        xml_obj.find(".//mindate").text = self.start_time.strftime('%m/%d/%Y')
-        xml_obj.find(".//maxdate").text = self.end_time.strftime('%m/%d/%Y')
+        xml_obj.find(".//mindate").text = self.start_time.strftime("%m/%d/%Y")
+        xml_obj.find(".//maxdate").text = self.end_time.strftime("%m/%d/%Y")
 
         feature_vars = self.list_variables(feature=feature)
         if len(feature_vars) == 0:
