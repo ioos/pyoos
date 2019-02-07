@@ -5,25 +5,9 @@ from __future__ import (
     with_statement,
 )
 
-import os
-import sys
-
 from setuptools import find_packages, setup
-from setuptools.command.test import test as TestCommand
 
-
-def extract_version(module="pyoos"):
-    version = None
-    fdir = os.path.dirname(__file__)
-    fnme = os.path.join(fdir, module, "__init__.py")
-    with open(fnme) as fd:
-        for line in fd:
-            if line.startswith("__version__"):
-                _, version = line.split("=")
-                # Remove quotation characters.
-                version = version.strip()[1:-1]
-                break
-    return version
+import versioneer
 
 
 def readme():
@@ -34,22 +18,9 @@ def readme():
 reqs = [line.strip() for line in open("requirements.txt")]
 
 
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
-
-
 setup(
     name="pyoos",
-    version=extract_version(),
+    version=versioneer.get_version(),
     description="A Python library for collecting Met/Ocean observations",
     long_description=readme(),
     license="GPLv3",
@@ -59,7 +30,7 @@ setup(
     packages=find_packages(exclude=["tests.*", "tests"]),
     install_requires=reqs,
     tests_require=["pytest"],
-    cmdclass={"test": PyTest},
+    cmdclass=versioneer.get_cmdclass(),
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",

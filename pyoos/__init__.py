@@ -1,7 +1,5 @@
 from __future__ import absolute_import, division, print_function
 
-__version__ = "0.8.4"
-
 # Package level logger
 import logging
 
@@ -17,3 +15,8 @@ except ImportError:
 
 logger = logging.getLogger("pyoos")
 logger.addHandler(logging.NullHandler())
+
+from ._version import get_versions
+
+__version__ = get_versions()["version"]
+del get_versions
