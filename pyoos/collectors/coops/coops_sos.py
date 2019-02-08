@@ -84,7 +84,8 @@ class CoopsSos(IoosSweSos):
         return params
 
     def metadata(self, **kwargs):
-        callback = lambda x: "urn:ioos:station:NOAA.NOS.CO-OPS:%s" % x
+        def callback(x):
+            return "urn:ioos:station:NOAA.NOS.CO-OPS:%s" % x
         return super(CoopsSos, self).metadata(
             feature_name_callback=callback, **kwargs
         )

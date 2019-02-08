@@ -53,7 +53,7 @@ class WqxToPaegan(object):
                     vertical = 0
                     try:
                         vertical = float(ml.vertical_measure_value)
-                    except:
+                    except Exception:
                         pass
 
                     # convert the vertical to meters if it is ft (which it always is)

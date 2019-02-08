@@ -28,7 +28,8 @@ namespaces = get_namespaces()
 
 class ProfileCache(object):
     """
-    Helper class to accumulate observations and transform them into ProfileCollections representing TimeseriesProfiles.
+    Helper class to accumulate observations and transform them into
+    ProfileCollections representing TimeseriesProfiles.
 
     Used internally.
     """
@@ -234,7 +235,7 @@ class TimeSeriesProfile(object):
 
     def _parse_profile_bins(self, profbins_el):
         data_array = profbins_el.content
-        count = int(data_array.elementCount[0].text)
+        # count = int(data_array.elementCount[0].text)
         data = self._parse_data_array(data_array)
 
         bin_center_quantity = data_array.elementType.content.get_by_name(
@@ -263,7 +264,7 @@ class TimeSeriesProfile(object):
 
     def _parse_profile_heights(self, profheights_el):
         data_array = profheights_el.content
-        count = int(data_array.elementCount[0].text)
+        # count = int(data_array.elementCount[0].text)
         data = self._parse_data_array(data_array)
 
         height_el = data_array.elementType.get_by_name("height")
@@ -280,10 +281,10 @@ class TimeSeriesProfile(object):
         """
         Parses a general DataArray.
         """
-        decimalSeparator = data_array.encoding.decimalSeparator
+        # decimalSeparator = data_array.encoding.decimalSeparator
         tokenSeparator = data_array.encoding.tokenSeparator
         blockSeparator = data_array.encoding.blockSeparator
-        collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
+        # collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
 
         data_values = data_array.values
         lines = [x for x in data_values.split(blockSeparator) if x != ""]
@@ -318,7 +319,7 @@ class TimeSeriesProfile(object):
 
         # get more information on sensor cols
         sensor_cols = defaultdict(list)
-        sensor_vals = defaultdict(list)
+        # sensor_vals = defaultdict(list)
 
         sensor_rec = data_record.get_by_name("sensor")
         for sendata in sensor_rec.content.item:
@@ -329,10 +330,10 @@ class TimeSeriesProfile(object):
                 sensor_cols[sendata.name].append(f)
 
         # @TODO deduplicate
-        decimalSeparator = data_array.encoding.decimalSeparator
+        # decimalSeparator = data_array.encoding.decimalSeparator
         tokenSeparator = data_array.encoding.tokenSeparator
         blockSeparator = data_array.encoding.blockSeparator
-        collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
+        # collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
 
         data_values = data_array.values
         lines = [x for x in data_values.split(blockSeparator) if x != ""]
@@ -343,10 +344,10 @@ class TimeSeriesProfile(object):
         for row in lines:
             values = row.split(tokenSeparator)
 
-            skey = None
+            # skey = None
             i = 0
             cur_time = None
-            cur_qual = None
+            # cur_qual = None
 
             for c in columns:
 

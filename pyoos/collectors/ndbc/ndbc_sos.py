@@ -53,7 +53,8 @@ class NdbcSos(IoosSweSos):
         return params
 
     def metadata(self, **kwargs):
-        callback = lambda x: "urn:ioos:station:wmo:%s" % x
+        def callback(x):
+            return "urn:ioos:station:wmo:%s" % x
         return super(NdbcSos, self).metadata(
             feature_name_callback=callback, **kwargs
         )

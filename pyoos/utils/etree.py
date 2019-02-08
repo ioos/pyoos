@@ -2,8 +2,6 @@ from __future__ import absolute_import, division, print_function
 
 import inspect
 
-import six
-
 # Makes etree, ElementType, and ParseError availablefrom either `lxml `or `xml`.
 try:
     from lxml import etree
@@ -32,7 +30,7 @@ except ImportError:
             # Python < 2.5 with ElementTree installed.
             import elementtree.ElementTree as etree
 
-            ParseError = StandardError
+            ParseError = StandardError  # noqa
             ElementType = etree.Element
         except ImportError:
             raise RuntimeError(

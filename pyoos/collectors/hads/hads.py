@@ -74,7 +74,7 @@ class Hads(Collector):
         #     PC(SRBM5)
         #         2013-07-22 19:30 36.19
         #
-        rvar = re.compile("""\n\s([A-Z]{2}[A-Z0-9]{0,1})\(\w+\)""")
+        rvar = re.compile(r"\n\s([A-Z]{2}[A-Z0-9]{0,1})\(\w+\)")
 
         variables = set()
         resp = requests.post(
@@ -218,7 +218,7 @@ class Hads(Collector):
     def _get_state_urls(self):
         root = BeautifulSoup(requests.get(self.states_url).text)
         areas = root.find_all("area")
-        return list(set([x.attrs.get("href", None) for x in areas]))
+        return list({x.attrs.get("href", None) for x in areas})
 
     def _get_stations_for_state(self, state_url):
         state_root = BeautifulSoup(requests.get(state_url).text)

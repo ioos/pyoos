@@ -77,10 +77,8 @@ class AwcToPaegan(object):
                     ):
                         times[station_lookup.index(s.uid)][dt] = []
 
-                    if metar.find(variable) != None:
-                        if variable in set(
-                            ["raw_text", "flight_category", "wx_string"]
-                        ):
+                    if metar.find(variable):
+                        if variable in {"raw_text", "flight_category", "wx_string"}:
                             times[station_lookup.index(s.uid)][dt].append(
                                 Member(
                                     value=metar.find(variable).text,
@@ -96,7 +94,7 @@ class AwcToPaegan(object):
                                 cover = cond.attrib["sky_cover"]
                                 try:
                                     alt = cond.attrib["cloud_base_ft_agl"]
-                                except:
+                                except Exception:
                                     alt = None
                                 sky_condition.append(
                                     {

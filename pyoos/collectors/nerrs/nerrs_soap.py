@@ -83,7 +83,7 @@ class NerrsSoap(Collector):
 
     def list_features(self):
         return sorted(
-            [s["Station_Code"] for s in self.stations], key=str.lower
+            (s["Station_Code"] for s in self.stations), key=str.lower
         )
 
     def list_variables(self, feature=None):
@@ -104,11 +104,11 @@ class NerrsSoap(Collector):
         else:
             s = self.get_station(feature)
             return sorted(
-                [
+                (
                     v
                     for v in list(set(s["Params_Reported"].split(",")))
                     if v not in ignore_vars
-                ],
+                ),
                 key=str.lower,
             )
 

@@ -7,7 +7,6 @@ from dateutil import parser
 from owslib.namespaces import Namespaces
 from owslib.swe.sensor.sml import SensorML
 from owslib.util import nspath_eval, testXMLAttribute, testXMLValue
-from six import text_type
 
 from pyoos.parsers.ioos.describe_sensor import IoosDescribeSensor
 from pyoos.utils import ElementType, etree
@@ -45,7 +44,7 @@ class DescribeSensor(IoosDescribeSensor):
                     if st.definition == string_def
                 )
             )
-        except:
+        except Exception:
             return None
 
     def get_ioos_def(self, ident, elem_type, ont):
@@ -67,9 +66,7 @@ class DescribeSensor(IoosDescribeSensor):
         else:
             root = etree.fromstring(element)
 
-        sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(
-            SML_NS
-        )
+        # sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(SML_NS)
 
         # TODO: make this cleaner
         if hasattr(root, "getroot"):
@@ -143,13 +140,12 @@ class NetworkDS(DescribeSensor):
         # Verbose method of describing members.  Pull out each individual procedure
         # there is no 'lower-case' function in XPath 1, so we have to settle
         # with this
-        sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(
-            SML_NS
-        )
+        # sml_str = ".//{{{0}}}identifier/{{{0}}}Term[@definition='http://mmisw.org/ont/ioos/definition/%s']".format(SML_NS)
         name_trans = """translate(@name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"""
         stat_id_val = ".//sml101:identifier[{}='stationid']/sml101:Term/sml101:value".format(
             name_trans
         )
+
         # TODO: maybe refactor to use ioos_get_def instead
         def first_xpath_or_none(e):
             res = e.xpath(stat_id_val, namespaces=namespaces)
@@ -160,12 +156,10 @@ class NetworkDS(DescribeSensor):
 
         self.procedures = sorted(
             list(
-                set(
-                    [
-                        testXMLValue(first_xpath_or_none(comp))
-                        for comp in self.system.components
-                    ]
-                )
+                {
+                    testXMLValue(first_xpath_or_none(comp))
+                    for comp in self.system.components
+                }
             )
         )
 
@@ -201,7 +195,7 @@ class StationDS(DescribeSensor):
         # components instead
         if not self.variables:
             self.variables = sorted(
-                [comp.values()[0] for comp in self.system.components]
+                (comp.values()[0] for comp in self.system.components)
             )
 
 

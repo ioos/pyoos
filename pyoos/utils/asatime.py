@@ -61,5 +61,5 @@ class AsaTime(object):
             if date.tzinfo is None:
                 date = dateparser.parse(date_string, tzinfos=cls.tzd)
             return date
-        except:
+        except Exception:
             raise ValueError("Could not parse date string!")

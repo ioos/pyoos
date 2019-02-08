@@ -71,7 +71,7 @@ class HadsParser(object):
             # annotate data with z values, sort, group by keyfunc (z/time)
             grouped_data = groupby(
                 sorted(
-                    [
+                    (
                         (
                             x[0],
                             x[1],
@@ -81,7 +81,7 @@ class HadsParser(object):
                             ],
                         )
                         for x in parsed_data[station_code]
-                    ],
+                    ),
                     key=zandtime,
                 ),
                 zandtime,

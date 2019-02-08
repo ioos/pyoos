@@ -30,7 +30,7 @@ class IoosGetObservation(object):
                     )
                 )
                 break
-            except:
+            except Exception:
                 continue
 
         if version == "1.0":

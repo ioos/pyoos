@@ -45,7 +45,7 @@ class WaterML11ToPaegan(object):
                 try:
                     location = info.location.geo_coords[0]
                     srs = info.location.srs[0]
-                except:
+                except Exception:
                     print(
                         "Could not find a location for {}... skipping station".format(
                             s.uid

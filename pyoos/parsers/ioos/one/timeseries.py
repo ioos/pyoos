@@ -145,10 +145,10 @@ class TimeSeries(object):
                     # Create a model Member for each column that will be copied and filled with data from each row
                     sensors[sendata.name]["columns"].append(f)
 
-        decimalSeparator = data_array.encoding.decimalSeparator
+        # decimalSeparator = data_array.encoding.decimalSeparator
         tokenSeparator = data_array.encoding.tokenSeparator
         blockSeparator = data_array.encoding.blockSeparator
-        collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
+        # collapseWhiteSpaces = data_array.encoding.collapseWhiteSpaces
 
         data_values = data_array.values
         self.raw_data = copy(data_values)
