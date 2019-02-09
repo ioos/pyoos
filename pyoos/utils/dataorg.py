@@ -1,4 +1,5 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
 
 def flatten_element(p):
     """
@@ -9,7 +10,7 @@ def flatten_element(p):
     so it's ready to use.
     Useful with most pyoos collectors.
     """
-    rd = {'time': p.time}
+    rd = {"time": p.time}
     for member in p.members:
-        rd[member['standard']] = member['value']
+        rd[member["standard"]] = member["value"]
     return rd

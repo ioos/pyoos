@@ -1,45 +1,39 @@
-language: python
+language: minimal
 
 sudo: false
 
 matrix:
+  fast_finish: true
   include:
-  - python: 2.7
-    env: TEST_TARGET=default
-  - python: 3.5
-    env: TEST_TARGET=default
-  - python: 3.6
-    env: TEST_TARGET=default
-  - python: 3.6
-    env: TEST_TARGET=coding_standards
-  allow_failures:
-  - python: 3.6
-    env: TEST_TARGET=coding_standards
+    - name: "legacy_python"
+      env: PY=2.7
+    - name: "default"
+      env: PY=3.7
+    - name: "coding_standards"
+      env: PY=3.7
 
 before_install:
   - wget http://bit.ly/miniconda -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
   - conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-  - conda update conda
+  - conda update conda --quiet
   - conda config --add channels conda-forge --force
-  - conda create --name TEST python=$TRAVIS_PYTHON_VERSION --file requirements.txt --file requirements-dev.txt
+  - conda create --name TEST python=$PY --file requirements.txt --file requirements-dev.txt
   - source activate TEST
 
 # Test source distribution.
 install:
-  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install pyoos-${version}.tar.gz && popd
+  - python setup.py sdist && version=$(python setup.py --version) && pushd dist  && pip install --no-deps --force-reinstall pyoos-${version}.tar.gz && popd
 
 script:
-  - if [[ $TEST_TARGET == 'default' ]]; then
+  - if [[ $TRAVIS_JOB_NAME == 'default' ]] || [[ $TRAVIS_JOB_NAME == 'legacy_python' ]]; then
       cp -r tests /tmp && cd /tmp ;
-      py.test -s -rxs -vv tests ;
+      pytest -n 2 -rxs -vv tests ;
     fi
 
-
-  - if [[ $TEST_TARGET == 'coding_standards' ]]; then
-      flake8 --max-line-length=105 pyoos ;
-      flake8 --max-line-length=105 tests ;
+  - if [[ $TRAVIS_JOB_NAME == 'coding_standards' ]]; then
+      pytest --flake8 -m flake8 ;
     fi
 
 notifications:

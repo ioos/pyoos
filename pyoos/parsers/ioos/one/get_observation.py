@@ -1,11 +1,14 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
-from owslib.namespaces import Namespaces
-from owslib.util import testXMLValue, testXMLAttribute, extract_time
-from owslib.util import nspath_eval
 from owslib.crs import Crs
-
-from shapely.geometry import box, Point
+from owslib.namespaces import Namespaces
+from owslib.util import (
+    extract_time,
+    nspath_eval,
+    testXMLAttribute,
+    testXMLValue,
+)
+from shapely.geometry import Point, box
 
 from pyoos.parsers.ioos.get_observation import IoosGetObservation
 from pyoos.parsers.ioos.one.timeseries import TimeSeries
@@ -15,6 +18,8 @@ from pyoos.parsers.ioos.one.timeseries_profile import TimeSeriesProfile
 def get_namespaces():
     ns = Namespaces()
     return ns.get_namespaces(["om10", "swe101", "swe20", "gml311", "xlink"])
+
+
 namespaces = get_namespaces()
 
 
@@ -37,43 +42,99 @@ class OmObservation(object):
     def __init__(self, element):
         self._root = element
 
-        self.description = testXMLValue(self._root.find(nspv("gml311:description")))
+        self.description = testXMLValue(
+            self._root.find(nspv("gml311:description"))
+        )
 
-        self.begin_position = extract_time(self._root.find(nspv('om10:samplingTime/gml311:TimePeriod/gml311:beginPosition')))
+        self.begin_position = extract_time(
+            self._root.find(
+                nspv(
+                    "om10:samplingTime/gml311:TimePeriod/gml311:beginPosition"
+                )
+            )
+        )
 
-        self.end_position = extract_time(self._root.find(nspv('om10:samplingTime/gml311:TimePeriod/gml311:endPosition')))
+        self.end_position = extract_time(
+            self._root.find(
+                nspv("om10:samplingTime/gml311:TimePeriod/gml311:endPosition")
+            )
+        )
 
-        self.procedures = [testXMLAttribute(e, nspv("xlink:href")) for e in self._root.findall(nspv("om10:procedure/om10:Process/gml311:member"))]
+        self.procedures = [
+            testXMLAttribute(e, nspv("xlink:href"))
+            for e in self._root.findall(
+                nspv("om10:procedure/om10:Process/gml311:member")
+            )
+        ]
 
-        self.observedProperties = [testXMLAttribute(e, nspv("xlink:href")) for e in self._root.findall(nspv("om10:observedProperty/swe101:CompositePhenomenon/swe101:component"))]
+        self.observedProperties = [
+            testXMLAttribute(e, nspv("xlink:href"))
+            for e in self._root.findall(
+                nspv(
+                    "om10:observedProperty/swe101:CompositePhenomenon/swe101:component"
+                )
+            )
+        ]
 
         # Can't use a full Xpath expression, so iterate over all metaDataProperties to find the IOOS FeatureType
         self.feature_type = None
-        ft = self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:GenericMetaData/gml311:name"))
-        ft.extend(self._root.findall(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:name")))
+        ft = self._root.findall(
+            nspv(
+                "om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:GenericMetaData/gml311:name"
+            )
+        )
+        ft.extend(
+            self._root.findall(
+                nspv(
+                    "om10:featureOfInterest/gml311:FeatureCollection/gml311:metaDataProperty/gml311:name"
+                )
+            )
+        )
         ft_def = "http://cf-pcmdi.llnl.gov/documents/cf-conventions/1.6/cf-conventions.html#discrete-sampling-geometries"
         for f in ft:
             if testXMLAttribute(f, "codeSpace") == ft_def:
                 self.feature_type = testXMLValue(f)
 
         # BBOX
-        envelope = self._root.find(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:boundedBy/gml311:Envelope"))
-        self.bbox_srs = Crs(testXMLAttribute(envelope, 'srsName'))
-        lower_left_corner = testXMLValue(envelope.find(nspv('gml311:lowerCorner'))).split(" ")
-        upper_right_corner = testXMLValue(envelope.find(nspv('gml311:upperCorner'))).split(" ")
+        envelope = self._root.find(
+            nspv(
+                "om10:featureOfInterest/gml311:FeatureCollection/gml311:boundedBy/gml311:Envelope"
+            )
+        )
+        self.bbox_srs = Crs(testXMLAttribute(envelope, "srsName"))
+        lower_left_corner = testXMLValue(
+            envelope.find(nspv("gml311:lowerCorner"))
+        ).split(" ")
+        upper_right_corner = testXMLValue(
+            envelope.find(nspv("gml311:upperCorner"))
+        ).split(" ")
         if self.bbox_srs.axisorder == "yx":
-            self.bbox = box(float(lower_left_corner[1]), float(lower_left_corner[0]), float(upper_right_corner[1]), float(upper_right_corner[0]))
+            self.bbox = box(
+                float(lower_left_corner[1]),
+                float(lower_left_corner[0]),
+                float(upper_right_corner[1]),
+                float(upper_right_corner[0]),
+            )
         else:
-            self.bbox = box(float(lower_left_corner[0]), float(lower_left_corner[1]), float(upper_right_corner[0]), float(upper_right_corner[1]))
+            self.bbox = box(
+                float(lower_left_corner[0]),
+                float(lower_left_corner[1]),
+                float(upper_right_corner[0]),
+                float(upper_right_corner[1]),
+            )
 
         # LOCATION
-        location = self._root.find(nspv("om10:featureOfInterest/gml311:FeatureCollection/gml311:location"))
+        location = self._root.find(
+            nspv(
+                "om10:featureOfInterest/gml311:FeatureCollection/gml311:location"
+            )
+        )
         # Should only have one child
         geo = list(location)[-1]
         self.location = {}
 
         def get_point(element, srs):
-            name  = testXMLValue(element.find(nspv("gml311:name")))
+            name = testXMLValue(element.find(nspv("gml311:name")))
             point = testXMLValue(element.find(nspv("gml311:pos"))).split(" ")
             if srs.axisorder == "yx":
                 point = Point(float(point[1]), float(point[0]))
@@ -97,9 +158,9 @@ class OmObservation(object):
         self.feature = None
         data = self.results.find(nspv("swe20:DataRecord"))
         if data is not None:
-            if self.feature_type == 'timeSeries':
+            if self.feature_type == "timeSeries":
                 self.feature = TimeSeries(data).feature
-            elif self.feature_type == 'timeSeriesProfile':
+            elif self.feature_type == "timeSeriesProfile":
                 self.feature = TimeSeriesProfile(data).feature
             else:
                 print("No feature type found.")

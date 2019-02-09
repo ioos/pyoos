@@ -1,14 +1,13 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import pytz
 from owslib.etree import ElementType, etree
-
 from owslib.waterml.wml11 import WaterML_1_1
-from shapely.geometry import Point as sPoint
+from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.features.base.point import Point
 from paegan.cdm.dsg.features.station import Station as Station
-from paegan.cdm.dsg.collections.station_collection import StationCollection
 from paegan.cdm.dsg.member import Member
+from shapely.geometry import Point as sPoint
 
 
 class WaterML11ToPaegan(object):
@@ -46,11 +45,17 @@ class WaterML11ToPaegan(object):
                 try:
                     location = info.location.geo_coords[0]
                     srs = info.location.srs[0]
-                except:
-                    print("Could not find a location for {}... skipping station".format(s.uid))
+                except Exception:
+                    print(
+                        "Could not find a location for {}... skipping station".format(
+                            s.uid
+                        )
+                    )
                     continue
 
-                s.location = sPoint(float(location[0]), float(location[1]), vertical)
+                s.location = sPoint(
+                    float(location[0]), float(location[1]), vertical
+                )
                 s.set_property("horizontal_crs", srs)
                 s.set_property("vertical_units", "m")
                 s.set_property("vertical_crs", info.vertical_datum)
@@ -71,7 +76,15 @@ class WaterML11ToPaegan(object):
                     if dt not in times.keys():
                         times[dt] = []
 
-                    times[dt].append(Member(value=r.value, unit=variable.unit.code, name=variable.variable_name, description=variable.variable_description, standard=variable.variable_code))
+                    times[dt].append(
+                        Member(
+                            value=r.value,
+                            unit=variable.unit.code,
+                            name=variable.variable_name,
+                            description=variable.variable_description,
+                            standard=variable.variable_code,
+                        )
+                    )
 
             station = stations[station_lookup.index(station_code)]
             for dts, members in times.items():

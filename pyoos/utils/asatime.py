@@ -1,11 +1,11 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import dateutil.parser as dateparser
 
 
 class AsaTime(object):
 
-    tz_str = '''-12 Y
+    tz_str = """-12 Y
     -11 X NUT SST
     -10 W CKT HAST HST TAHT TKT
     -9 V AKST GAMT GIT HADT HNY
@@ -42,10 +42,10 @@ class AsaTime(object):
     -2.5 HAT NDT
     -3.5 HNT NST NT
     -4.5 HLV VET
-    -9.5 MART MIT'''
+    -9.5 MART MIT"""
 
     tzd = {}
-    for tz_descr in map(str.split, tz_str.split('\n')):
+    for tz_descr in map(str.split, tz_str.split("\n")):
         tz_offset = int(float(tz_descr[0]) * 3600)
         for tz_code in tz_descr[1:]:
             tzd[tz_code] = tz_offset
@@ -61,5 +61,5 @@ class AsaTime(object):
             if date.tzinfo is None:
                 date = dateparser.parse(date_string, tzinfos=cls.tzd)
             return date
-        except:
+        except Exception:
             raise ValueError("Could not parse date string!")

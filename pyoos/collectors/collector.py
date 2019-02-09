@@ -1,10 +1,9 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import pytz
 
 
 class Collector(object):
-
     def __init__(self):
         self._end_time = None
         self._start_time = None
@@ -25,6 +24,7 @@ class Collector(object):
                 time = time.replace(tzinfo=pytz.utc)
             time = time.astimezone(pytz.utc)
         self._start_time = time
+
     start_time = property(get_start_time, set_start_time)
 
     def get_end_time(self):
@@ -39,6 +39,7 @@ class Collector(object):
                 time = time.replace(tzinfo=pytz.utc)
             time = time.astimezone(pytz.utc)
         self._end_time = time
+
     end_time = property(get_end_time, set_end_time)
 
     def get_bbox(self):
@@ -55,9 +56,12 @@ class Collector(object):
             dy = bbox[3] - bbox[1]
         if dx <= 0 or dy <= 0:
             raise ValueError(
-                "Not a recognized bbox: {!r}. Must be in format: (minx, miny, maxx, maxy)".format(bbox)
+                "Not a recognized bbox: {!r}. Must be in format: (minx, miny, maxx, maxy)".format(
+                    bbox
+                )
             )
         self._bbox = bbox
+
     bbox = property(get_bbox, set_bbox)
 
     def get_variables(self):
@@ -71,9 +75,12 @@ class Collector(object):
             if isinstance(variables, list) or isinstance(variables, tuple):
                 variables = list(variables)
             else:
-                raise ValueError("Not a recognized variable list. \
-                                  Must be a list or tuple of strings")
+                raise ValueError(
+                    "Not a recognized variable list. \
+                                  Must be a list or tuple of strings"
+                )
         self._variables = variables
+
     variables = property(get_variables, set_variables)
 
     def get_features(self):
@@ -87,9 +94,12 @@ class Collector(object):
             if isinstance(features, list) or isinstance(features, tuple):
                 features = list(features)
             else:
-                raise ValueError("Not a recognized variable list. \
-                                  Must be a list or tuple of strings")
+                raise ValueError(
+                    "Not a recognized variable list. \
+                                  Must be a list or tuple of strings"
+                )
         self._features = features
+
     features = property(get_features, set_features)
 
     def filter(self, **kwargs):

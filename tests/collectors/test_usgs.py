@@ -1,12 +1,12 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import unittest
-from pyoos.collectors.usgs.usgs_rest import UsgsRest
 from datetime import datetime, timedelta
+
+from pyoos.collectors.usgs.usgs_rest import UsgsRest
 
 
 class USGSTest(unittest.TestCase):
-
     def setUp(self):
         self.c = UsgsRest()
 
@@ -17,7 +17,15 @@ class USGSTest(unittest.TestCase):
 
         # Another flaky test.
         assert len(collection.elements) == 7
-        assert sorted([x.uid for x in collection.elements]) == ['04044724', '04044755', '04045500', '04046000', '04052500', '04052600', '04056500']
+        assert sorted((x.uid for x in collection.elements)) == [
+            "04044724",
+            "04044755",
+            "04045500",
+            "04046000",
+            "04052500",
+            "04052600",
+            "04056500",
+        ]
 
         station = collection.elements[0]
         assert station.name == "AU TRAIN RIVER AT FOREST LAKE, MI"
@@ -36,7 +44,12 @@ class USGSTest(unittest.TestCase):
 
         # Returns 4 stations: 04044724, 04045500, 04046000, 04056500
         assert len(collection.elements) == 4
-        assert sorted([x.uid for x in collection.elements]) == ["04044724", "04045500", "04046000", "04056500"]
+        assert sorted((x.uid for x in collection.elements)) == [
+            "04044724",
+            "04045500",
+            "04046000",
+            "04056500",
+        ]
 
     def test_by_state(self):
         # Clear filters
@@ -49,7 +62,9 @@ class USGSTest(unittest.TestCase):
         assert len(collection.elements) == 58
 
         station = collection.elements[0]
-        assert station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"
+        assert (
+            station.name == "TEN MILE R., PAWTUCKET AVE. AT E. PROVIDENCE, RI"
+        )
         # Measures 2 variables
         assert len(station.get_unique_members()) == 2
         assert station.location.x == -71.3503315
@@ -60,13 +75,13 @@ class USGSTest(unittest.TestCase):
         # Clear filters
         self.c.clear()
         # Add custom state filter
-        self.c.filter(features=['04001000'])
+        self.c.filter(features=["04001000"])
         collection = self.c.collect()
         collection.calculate_bounds()
 
         station = collection.elements[0]
-        assert station.uid == '04001000'
-        assert station.name == 'WASHINGTON CREEK AT WINDIGO, MI'
+        assert station.uid == "04001000"
+        assert station.name == "WASHINGTON CREEK AT WINDIGO, MI"
         assert station.location.x == -89.1459196999999932
         assert station.location.y == 47.9212792000000007
         assert station.location.z == 0

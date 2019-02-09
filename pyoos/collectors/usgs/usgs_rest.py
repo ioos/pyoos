@@ -1,26 +1,30 @@
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
+
+import requests
 from six import string_types
 
 from pyoos.collectors.collector import Collector
-import requests
 from pyoos.parsers.waterml import WaterML11ToPaegan
 
 
 class UsgsRest(Collector):
     def __init__(self, **kwargs):
         super(UsgsRest, self).__init__()
-        self.rest_url = 'http://waterservices.usgs.gov/nwis/iv'
+        self.rest_url = "http://waterservices.usgs.gov/nwis/iv"
         self._state = None
 
     def set_state(self, state):
         if state is not None:
             if not isinstance(state, string_types):
-                raise ValueError("Not a recognized state. \
-                                  Must be a str or unicode string")
+                raise ValueError(
+                    "Not a recognized state. \
+                                  Must be a str or unicode string"
+                )
         self._state = state
 
     def get_state(self):
         return self._state
+
     state = property(get_state, set_state)
 
     def list_variables(self):
@@ -38,14 +42,16 @@ class UsgsRest(Collector):
 
         majors = [_f for _f in [self.bbox, self.features, self.state] if _f]
         if len(majors) > 1:
-            raise ValueError("""USGS does not allow filtering by more than one 'major' filter.
+            raise ValueError(
+                """USGS does not allow filtering by more than one 'major' filter.
                                 State, BBox, and Features (sites) are all considered 'major' filters.
-                                Please set all but one of the filters to None and try again.""")
+                                Please set all but one of the filters to None and try again."""
+            )
 
         if self.start_time is not None:
-            params["startDT"] = self.start_time.strftime('%Y-%m-%dT%H:%M')
+            params["startDT"] = self.start_time.strftime("%Y-%m-%dT%H:%M")
         if self.end_time is not None:
-            params["endDT"] = self.end_time.strftime('%Y-%m-%dT%H:%M')
+            params["endDT"] = self.end_time.strftime("%Y-%m-%dT%H:%M")
         if self.bbox is not None:
             params["bBox"] = ",".join([str(x) for x in self.bbox])
         if self.variables is not None and len(self.variables) > 0:

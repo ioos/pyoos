@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-from __future__ import (absolute_import, division, print_function)
+from __future__ import absolute_import, division, print_function
 
 import unittest
+
 from pytest import raises
+
 from pyoos.collectors.wqp.wqp_rest import WqpRest
 from pyoos.parsers.wqx.wqx_outbound import WqxOutbound
 
 
 class WqpTest(unittest.TestCase):
-
     def setUp(self):
         self.c = WqpRest()
 
     def test_wqp_sites_metadata(self):
         """
-        <WQX xmlns="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/ http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/index.xsd">
+        <WQX xmlns="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/ http://qwwebservices.usgs.gov/schemas/WQX-Outbound/2_0/index.xsd">  # noqa
             <Organization>
                 <OrganizationDescription>
                     <OrganizationIdentifier>21IOWA</OrganizationIdentifier>
@@ -59,9 +60,14 @@ class WqpTest(unittest.TestCase):
 
         # MonitoringLocation
         assert org.locations[0].id == u"21IOWA-10070005"
-        assert org.locations[0].name == u"Cedar River Upstream of Waterloo/Cedar Falls"
+        assert (
+            org.locations[0].name
+            == u"Cedar River Upstream of Waterloo/Cedar Falls"
+        )
         assert org.locations[0].type == u"River/Stream"
-        assert org.locations[0].description.startswith(u"Below the dam of Old Highway 218 in Cedar Falls")
+        assert org.locations[0].description.startswith(
+            u"Below the dam of Old Highway 218 in Cedar Falls"
+        )
         assert org.locations[0].huc == u"07080205"
         assert org.locations[0].latitude == u"42.5392"
         assert org.locations[0].longitude == u"-92.4495"
@@ -85,7 +91,7 @@ class WqpTest(unittest.TestCase):
         rmeta, data = self.c.raw()
 
         with raises(AttributeError):
-            print(data.organization)
+            getattr(data, "organization")
 
     def test_into_dsg(self):
         # First feature filter
