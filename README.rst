@@ -57,7 +57,7 @@ Filter from a datetime (the 'start' parameter)
 
 .. code:: python
 
-    from dateime import dateime, timedelta
+    from datetime import datetime, timedelta
     collector.filter(start=datetime.utcnow() - timedelta(hours=1))
 
 Filter until a datetime (the 'end' parameter)
@@ -65,7 +65,7 @@ Filter until a datetime (the 'end' parameter)
 
 .. code:: python
 
-    from dateime import dateime
+    from datetime import datetime
     collector.filter(end=datetime.utcnow())
 
 Filter a datetime range (both 'start' and 'end' parameters)
@@ -73,7 +73,7 @@ Filter a datetime range (both 'start' and 'end' parameters)
 
 .. code:: python
 
-    from dateime import dateime, timedelta
+    from datetime import datetime, timedelta
     collector.filter(start=datetime.utcnow - timedelta(hours=24), end=datetime.utcnow())
 
 Feature(s)
